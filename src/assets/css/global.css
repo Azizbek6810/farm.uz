@@ -1,0 +1,153 @@
+@import url("./variables.css");
+@import url("../fonts/fonts.css");
+@import url("./icomoon/style.css");
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-family: 'Montserrat';
+}
+
+a {
+    text-decoration: none;
+}
+
+ul,
+ol {
+    list-style-type: none;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.row {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.transition-300 {
+    transition: all 0.3s ease;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.bg-bottom-header {
+    background-color: var(--bg-bottom-header);
+}
+
+.main-btn {
+    padding: 8px 20px;
+    color: white;
+    background-color: var(--main-blue);
+    border-radius: 8px;
+    font-size: 16px;
+    border: 1px solid var(--main-blue);
+    line-height: 24px;
+}
+
+.main-outline-btn {
+    padding: 8px 20px;
+    background-color: transparent;
+    color: var(--main-blue);
+    border-radius: 8px;
+    font-size: 16px;
+    border: 1px solid var(--main-blue);
+    line-height: 24px;
+}
+
+.main-outline-btn:hover {
+    background-color: var(--main-blue);
+    color: white;
+}
+
+.main-btn:hover {
+    background-color: #253e63;
+}
+
+img[alt="flag"] {
+    width: 20px;
+    border-radius: 5px;
+}
+
+main {
+    background-color: var(--bg-main);
+}
+
+.custom-dropdown button {
+    border: 1px solid rgb(176, 176, 176);
+    background-color: transparent;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 16px;
+}
+
+.title__wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.title_text {
+    border: 1px solid var(--main-blue);
+    padding: 21px 39px;
+    box-sizing: border-box;
+    border-radius: 38px;
+    color: var(--main-blue);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: 0%;
+    text-align: center;
+    text-transform: uppercase;
+    flex: 1 1 0%;
+}
+
+.title_line {
+    height: 1px;
+    flex: 1 1 0%;
+    background-color: var(--main-blue);
+}
+
+.custom_section {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.load_more{
+    margin: 0 auto;
+    display: flex;
+}
+
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1360px;
+        padding-right: 0;
+        padding-left: 0;
+    }
+}

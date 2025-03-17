@@ -1,9 +1,12 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "farm.uz": {
+    "shop-ui": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,32 +20,42 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/farm.uz",
+            "allowedCommonJsDependencies": [
+              "moment-timezone",
+              "node-forge"
+            ],
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/robots.txt"
             ],
             "styles": [
-              "src/styles.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/assets/css/global.css",
+              "src/assets/css/icomoon/style.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/@popperjs/core/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "6mb",
+                  "maximumError": "10mb"
                 }
               ],
               "fileReplacements": [
@@ -68,10 +81,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "farm.uz:build:production"
+              "browserTarget": "shop-ui:build:production"
             },
             "development": {
-              "browserTarget": "farm.uz:build:development"
+              "browserTarget": "shop-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +92,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "farm.uz:build"
+            "browserTarget": "shop-ui:build"
           }
         },
         "test": {
@@ -102,5 +115,5 @@
       }
     }
   },
-  "defaultProject": "farm.uz"
+  "defaultProject": "shop-ui"
 }

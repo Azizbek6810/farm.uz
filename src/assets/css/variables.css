@@ -1,0 +1,8 @@
+:root {
+    /* Font Families */
+    --font-family-primary: "Montserrat", serif;
+    /* Color */
+    --main-blue: #294C82;
+    --bg-bottom-header: #1F262C;
+    --bg-main: #EAEDED;
+}
