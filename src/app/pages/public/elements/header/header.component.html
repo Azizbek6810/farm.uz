@@ -1,156 +1,251 @@
-   <!-- Header -->
-   <header>
-    <!-- Top header -->
-    <div class="top-header">
-      <div class="container d-flex justify-content-between">
-        <!-- Logo -->
-        <div class="logo">
-          <img src="./assets/images/blue-logo.svg" alt="logo" />
-        </div>
-        <!-- Contact, language, auth buttons -->
-        <div class="top-header-right">
-          <!-- contact -->
-          <div class="contact-info">
-            <i class="icon-call transition-300"></i>
-            <div>
-              <a href="tel:+998712070033" class="fw-semibold text-black fs-5"
-                >+998 71 207 00 33</a
-              >
-              <p>24/7 Qanday yordam kerak?</p>
-            </div>
-          </div>
-          <div class="d-flex gap-5 align-items-center">
-            <!-- lang -->
-            <div class="dropdown custom-dropdown">
-              <button
-                class="dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <img src="./assets/images/uz-flag.svg" alt="flag" />
-                <span>UZ</span>
-              </button>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="#">
-                    <img src="./assets/images/uz-flag.svg" alt="flag" />
-                    <span>UZ</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#">
-                    <img src="./assets/images/ru-flag.svg" alt="flag" />
-                    <span>РУ</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#">
-                    <img src="./assets/images/en-flag.svg" alt="flag" />
-                    <span>EN</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <!-- auth buttons -->
-            <div class="auth-buttons">
-              <button class="main-outline-btn">
-                <i class="icon-user"></i>
-                Ro'yxatdan o'tish
-              </button>
-              <button class="main-btn">
-                <i class="icon-login"></i>
-                <span>Kirish</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- hamburger menu icon -->
-        <button class="hamburger" id="hamburger">
-          <i class="icon-menu"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Bottom header -->
-    <div class="bottom-header">
-      <div class="container">
-        <nav>
-          <ul>
-            <li><a href="#" class="active">Asosiy</a></li>
-            <li><a href="#" class="">Savdolar</a></li>
-            <li><a href="#" class="">Tovar</a></li>
-            <li><a href="#" class="">Tizimdagi yangiliklar</a></li>
-            <li><a href="#" class="">Bog'lanish uchun</a></li>
-          </ul>
-        </nav>
-      </div>
-    </div>
-
-    <!-- Mobile menu -->
-    <div class="mobile-menu" id="mobile-menu">
-      <div>
-        <div class="mobile-menu_header">
-          <!-- Logo -->
-          <div class="logo">
-            <img src="./assets/images/blue-logo.svg" alt="logo" />
-          </div>
-          <i class="icon-x-close" id="close"></i>
-        </div>
-        <hr />
-        <div class="mobile-menu_body">
-          <ul>
-            <li><a href="#" class="active">Asosiy</a></li>
-            <li><a href="#" class="">Savdolar</a></li>
-            <li><a href="#" class="">Tovar</a></li>
-            <li><a href="#" class="">Tizimdagi yangiliklar</a></li>
-            <li><a href="#" class="">Bog'lanish uchun</a></li>
-          </ul>
-          <hr />
-          <!-- auth buttons -->
-          <div class="mobile_auth__buttons">
-            <button class="main-outline-btn">
-              <i class="icon-user"></i>
-              Ro'yxatdan o'tish
-            </button>
-            <button class="main-btn">
-              <i class="icon-login"></i>
-              <span>Kirish</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="mobile-menu_footer">
+<!-- Header -->
+<header>
+  <!-- Top header -->
+  <div class="top-header">
+    <div class="container d-flex justify-content-between">
+      <!-- Logo -->
+      <a class="logo" routerLink="/home">
+        <img src="./assets/images/blue-logo.svg" alt="logo" />
+      </a>
+      <!-- Contact, language, auth buttons -->
+      <div class="top-header-right">
         <!-- contact -->
         <div class="contact-info">
           <i class="icon-call transition-300"></i>
           <div>
-            <a href="tel:+998712070033" class="fw-semibold text-black fs-5"
-              >+998 71 207 00 33</a
-            >
-            <p>24/7 Qanday yordam kerak?</p>
+            <a href="tel:+998712070033" class="fw-semibold text-black fs-5">+998 71 207 00 33</a>
+            <p>{{ 'Common.HowCanIHelp' | translate }}</p>
           </div>
         </div>
-        <ul class="mobile_lang__wrapper">
+        <div class="d-flex gap-5 align-items-center">
+          <!-- lang -->
+          <div class="dropdown custom-dropdown">
+            <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="./assets/images/{{ currentItem.key }}.svg" alt="flag" />
+              <span> {{ currentItem.value }}</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li *ngFor="let item of langs">
+                <a class="dropdown-item d-flex align-items-center gap-1" (click)="changeLang(item)">
+                  <img src="./assets/images/{{ item.key }}.svg" alt="flag" />
+                  <span> {{ item.value }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- auth buttons -->
+          <ng-container *ngIf="!auth">
+            <div class="auth-buttons d-flex gap-2">
+              <button class="main-outline-btn d-flex gap-1 align-items-center" (click)="onRegister($event)">
+                <i class="icon-user"></i>
+                <span>{{ 'Common.Register' | translate }}</span>
+              </button>
+              <button class="main-btn d-flex gap-1 align-items-center" (click)="onLogin($event)">
+                <i class="icon-login"></i>
+                <span> {{ 'Common.Login' | translate }}</span>
+              </button>
+            </div>
+          </ng-container>
+          <!-- Cabinet dropdown -->
+          <div class="dropdown" *ngIf="auth">
+            <button
+              class="btn btn-outline-primary dropdown-toggle d-flex align-items-center gap-2"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {{ 'Common.Cabinet' | translate }}
+            </button>
+            <ul class="dropdown-menu">
+              <li class="pb-2 cursor-pointer" style="border-bottom: 1px solid #ccc">
+                <a
+                  class="dropdown-item d-flex flex-column align-items-center gap-2 cursor-pointer"
+                  routerLink="/cabinet"
+                >
+                  <b class="fw-normal fs-6" placement="bottom">{{
+                    userName.length > 18 ? userName.substring(0, 18) + '...' : userName
+                  }}</b>
+                  <!-- <span class="d-flex justify-content-center" style="font-size: 10px;">{{ roleName | translate}} |
+                    {{loginName}}</span> -->
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item d-flex align-items-center gap-2 cursor-pointer text-success"
+                  routerLink="/cabinet"
+                >
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                  {{ 'Common.go' | translate }}
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2 cursor-pointer text-danger" (click)="logout()">
+                  <i class="fa fa-sign-out" aria-hidden="true"></i>
+                  {{ 'Common.exit' | translate }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Hamburger icon -->
+      <i
+        id="icon-menu"
+        class="icon-menu"
+        [class.active]="isMenuVisible"
+        aria-expanded="false"
+        (click)="toggleMenu()"
+      ></i>
+    </div>
+  </div>
+
+  <!-- Bottom header -->
+  <div class="bottom-header">
+    <div class="container">
+      <nav>
+        <ul>
           <li>
-            <a class="mobile_lang active" href="#">
-              <img src="./assets/images/uz-flag.svg" alt="flag" />
-              <span>UZ</span>
-            </a>
+            <a routerLink="/home" routerLinkActive="active"> {{ 'Common.Home' | translate }}</a>
           </li>
           <li>
-            <a class="mobile_lang" href="#">
-              <img src="./assets/images/ru-flag.svg" alt="flag" />
-              <span>РУ</span>
-            </a>
+            <a routerLink="/sales" [routerLinkActive]="'active'" routerLinkActive="active">
+              {{ 'Common.Sales' | translate }}</a
+            >
           </li>
           <li>
-            <a class="mobile_lang" href="#">
-              <img src="./assets/images/en-flag.svg" alt="flag" />
-              <span>EN</span>
-            </a>
+            <a routerLink="/products" [routerLinkActive]="'active'" routerLinkActive="active">
+              {{ 'Common.Product' | translate }}</a
+            >
+          </li>
+          <li>
+            <a routerLink="/useful-know" [routerLinkActive]="'active'" routerLinkActive="active">{{
+              'Common.UsefulToKnow' | translate
+            }}</a>
+          </li>
+          <li>
+            <a routerLink="/contact" [routerLinkActive]="'active'" routerLinkActive="active">{{
+              'Common.Contact' | translate
+            }}</a>
           </li>
         </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu" [class.show]="isMenuVisible">
+    <div>
+      <div class="mobile-menu_header">
+        <!-- Logo -->
+        <div class="logo">
+          <img src="./assets/images/blue-logo.svg" alt="logo" />
+        </div>
+        <i class="icon-x-close" id="close" (click)="closeMenu()"></i>
+      </div>
+      <hr />
+      <div class="mobile-menu_body">
+        <ul>
+          <li>
+            <a routerLink="/home" routerLinkActive="active"> {{ 'Common.Home' | translate }}</a>
+          </li>
+          <li>
+            <a routerLink="/sales" [routerLinkActive]="'active'" routerLinkActive="active">
+              {{ 'Common.Sales' | translate }}</a
+            >
+          </li>
+          <li>
+            <a routerLink="/products" [routerLinkActive]="'active'" routerLinkActive="active">
+              {{ 'Common.Product' | translate }}</a
+            >
+          </li>
+          <li>
+            <a routerLink="/useful-know" [routerLinkActive]="'active'" routerLinkActive="active">{{
+              'Common.UsefulToKnow' | translate
+            }}</a>
+          </li>
+          <li>
+            <a routerLink="/contact" [routerLinkActive]="'active'" routerLinkActive="active">{{
+              'Common.Contact' | translate
+            }}</a>
+          </li>
+        </ul>
+        <hr />
+        <div class="d-flex flex-column align-items-start gap-2">
+          <!-- auth buttons -->
+          <ng-container *ngIf="!auth">
+            <div class="auth-buttons d-flex flex-wrap gap-2">
+              <button class="main-outline-btn d-flex gap-1 align-items-center" (click)="onRegister($event)">
+                <i class="icon-user"></i>
+                <span>{{ 'Common.Register' | translate }}</span>
+              </button>
+              <button class="main-btn d-flex gap-1 align-items-center" (click)="onLogin($event)">
+                <i class="icon-login"></i>
+                <span> {{ 'Common.Login' | translate }}</span>
+              </button>
+            </div>
+          </ng-container>
+          <!-- Cabinet dropdown -->
+          <div class="dropdown" *ngIf="auth">
+            <button
+              class="btn btn-outline-primary dropdown-toggle d-flex align-items-center gap-2"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {{ 'Common.Cabinet' | translate }}
+            </button>
+            <ul class="dropdown-menu">
+              <li class="pb-2 cursor-pointer" style="border-bottom: 1px solid #ccc">
+                <a
+                  class="dropdown-item d-flex flex-column align-items-center gap-2 cursor-pointer"
+                  routerLink="/cabinet"
+                >
+                  <b class="fw-normal fs-6" placement="bottom">{{
+                    userName.length > 18 ? userName.substring(0, 18) + '...' : userName
+                  }}</b>
+                  <!-- <span class="d-flex justify-content-center" style="font-size: 10px;">{{ roleName | translate}} |
+                    {{loginName}}</span> -->
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item d-flex align-items-center gap-2 cursor-pointer text-success"
+                  routerLink="/cabinet"
+                >
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                  {{ 'Common.go' | translate }}
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2 cursor-pointer text-danger" (click)="logout()">
+                  <i class="fa fa-sign-out" aria-hidden="true"></i>
+                  {{ 'Common.exit' | translate }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
-  </header>
+    <div class="mobile-menu_footer">
+      <!-- contact -->
+      <div class="contact-info">
+        <i class="icon-call transition-300"></i>
+        <div>
+          <a href="tel:+998712070033" class="fw-semibold text-black fs-6">+998 71 207 00 33</a>
+          <p>{{ 'Common.HowCanIHelp' | translate }}</p>
+        </div>
+      </div>
+      <ul class="mobile_lang__wrapper">
+        <ng-container *ngFor="let item of langs">
+          <li>
+            <a class="mobile_lang" [ngClass]="{ active: currentItem.value === item.value }" (click)="changeLang(item)">
+              <img src="./assets/images/{{ item.key }}.svg" alt="flag" />
+              <span> {{ item.value }}</span>
+            </a>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+</header>

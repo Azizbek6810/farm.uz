@@ -1,16 +1,18 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  serverUrl: '',
+  authUrl: 'http://test-id.uzex.uz',
+  authAPIUrl: 'http://test-idapi.uzex.uz',
+  appUrl: 'http://localhost:4200',
+  tradeUrl: 'http://test-api-gp-trade.uzex.uz',
+  purchaseUrl: 'http://test-api-gp-purchase.uzex.uz',
+  auctionUrl: 'http://test-api-gp-auction.uzex.uz',
+  apiUrl: 'http://test-api-ekoplatforma.uzex.uz',
+  // apiUrl: 'https://api-ekoplatforma.uzex.uz',
+  minioUrl: 'https://minio-cdn.uzex.uz/minio/ezakupki',
+  requiredEsi: false,
+  requiredSms: false,
+  version: '1.0.0'
 };
 
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

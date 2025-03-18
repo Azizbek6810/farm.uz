@@ -7,6 +7,7 @@ footer {
 .first-row,
 .second-row {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .row-left,
@@ -44,6 +45,7 @@ footer {
 
 .third-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 87px;
   margin-top: 73px;
@@ -51,6 +53,7 @@ footer {
 
 .third-row_logo-media {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 26px;
 }
@@ -79,4 +82,32 @@ footer {
 
 .copyright {
   color: #ccc;
+  text-align: center;
+  margin-top: 40px;
+}
+
+@media (max-width: 1199.98px) {
+
+  /* Footer section */
+  .first-row,
+  .second-row {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 767.98px) {
+
+  /* Footer section */
+  .first-row,
+  .second-row,
+  .third-row {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .third-row_logo-media {
+    flex-wrap: wrap;
+  }
 }

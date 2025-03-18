@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { HomePageComponent } from './pages/public/home-page/home-page.component';
 import { HeaderComponent } from './pages/public/elements/header/header.component';
 import { FooterComponent } from './pages/public/elements/footer/footer.component';
+import { SwiperModule } from 'swiper/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { FooterComponent } from './pages/public/elements/footer/footer.component
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SwiperModule,
+    TranslateModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -461,7 +461,8 @@
 
 .swiper-slide img {
     display: block;
-    width: 100%;
+    /* width: 100%; */
+    width: 388px;
     height: 265px;
     object-fit: contain;
 }
@@ -660,13 +661,6 @@
     .swiper-slide img {
         height: 210px;
     }
-
-    /* Footer section */
-    .first-row,
-    .second-row {
-        gap: 30px;
-    }
-
 }
 
 @media (max-width: 991.98px) {
@@ -814,14 +808,6 @@
     .swiper_buttons {
         top: 1.4rem;
     }
-
-    /* Footer section */
-    .first-row,
-    .second-row,
-    .third-row {
-        align-items: start;
-        flex-direction: column;
-    }
 }
 
 @media (max-width: 575.98px) {
@@ -841,10 +827,6 @@
 
     .swiper-button-prev {
         right: 2.5rem;
-    }
-
-    .third-row_logo-media {
-        flex-wrap: wrap;
     }
 
     #uzb-map {

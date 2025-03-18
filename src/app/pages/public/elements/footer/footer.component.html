@@ -4,43 +4,62 @@
     <!-- first row -->
     <div class="first-row">
       <div class="row-left">
-        <p>Vakolatli organ : O'zbekiston Respublikasi Iqtisodiyot va moliya vazirligi</p>
-        <p>Manzil: 100017 O'zbekiston Respublikasi, Toshkent sh. , Istiqlol ko'chasi 29-uy</p>
-        <p>Telefon: <a href="tel:+998712035050">(71) 203-50-50</a></p>
-        <p>E-mail: <a href="mailto:info@mf.uz">info&#64;mf.uz</a></p>
         <p>
-          E-xat: Vazirlik va idoralar uchun
-          <a href="mailto: mf@exat.uz"> mf&#64;exat.uz</a>
+          <strong> {{ 'Common.AuthorizedBody' | translate }} </strong>{{ 'Common.AuthorizedBodyInfo' | translate }}
         </p>
-        <p><a href="#" class="custom_link">Termin va atamalar</a></p>
-        <p><a href="#" class="custom_link">Mahfiylik siyosati</a></p>
-        <p><a href="#" class="custom_link">Mahfiylik siyosati</a></p>
+        <p>
+          <strong>{{ 'Common.Address' | translate }} </strong> {{ 'Common.AddressInfo' | translate }}
+        </p>
+        <p>
+          <strong> {{ 'Common.phone' | translate }} </strong>
+          <a class="hover-orange" href="tel:+998712035050"> (71) 203-50-50</a>
+        </p>
+        <p><strong> E-mail: </strong> <a class="hover-orange" href="mailto:info@mf.uz">info&commat;mf.uz</a></p>
+        <p>
+          {{ 'Common.email' | translate }}
+          <a class="hover-orange" href="mailto: mf@exat.uz"> mf&commat;exat.uz</a>
+        </p>
+        <p>
+          <a href="#" class="custom_link">{{ 'Common.termDisc' | translate }} </a>
+        </p>
+        <p>
+          <a href="#" class="custom_link">{{ 'Common.termDisc1' | translate }}</a>
+        </p>
       </div>
       <div class="row-right">
-        <p>Operator: “O'zbekiston respublika tovar-xom ashyo birjasi” aksiyadorlik jamiyati</p>
-        <p>Manzil: 100090, O'zbekiston Respublikasi, Toshkent sh., Bobur ko'chasi, 77</p>
-        <p>Call-Center: <a href="tel:+998712070033">71-207-00-33</a></p>
-        <p>E-mail: <a href="mailto:info@rtsb.uz">info&#64;rtsb.uz</a></p>
+        <p>
+          <strong>{{ 'Common.operator' | translate }} </strong>{{ 'Common.operatorINfo' | translate }}
+        </p>
+        <p>
+          <strong>{{ 'Common.address' | translate }} </strong> {{ 'Common.addressInfo' | translate }}
+        </p>
+        <p><strong>Call-Center: </strong> <a class="hover-orange" href="tel:+998712070033">71-207-00-33</a></p>
+        <p><strong>E-mail: </strong> <a class="hover-orange" href="mailto:info@rtsb.uz">info&commat;rtsb.uz</a></p>
       </div>
     </div>
     <hr />
     <!-- second row -->
     <div class="second-row">
       <div class="row-left">
-        <h5>Korporativ buyurtmachilar va ishtirokchilar uchun rekvizitlar</h5>
-        <p>STIR 200933985</p>
-        <p>Hisob raqam: 20208000000600257003</p>
-        <p>MFO 00980 Bank 'Octobank' AJ ('Ravnaq-bank' AJ)</p>
+        <h5>{{ 'Common.DetailsForCorporate' | translate }}</h5>
+        <p>
+          <strong>{{ 'Common.Inn' | translate }}: </strong> 200933985
+        </p>
+        <p>
+          <strong>{{ 'Common.BankAcc' | translate }}</strong
+          >: 20208000000600257003
+        </p>
+        <p>{{ 'Common.bankInfo' | translate }}</p>
       </div>
       <div class="row-right">
-        <h5>Budjet buyurtmachilari uchun rekvizitlar</h5>
+        <h5>{{ 'Common.InvoicePayment' | translate }}</h5>
         <p>
-          Vositalik yig'imi to'lash uchun hisobvaraq:
+          <strong>{{ 'Common.RequirementsBudgetCustomers' | translate }}:</strong>
           <br />
           700110860262877950600262006
         </p>
         <p>
-          Shartnoma bo'yicha to'lov uchun hisobvaraq:
+          <strong> {{ 'Common.RequirementsPay' | translate }}: </strong>
           <br />
           700110860262877950600262007
         </p>
@@ -56,7 +75,7 @@
           <i class="icon icon-youtube"></i>
         </div>
       </div>
-      <div class="copyright">Copyright © 2020-2025. Barcha huquqlar himoyalangan.</div>
     </div>
+    <div class="copyright">Copyright © 2020-2025. Barcha huquqlar himoyalangan.</div>
   </div>
 </footer>
