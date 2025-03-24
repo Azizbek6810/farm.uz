@@ -1,0 +1,25 @@
+
+.bg-success-50 {
+    background-color: #ecfdf3;
+}
+
+.gap-10 {
+    gap: 100px;
+}
+
+
+.icon-chevron-down1,
+.icon-copy {
+    cursor: pointer;
+}
+
+i[aria-expanded="false"] {
+    border: 2px solid var(--gray-400);
+    color: var(--gray-400);
+}
+
+i[aria-expanded="true"],
+i[aria-expanded="false"]:hover {
+    border: 2px solid var(--blue-400);
+    color: var(--blue-400);
+}

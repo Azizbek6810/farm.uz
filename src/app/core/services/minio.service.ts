@@ -124,7 +124,7 @@ export class MinioService {
       });
       dataStream.on('end', function () {
         let blob = new Blob(fileMinio, { type: dataStream.headers['content-type'] });
-        let objectURL = 'data:image/jpeg;base64,' + blob
+        let objectURL = 'data:image/jpeg;base64,' + blob;
       });
     });
   }

@@ -124,147 +124,54 @@
   <!-- Categories section -->
   <section class="categories container">
     <div class="categories_wrapper">
-      <!-- category item 1 -->
-      <div class="category_item">
-        <div class="category_header">
-          <p>Tibbiy maqsadlarda ishlatiladigan dori mahsulotlar va materiallar</p>
-        </div>
-        <div class="category_info">
-          <div class="d-flex justify-content-between">
-            <p>
-              <i class="icon-piece"></i>
-              <span>Ulushi</span>
+      <ng-container *ngFor="let category of categoryList">
+        <!-- category item 1 -->
+        <div class="category_item">
+          <div class="category_header">
+            <p
+              [title]="category.category_name.length > 60 ? category.category_name : null"
+              (click)="redirectToProductList(category.category_id)"
+            >
+              {{
+                category.category_name.length > 60
+                  ? category.category_name.substring(0, 60) + '...'
+                  : (category.category_name | translate)
+              }}
             </p>
-            <span class="percent">57%</span>
           </div>
-          <div class="d-flex justify-content-between">
-            <p>
-              <i class="icon-invoice"></i>
-              <span>Savdo hajmi</span>
-            </p>
-            <span class="trade_amount">5 000 000,00 so'm</span>
+          <div class="category_info">
+            <div class="d-flex justify-content-between">
+              <p>
+                <i class="icon-piece"></i>
+                <span>{{ 'Common.SalesShare' | translate }}</span>
+              </p>
+              <span class="percent">57%</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <p>
+                <i class="icon-invoice"></i>
+                <span>{{ 'Common.VolumeShare' | translate }}</span>
+              </p>
+              <span class="trade_amount">5 000 000,00 so'm</span>
+            </div>
           </div>
-        </div>
-        <div class="category_images__wrapper">
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/pill-1.png" alt="pill" />
-            <h5>Средства лекарственные и материалы</h5>
+          <div class="category_images__wrapper">
+            <ng-container *ngFor="let productItem of category.products">
+              <!-- category image -->
+              <div
+                class="category_image"
+                (click)="redirectToProductList(category.category_id, productItem.product_code)"
+              >
+                <img [src]="productItem.thumb_image || '/assets/images/empty-img.png'" alt="pill" />
+                <h5>{{ productItem.product_name }}</h5>
+              </div>
+            </ng-container>
           </div>
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/pill-2.png" alt="pill" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/pill-3.png" alt="pill" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/pill-4.png" alt="pill" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-        </div>
-        <div class="category_footer">
-          <a href="#">Batafsil ko'rish</a>
-        </div>
-      </div>
-      <!-- category item 2 -->
-      <div class="category_item">
-        <div class="category_header">
-          <p>Tibbiyot buyumlari va tibbiy texnika mahsulotlari</p>
-        </div>
-        <div class="category_info">
-          <div class="d-flex justify-content-between">
-            <p>
-              <i class="icon-piece"></i>
-              <span>Ulushi</span>
-            </p>
-            <span class="percent">57%</span>
-          </div>
-          <div class="d-flex justify-content-between">
-            <p>
-              <i class="icon-invoice"></i>
-              <span>Savdo hajmi</span>
-            </p>
-            <span class="trade_amount">5 000 000,00 so'm</span>
+          <div class="category_footer">
+            <a href="#">Batafsil ko'rish</a>
           </div>
         </div>
-        <div class="category_images__wrapper">
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/med-technology-1.png" alt="med-technology" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/med-technology-2.png" alt="med-technology" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/med-technology-3.png" alt="med-technology" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/med-technology-4.png" alt="med-technology" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-        </div>
-        <div class="category_footer">
-          <a href="#">Batafsil ko'rish</a>
-        </div>
-      </div>
-      <!-- category item 3 -->
-      <div class="category_item">
-        <div class="category_header">
-          <p>Biologik faol qo'shimchalar, veteraniriya preparatlari</p>
-        </div>
-        <div class="category_info">
-          <div class="d-flex justify-content-between">
-            <p>
-              <i class="icon-piece"></i>
-              <span>Ulushi</span>
-            </p>
-            <span class="percent">57%</span>
-          </div>
-          <div class="d-flex justify-content-between">
-            <p>
-              <i class="icon-invoice"></i>
-              <span>Savdo hajmi</span>
-            </p>
-            <span class="trade_amount">5 000 000,00 so'm</span>
-          </div>
-        </div>
-        <div class="category_images__wrapper">
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/bio-vitamins-1.png" alt="bio-vitamins" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/bio-vitamins-2.png" alt="bio-vitamins" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/bio-vitamins-3.png" alt="bio-vitamins" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-          <!-- category image -->
-          <div class="category_image">
-            <img src="./assets/images/bio-vitamins-4.png" alt="bio-vitamins" />
-            <h5>Средства лекарственные и материалы</h5>
-          </div>
-        </div>
-        <div class="category_footer">
-          <a href="#">Batafsil ko'rish</a>
-        </div>
-      </div>
+      </ng-container>
     </div>
   </section>
 
@@ -367,154 +274,62 @@
           <h2 class="title_text">So'ngi mahsulotlar</h2>
           <div class="title_line"></div>
         </div>
-        <!-- product items -->
-        <div class="products_wrapper">
-          <!-- product item 1 -->
-          <div class="product-item">
-            <img src="./assets/images/product-1.png" alt="product" />
-            <div class="product-item-body">
-              <p class="product_number">№: SO15896095</p>
-              <h4>Перчатки хирургические и ...</h4>
-              <div class="product-item-infos">
-                <div class="d-flex justify-content-between mb-2">
-                  <p>
-                    <i class="icon-quantity"></i>
-                    <span>Miqdori</span>
-                  </p>
-                  <span class="quantity_number">500 dona</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <p>
-                    <i class="icon-invoice"></i>
-                    <span>Narxi</span>
-                  </p>
-                  <span class="price_amount">5 000,00 so'm</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- product item 2 -->
-          <div class="product-item">
-            <img src="./assets/images/product-2.png" alt="product" />
-            <div class="product-item-body">
-              <p class="product_number">№: SO15896095</p>
-              <h4>Бактерицидные рециркуляторы</h4>
-              <div class="product-item-infos">
-                <div class="d-flex justify-content-between mb-2">
-                  <p>
-                    <i class="icon-quantity"></i>
-                    <span>Miqdori</span>
-                  </p>
-                  <span class="quantity_number">500 dona</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <p>
-                    <i class="icon-invoice"></i>
-                    <span>Narxi</span>
-                  </p>
-                  <span class="price_amount">5 000,00 so'm</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- product item 3 -->
-          <div class="product-item">
-            <img src="./assets/images/product-3.jpg" alt="product" />
-            <div class="product-item-body">
-              <p class="product_number">№: SO15896095</p>
-              <h4>Насос инфузионный </h4>
-              <div class="product-item-infos">
-                <div class="d-flex justify-content-between mb-2">
-                  <p>
-                    <i class="icon-quantity"></i>
-                    <span>Miqdori</span>
-                  </p>
-                  <span class="quantity_number">500 dona</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <p>
-                    <i class="icon-invoice"></i>
-                    <span>Narxi</span>
-                  </p>
-                  <span class="price_amount">5 000,00 so'm</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- product item 4 -->
-          <div class="product-item">
-            <img src="./assets/images/product-4.png" alt="product" />
-            <div class="product-item-body">
-              <p class="product_number">№: SO15896095</p>
-              <h4>Кресла стоматологические</h4>
-              <div class="product-item-infos">
-                <div class="d-flex justify-content-between mb-2">
-                  <p>
-                    <i class="icon-quantity"></i>
-                    <span>Miqdori</span>
-                  </p>
-                  <span class="quantity_number">500 dona</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <p>
-                    <i class="icon-invoice"></i>
-                    <span>Narxi</span>
-                  </p>
-                  <span class="price_amount">5 000,00 so'm</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- product item 5 -->
-          <div class="product-item">
-            <img src="./assets/images/product-5.png" alt="product" />
-            <div class="product-item-body">
-              <p class="product_number">№: SO15896095</p>
-              <h4>Гуттаперчевый штифт</h4>
-              <div class="product-item-infos">
-                <div class="d-flex justify-content-between mb-2">
-                  <p>
-                    <i class="icon-quantity"></i>
-                    <span>Miqdori</span>
-                  </p>
-                  <span class="quantity_number">500 dona</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <p>
-                    <i class="icon-invoice"></i>
-                    <span>Narxi</span>
-                  </p>
-                  <span class="price_amount">5 000,00 so'm</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- product item 6 -->
-          <div class="product-item">
-            <img src="./assets/images/product-4.png" alt="product" />
-            <div class="product-item-body">
-              <p class="product_number">№: SO15896095</p>
-              <h4>Кресла стоматологические</h4>
-              <div class="product-item-infos">
-                <div class="d-flex justify-content-between mb-2">
-                  <p>
-                    <i class="icon-quantity"></i>
-                    <span>Miqdori</span>
-                  </p>
-                  <span class="quantity_number">500 dona</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <p>
-                    <i class="icon-invoice"></i>
-                    <span>Narxi</span>
-                  </p>
-                  <span class="price_amount">5 000,00 so'm</span>
-                </div>
-              </div>
-            </div>
+        <!-- Loading -->
+        <div class="col-12 text-center" *ngIf="loading && !productNotFound">
+          <div class="spinner-border text-primary" style="width: 2rem; height: 2rem" role="status">
+            <span class="sr-only"></span>
           </div>
         </div>
-        <button class="main-btn load_more mt-5">Barcha mahsulotlar</button>
+        <!-- Product not found -->
+        <div class="col-12 text-center" *ngIf="productNotFound">
+          <h6>{{ 'Common.ProductNotFound' | translate }}</h6>
+        </div>
+        <!-- product items -->
+        <div class="products_wrapper">
+          <ng-container *ngFor="let productItem of productList">
+            <!-- product item 1 -->
+            <div class="product-item">
+              <img
+                [src]="productItem.thumb_image || '/assets/images/empty-img.png'"
+                (click)="onViewProductDetails(productItem.id)"
+                alt="product"
+              />
+              <div class="product-item-body">
+                <p class="product_number">№: {{ productItem.display_no }}</p>
+                <h4>{{ productItem.product_name | slice2: 25 }}</h4>
+                <div class="product-item-infos">
+                  <div class="d-flex justify-content-between mb-2">
+                    <p>
+                      <i class="icon-quantity"></i>
+                      <span> {{ 'Common.amount' | translate }}</span>
+                    </p>
+                    <span class="quantity_number">
+                      {{ productItem.amount | numberFormat }} <small>{{ productItem.unit_name }}</small></span
+                    >
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <p>
+                      <i class="icon-invoice"></i>
+                      <span> {{ 'Common.price' | translate }}</span>
+                    </p>
+                    <span class="price_amount">
+                      {{ productItem.price | numberFormat }}
+                      {{ 'Cabinet.sum' | translate }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <div class="text-center mt-3">
+          <a
+            *ngIf="!productNotFound"
+            (click)="redirectToProductList()"
+            class="btn btn-primary load-btn border-primary-color"
+            >{{ 'Common.allProducts' | translate }}</a
+          >
+        </div>
       </div>
     </section>
 
