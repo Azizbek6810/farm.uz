@@ -1,0 +1,32 @@
+.card-hover:hover {
+    background-color: rgb(108 117 125 / 45%);
+}
+
+::ng-deep.ng-select-container {
+    border: 1px solid #CCCCCC !important;
+    border-radius: 0px 5px 5px 0px !important;
+    font-size: 14px;
+    height: 40px !important;
+}
+
+#product_search {
+    width: 300px;
+}
+
+
+/* ::ng-deep .ng-select div {
+    display: flex;
+    align-items: center;
+    color: #999;
+    font-size: 16px;
+
+} */
+
+
+/*=========== MEDIA QUERY (Kichik ekranlar) ===========*/
+
+@media (max-width: 575.99px) {
+    #product_search {
+        width: 100%;
+    }
+}

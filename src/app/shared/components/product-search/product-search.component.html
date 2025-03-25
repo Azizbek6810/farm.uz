@@ -1,0 +1,53 @@
+<ng-select
+  id="product_search"
+  bindLabel="name"
+  bindValue="product_code"
+  class="border-radius-0"
+  [items]="searchedProducts"
+  [placeholder]="'Shop.Provider.OfferAdd.ProductSearch' | translate"
+  [loading]="loadingSearchedProducts === 'loading'"
+  [notFoundText]="'Не найдено'"
+  (change)="selectSearchProduct($event)"
+  (search)="notesModelChanged.next($event)"
+  #searchProduct
+>
+  <ng-template ng-label-tmp let-item="item" let-index="index"
+    >{{ item.product_code }} {{ item.name }}</ng-template
+  >
+
+  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+    <div class="card m-1 card-hover" style="margin-bottom: 5px; white-space: normal">
+      <div class="card-body p-2">
+        <p>
+          <strong>{{ 'Shop.Provider.MyDeals.Product' | translate }}: </strong> {{ item.name }}
+        </p>
+      </div>
+      <div class="card-footer p-2">
+        <small
+          ><strong>{{ 'Cabinet.ProductCode' | translate }}: </strong> {{ item.product_code }}</small
+        >
+      </div>
+    </div>
+  </ng-template>
+  <ng-template ng-notfound-tmp>
+    <ng-container *ngIf="!filterModel">
+      <div class="p-2 m-2 border text-center" *ngIf="searchProduct?.items?.length === 0">
+        <p>
+          Проверьте пожалуйста, правильно ли набрали название товара, если его нет в списке то можете скачать лицензию
+        </p>
+        <hr />
+        <div>
+          <button type="button" class="btn btn-outline-success btn-sm">
+            <img src="./assets/images/icons/pdf-color.svg" height="16" />
+            Скачать
+          </button>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="filterModel">
+      <div class="p-2 m-2 border text-center" *ngIf="searchProduct?.items?.length === 0">
+        <p>Не найдено</p>
+      </div>
+    </ng-container>
+  </ng-template>
+</ng-select>

@@ -1,0 +1,93 @@
+/* So'ngi maxsulotlar section styles */
+
+#latest-products .icon-star {
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-text {
+    cursor: text;
+}
+
+.result_item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    width: max-content;
+    cursor: pointer;
+    transition: box-shadow .3s linear;
+}
+
+.result_item:hover {
+    box-shadow:
+        0px 1px 2px 0px rgba(10, 13, 18, 0.05),
+        inset 0px -2px 0px 0px rgba(10, 13, 18, 0.05),
+        inset 0px 0px 0px 1px rgba(10, 13, 18, 0.18);
+}
+
+.result_item span {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    opacity: 0.6;
+}
+
+.result_item .icon-x-close {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.result_item .icon-x-close:hover {
+    color: var(--bs-red);
+}
+
+.offcanvas-header {
+    display: flex;
+    align-items: center;
+    padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
+    justify-content: space-between;
+}
+
+.product-img img {
+    height: 200px;
+    width: 250px;
+    object-fit: contain;
+}
+
+/*=========== MEDIA QUERY (Kichik ekranlar) ===========*/
+
+@media (max-width: 1399.99px) {
+    .product-img img {
+        height: 170px;
+        width: 225px;
+    }
+}
+
+@media (max-width: 991.99px) {
+    .product-img img {
+        width: 306px;
+    }
+}
+
+@media (max-width: 767.99px) {
+    .product-img img {
+        width: 100%;
+        max-width: 225px;
+    }
+}
+
+@media (max-width: 575.99px) {
+    .product-box {
+        max-width: 320px;
+    }
+}

@@ -359,77 +359,6 @@
     background-repeat: no-repeat;
 }
 
-.products_wrapper {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-}
-
-.product-item {
-    background-color: #fff;
-    padding: 16px;
-    border-radius: 20px;
-    box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.product-item:hover {
-    box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.038);
-}
-
-.product-item img {
-    border-radius: 10px;
-    width: 100%;
-    height: 283px;
-    object-fit: contain;
-}
-
-.product_number {
-    display: inline-block;
-    color: var(--main-blue);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    letter-spacing: 0%;
-    margin-top: 16px;
-    margin-bottom: 16px;
-    padding: 4px 10px;
-    box-sizing: border-box;
-    border: 1px solid #b0b0b0;
-    border-radius: 15px;
-}
-
-.product-item-body h4 {
-    color: var(--main-blue);
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0%;
-    text-align: left;
-    margin-bottom: 16px;
-}
-
-.quantity_number {
-    color: var(--main-blue);
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    letter-spacing: 0%;
-    text-align: center;
-    padding: 4px 10px;
-    border: 1px solid var(--main-blue);
-    border-radius: 15px;
-}
-
-.price_amount {
-    color: var(--main-blue);
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0%;
-    text-align: left;
-}
 
 /* News section */
 
@@ -637,26 +566,6 @@
         max-width: 360px;
     }
 
-    /* Last products section */
-    .products_wrapper {
-        gap: 20px;
-    }
-
-    .product-item img {
-        height: 220px;
-    }
-
-    .product-item-body h4 {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        height: 1.6em;
-        line-height: 1.6em;
-        width: 100%;
-    }
-
     /* News section */
     .swiper-slide img {
         height: 210px;
@@ -739,11 +648,6 @@
         height: 450px;
     }
 
-    /* Last products section */
-    .products_wrapper {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
     /* News section */
     .swiper_buttons div {
         padding: 16px;
@@ -787,17 +691,6 @@
 
     .title_text {
         padding: 15px;
-    }
-
-    /* Last products section */
-    .products_wrapper {
-        grid-template-columns: 1fr;
-        place-items: center;
-    }
-
-    .product-item {
-        max-width: 400px;
-        width: 100%;
     }
 
     /* News section */

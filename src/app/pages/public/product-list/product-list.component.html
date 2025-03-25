@@ -1,61 +1,144 @@
 <app-header></app-header>
 <app-breadcrumb [pageNames]="[{ name: 'Common.Product' }]"></app-breadcrumb>
 
-<div class="container custom__min_height">
+<div class="custom__min_height mb-5">
   <!-- Last products section -->
   <section class="last-products">
-    <div class="py-5 container">
+    <div class="container">
       <!-- Title -->
-      <div class="title__wrapper">
-        <div class="title_line"></div>
-        <h2 class="title_text">So'ngi mahsulotlar</h2>
-        <div class="title_line"></div>
+      <h2 class="section-title mb-4 fw-bold fs-2">{{ 'Shop.Common.ProductList.ProductCatalog' | translate }}</h2>
+      <div class="section-header d-flex justify-content-between align-items-center mb-5 flex-wrap gap-2">
+        <p>
+          <ng-container *ngIf="total >= 0">
+            <span class="me-1 text-muted">{{ 'Cabinet.FoundGoods' | translate }}:</span>
+            <span class="px-2 py-1 rounded-3 bg-blue-100 text-primary fs-6">
+              {{ total }}
+            </span>
+          </ng-container>
+        </p>
+        <div class="d-flex flex-wrap-reverse flex-md-nowrap align-items-center justify-content-start gap-2">
+          <div class="input-group flex-nowrap">
+            <span class="input-group-text bg-body" id="filter_qidirish">
+              <i class="icon-search"></i>
+            </span>
+            <app-product-search
+              [inputWidth]="'450px'"
+              [filterModel]="filter"
+              (resetFilter)="reset()"
+              (searchEvent)="loadProducts()"
+            ></app-product-search>
+            <button class="btn btn-primary" id="basic-addon1" (click)="loadProducts()">
+              <i class="icon-search"></i>
+              {{ 'Common.Search' | translate }}
+            </button>
+          </div>
+          <button
+            type="button"
+            class="btn btn-light border border-2 bg-transparent d-flex align-items-center justify-content-center gap-2"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasProductFilter"
+            aria-controls="offcanvasProductFilter"
+          >
+            <i class="icon-filter"></i>
+            <span>{{ 'Common.Filter' | translate }}</span>
+          </button>
+          <div
+            class="offcanvas offcanvas-end"
+            tabindex="-1"
+            id="offcanvasProductFilter"
+            aria-labelledby="offcanvasProductFilterLabel"
+          >
+            <app-public-filter
+              [items]="filterSections"
+              (resetFilter)="reset()"
+              (searchByFilter)="loadProducts()"
+              [filterModel]="filter"
+            ></app-public-filter>
+          </div>
+          <i
+            class="icon-refresh btn btn-light border border-2 bg-transparent p-2"
+            (click)="reset()"
+            [title]="'Сбросить'"
+          ></i>
+        </div>
       </div>
-      <!-- product items -->
-      <div class="products_wrapper">
-        <ng-container *ngFor="let productItem of productList">
-          <!-- product item 1 -->
-          <div class="product-item">
-            <img
-              [src]="productItem.thumb_image || '/assets/images/empty-img.png'"
-              (click)="onViewProductDetails(productItem.id)"
-              alt="product"
-            />
-            <div class="product-item-body">
-              <p class="product_number">№: {{ productItem.display_no }}</p>
-              <h4>{{ productItem.product_name | slice2: 25 }}</h4>
-              <div class="product-item-infos">
-                <div class="d-flex justify-content-between mb-2">
-                  <p>
-                    <i class="icon-quantity"></i>
-                    <span> {{ 'Common.amount' | translate }}</span>
-                  </p>
-                  <span class="quantity_number">
-                    {{ productItem.amount | numberFormat }} <small>{{ productItem.unit_name }}</small></span
-                  >
-                </div>
-                <div class="d-flex justify-content-between">
-                  <p>
-                    <i class="icon-invoice"></i>
-                    <span> {{ 'Common.price' | translate }}</span>
-                  </p>
-                  <span class="price_amount">
-                    {{ productItem.price | numberFormat }}
-                    {{ 'Cabinet.sum' | translate }}</span
-                  >
+      <!-- filter result -->
+      <div class="filter-result d-flex gap-2 flex-wrap mb-4 mt-4">
+        <div class="result_item" *ngIf="filterResult?.category_name && filter?.category_id">
+          <span> {{ 'Shop.Common.ProductList.ProductCategory' | translate }}:</span>
+          <h6 [title]="filterResult.category_name.length > 24 ? filterResult.category_name : null">
+            {{
+              filterResult.category_name.length > 24
+                ? filterResult.category_name.substring(0, 24) + '...'
+                : filterResult.category_name
+            }}
+          </h6>
+          <i class="icon-x-close" (click)="reset('category_id')"></i>
+        </div>
+
+        <div class="result_item" *ngIf="filterResult?.product_name && filter?.product_code">
+          <span>Tovarlar ro'yxati:</span>
+          <h6 [title]="filterResult.product_name.length > 18 ? filterResult.product_name : null">
+            {{
+              filterResult.product_name.length > 18
+                ? filterResult.product_name.substring(0, 18) + '...'
+                : filterResult.product_name
+            }}
+          </h6>
+          <i class="icon-x-close" (click)="reset('product_code')"></i>
+        </div>
+      </div>
+      <div>
+        <!-- <app-skeleton-loader *ngIf="loading"></app-skeleton-loader> -->
+        <!-- product items -->
+        <div class="products_wrapper">
+          <ng-container *ngFor="let productItem of productList">
+            <!-- product item 1 -->
+            <div class="product-item bg-light">
+              <img
+                [src]="productItem.thumb_image || '/assets/images/empty-img.png'"
+                (click)="onViewProductDetails(productItem.id)"
+                alt="product"
+              />
+              <div class="product-item-body">
+                <p class="product_number">№: {{ productItem.display_no }}</p>
+                <h4>{{ productItem.product_name | slice2: 25 }}</h4>
+                <div class="product-item-infos">
+                  <div class="d-flex justify-content-between mb-2">
+                    <p>
+                      <i class="icon-quantity"></i>
+                      <span> {{ 'Common.amount' | translate }}</span>
+                    </p>
+                    <span class="quantity_number">
+                      {{ productItem.amount | numberFormat }} <small>{{ productItem.unit_name }}</small></span
+                    >
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <p>
+                      <i class="icon-invoice"></i>
+                      <span> {{ 'Common.price' | translate }}</span>
+                    </p>
+                    <span class="price_amount">
+                      {{ productItem.price | numberFormat }}
+                      {{ 'Cabinet.sum' | translate }}</span
+                    >
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </ng-container>
+          </ng-container>
+        </div>
       </div>
       <div class="text-center mt-3">
-        <a
-          *ngIf="productNotFound"
-          (click)="redirectToProductList()"
-          class="btn btn-primary load-btn border-primary-color"
-          >{{ 'Common.allProducts' | translate }}</a
-        >
+        <a *ngIf="productNotFound" class="btn btn-primary load-btn border-primary-color">{{
+          'Common.allProducts' | translate
+        }}</a>
+      </div>
+      <div class="text-center mt-4" *ngIf="filter.to < total">
+        <button class="btn btn-primary btn-lg" (click)="loadMore()" *ngIf="!productNotFound" [disabled]="loading">
+          {{ 'Загрузить еще' | translate }}
+          <div class="spinner-border spinner-border-sm" role="status" *ngIf="loading"></div>
+        </button>
       </div>
     </div>
   </section>
