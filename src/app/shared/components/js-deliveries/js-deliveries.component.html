@@ -1,0 +1,96 @@
+<div class="row">
+    <div class="col-6">
+      <div class="dash-card">
+        <div class="dash-card__header bg-grey dashHeader">
+          <div class="dash-card__title">{{ 'Common.RegionsDeliveryAreas'|translate }}</div>
+          <label class="checkbox-custom mb-0">
+            {{ 'Common.AllRegions'|translate }}
+            <input type="checkbox" [disabled]="isDisableAll" (change)="onAllRegions()">
+            <span class="checkmark"></span>
+          </label>
+  
+        </div>
+  
+        <div class="dash-card__body accordion__body">
+          <div class="input-group input-group--search mb-3" *ngIf="false">
+            <input type="text" class="form-control form-control-lg" [disabled]="isDisableAll"
+                   (input)="filterRegions($event)"
+                   placeholder="{{'Common.Search'|translate}}">
+            <div class="input-group-append">
+              <button class="btn btn-primary btn-lg" type="button">
+                <i class="icon icon-search"></i>
+              </button>
+            </div>
+          </div>
+  
+  
+          <ngb-accordion #acc="ngbAccordion">
+            <ng-container *ngFor="let item of filteredData">
+              <ngb-panel>
+                <ng-template ngbPanelHeader>
+                  <button ngbPanelToggle class="accordion-button">
+                    <div class="accBlock">
+                      <div class="mr-4">{{ item.name }}</div>
+                      <div style="margin-right: 10px">
+                        <span class="badge badge-dark" style="width: 30px">{{ item.children.length }}</span>
+                        -
+                        <span class="badge badge-primary text-white"
+                              style="width: 30px">{{ getSelectedNumber(item) }}</span>
+                      </div>
+                    </div>
+                  </button>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                  <div class="selectAll" (change)="onRegion(item)">
+                    <label class="checkbox-custom mb-0" (change)="onRegion(item)">
+                      {{ 'Common.All'|translate }}
+                      <input type="checkbox" [disabled]="isDisableAll" [(ngModel)]="item.selected">
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div class="card p-3 m-3" *ngFor="let district of item.children">
+                    <label class="checkbox-custom mb-0">
+                      {{ district.name }}
+                      <input type="checkbox" [disabled]="isDisableAll"
+                             [checked]="district.selected" [(ngModel)]="district.selected"
+                             (change)="onDistrict(district)">
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                </ng-template>
+              </ngb-panel>
+            </ng-container>
+          </ngb-accordion>
+  
+        </div>
+      </div>
+    </div>
+  
+    <div class="col-6">
+      <div class="dash-card">
+        <div class="dash-card__header bg-grey">
+          <div class="dash-card__title" translate>Shop.Provider.OfferAdd.DeliveryPlaces</div>
+        </div>
+  
+        <div class="dash-card__body accordion__body" [class.custom-min-height-style]="isAll">
+  
+          <div class="empty-condition text-center" *ngIf="demoItems.length == 0">
+            <p>{{ 'Common.ChooseDeliveries'|translate }}</p>
+          </div>
+  
+          <div class="sortable-items">
+  
+            <div *ngFor="let demo of demoItems" class="demo-item-style">
+              <h5 style="font-weight: 700;">{{ demo.regionName }}</h5>
+              <span class="badge badge-pill badge-info m-1"
+                    *ngFor="let child of demo.children">
+                              {{ child.districtName }}
+                <span class="badge badge-danger m-1 p-1 cursor-pointer" (click)="onChildDelete(child)">x</span>
+                          </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

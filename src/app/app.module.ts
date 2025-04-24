@@ -17,15 +17,29 @@ import { BreadcrumbComponent } from './pages/public/elements/breadcrumb/breadcru
 import { DealsComponent } from './pages/public/deals/deals.component';
 import { ProductListComponent } from './pages/public/product-list/product-list.component';
 import { UsefulToKnowComponent } from './pages/public/useful-to-know/useful-to-know.component';
+import { ProductDetailsComponent } from './pages/public/product-list/product-details/product-details.component';
+import { LotDetailsComponent } from './pages/public/product-list/lot-details/lot-details.component';
+import {TooltipModule} from "ngx-bootstrap/tooltip";
+import {ProgressbarModule} from "ngx-bootstrap/progressbar";
+import {NgSelectModule} from "@ng-select/ng-select";
+import { CommonModule } from '@angular/common';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent, HomePageComponent, HeaderComponent, FooterComponent, BreadcrumbComponent, DealsComponent, ProductListComponent, UsefulToKnowComponent],
+  declarations: [AppComponent, HomePageComponent, HeaderComponent, FooterComponent, BreadcrumbComponent, DealsComponent, ProductListComponent, UsefulToKnowComponent, ProductDetailsComponent, LotDetailsComponent],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     SwiperModule,
     HttpClientModule,
     SharedModule,
+    TooltipModule,
+    ProgressbarModule,
+    NgSelectModule,
+    FormsModule,
+    ModalModule.forRoot(),
     TranslateModule.forRoot(),
     ToastrModule.forRoot({
       timeOut: 5000,

@@ -1,0 +1,77 @@
+.item-all-selected-style {
+    background-color: #FF9902;
+    border-color: #FF9902;
+    padding: 2px;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+}
+
+.demo-item-style {
+    padding: 5px 10px;
+    background: #ffffff !important;
+    color: rgba(0, 0, 0, .87);
+    ;
+    border-radius: 2px;
+    max-width: 5px 5px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+div.mat-expansion-panel-body {
+    max-height: 300px !important;
+    overflow: auto !important;
+}
+
+div.dash-card__body.accordion__body {
+    max-height: 400px !important;
+    /* min-height: 400px !important; */
+    overflow: auto !important;
+}
+
+.custom-badge-style {
+    background-color: #55B4B0;
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.custom-delete-badge-style {
+    color: #1D262D;
+    cursor: pointer;
+}
+
+.custom-demo-item-style {
+    background-color: #55B4B0;
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.custom-min-height-style {
+    min-height: 400px !important;
+}
+
+.bg-grey {
+    background-color: #343a40;
+}
+
+.dashHeader {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #FFF;
+}
+
+.selectAll {
+    cursor: pointer;
+    border: 1px solid #1e262d;
+    border-radius: 6px;
+    width: fit-content;
+    padding: 8px;
+    color: #1e262d;
+}
+
+.accBlock {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

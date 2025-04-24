@@ -1,0 +1,916 @@
+<app-header></app-header>
+
+<app-breadcrumb [pageNames]="[{ name: product?.product_name + ' (' + product?.product_code + ')' }]"></app-breadcrumb>
+
+<div class="container py-3">
+  <div class="item" *ngIf="productState === 1">
+    <app-skeleton-loader></app-skeleton-loader>
+  </div>
+  <section id="product-details" class="mb-5" *ngIf="productState === 2">
+    <h2 class="section-title mb-5 fw-bold fs-2" *ngIf="false">Mahsulot sahifasi</h2>
+    <div class="row mb-4 flex-wrap">
+      <div class="product-images col-12 col-lg-6 mb-4">
+        <div class="border rounded-4 text-center p-4 mb-3">
+          <span
+            class="dwnButton cursor-pointer"
+            [tooltip]="'Скачать файл'"
+            (click)="downloadFile(mainFile.file_path, mainFile.file_name)"
+          >
+            <i class="fa fa-download" aria-hidden="true"></i>
+          </span>
+          <img class="main-img" [src]="mainImageUrl || '/assets/images/empty-img.png'" alt="asd" />
+        </div>
+        <div class="d-flex thumbnail-images thumbnail-images-div">
+          <ng-container *ngFor="let childImages of product.js_files">
+            <img
+              [tooltip]="childImages.custom_name"
+              *ngIf="childImages.file_ext.toLowerCase() === 'xls' || childImages.file_ext.toLowerCase() === 'xlsx'"
+              class="p-2 m-1 rounded-3 custom-transition thumbnail-images"
+              src="/assets/images/files/xls.svg"
+              (click)="downloadFile(childImages.file_path, childImages.file_name)"
+            />
+            <img
+              [tooltip]="childImages.custom_name"
+              *ngIf="childImages.file_ext.toLowerCase() === 'doc' || childImages.file_ext.toLowerCase() === 'docx'"
+              class="p-2 m-1 rounded-3 custom-transition thumbnail-images"
+              src="/assets/images/files/doc.svg"
+              alt=""
+              (click)="downloadFile(childImages.file_path, childImages.file_name)"
+            />
+            <img
+              [tooltip]="childImages.custom_name"
+              *ngIf="childImages.file_ext.toLowerCase() === 'pdf'"
+              class="p-2 m-1 rounded-3 custom-transition thumbnail-images"
+              src="/assets/images/files/pdf.svg"
+              alt=""
+              (click)="downloadFile(childImages.file_path, childImages.file_name)"
+            />
+            <img
+              *ngIf="
+                childImages.file_ext.toLowerCase() === 'jpeg' ||
+                childImages.file_ext.toLowerCase() === 'jpg' ||
+                childImages.file_ext.toLowerCase() === 'png'
+              "
+              class="p-2 m-1 rounded-3 custom-transition thumbnail-images"
+              [ngClass]="{ active: childImages.selected }"
+              [src]="childImages.thumb_image || '/assets/images/empty-img.png'"
+              alt=""
+              (click)="onSelectMain(childImages)"
+            />
+          </ng-container>
+        </div>
+      </div>
+      <div class="product-infos col-12 col-lg-6 d-flex flex-column gap-3">
+        <div class="d-flex justify-content-between">
+          <span class="border border-primary py-2 px-3 rounded-4 text-primary fw-normal bg-blue-100">
+            {{ 'Common.NumberProduct' | translate }}: {{ product.display_no }}
+          </span>
+          <i class="icon-star" style="border: 0px"></i>
+        </div>
+        <h3 class="fw-semibold">{{ product.product_name }}</h3>
+        <div>
+          <small class="border p-2" style="border-radius: 5px"
+            >{{ 'Cabinet.ProductCode' | translate }}:
+            <app-copy-to-clipboard [text]="product.product_code"></app-copy-to-clipboard>
+            {{ product.product_code }}</small
+          >
+        </div>
+        <button
+          class="btn btn-primary d-flex align-items-center justify-content-center gap-2 d-none"
+          data-bs-toggle="modal"
+          data-bs-target="#givePiceModal"
+        >
+          <i class="icon-legal"></i>
+          <span>Taklif kiritish</span>
+        </button>
+        <div class="row">
+          <div
+            class="col-12"
+            *ngIf="product?.status_id == offerStatuses.Published && userRoleId == roleTypes.Customer && isAuthorized"
+          >
+            <button
+              type="button"
+              class="w-100 btn btn-primary d-flex align-items-center justify-content-center gap-2"
+              (click)="onBidClick()"
+            >
+              <i class="icon-legal"></i>
+              {{ 'Shop.Common.ProductDetails.PriceRequrest' | translate }}
+            </button>
+          </div>
+        </div>
+        <div class="box mt-3 border rounded-4 bg-light p-3 d-flex flex-column gap-2">
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Shop.Provider.MyOffers.Status' | translate }}:</span>
+            <span class="text-primary border border-primary py-1 px-2 rounded-4 fw-normal bg-blue-100">
+              {{ product.status_name }}
+            </span>
+          </div>
+          <div class="d-flex justify-content-between gap-5">
+            <span class="text-muted">{{ 'Shop.Common.ProductDetails.Category' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end">
+              {{
+                product.category_name.length > 40
+                  ? product.category_name.substring(0, 40) + '...'
+                  : product.category_name
+              }}
+              <i
+                class="icon-help-circle text-primary"
+                *ngIf="product.category_name.length > 40"
+                [tooltip]="product.category_name"
+              >
+              </i
+            ></span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted"> {{ 'Common.amount' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end"
+              >{{ product.amount }}
+              <ng-container *ngFor="let prop of product.js_properties">
+                <span *ngIf="prop.pnum === 0">
+                  {{ prop.user_value }}
+                </span>
+              </ng-container>
+            </span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Cabinet.MinMaxSet' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end"
+              >{{ product.min_delivery_amount }}-{{ product.max_delivery_amount }}
+              <ng-container *ngFor="let prop of product.js_properties">
+                <span *ngIf="prop.pnum === 0">
+                  {{ prop.user_value }}
+                </span>
+              </ng-container>
+            </span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Shop.Provider.MyDeals.DelivDeadline' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end"
+              >{{ product.delivery_term }} {{ product.delivery_term_period_name }}</span
+            >
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Shop.Provider.OfferAdd.StartDate' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end">
+              {{ product.start_date ? (product.start_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+            </span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Shop.Provider.OfferAdd.EndDate' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end">
+              {{ product.end_date ? (product.end_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-4 g-3">
+      <div class="col-lg-6">
+        <div class="border rounded-4 bg-light p-3 d-none">
+          <h3>Countdown</h3>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="d-flex flex-column align-items-center border rounded-4 bg-light p-3">
+          <span class="fs-5 text-muted">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}:</span>
+          <strong class="fs-4">{{ product.price | numberFormat: '1.2-2' }} {{ 'Cabinet.sum' | translate }}</strong>
+        </div>
+      </div>
+    </div>
+    <ul class="product-info-tabs nav nav-tabs gap-2 d-flex justify-content-around" id="myTab" role="tablist">
+      <!-- TAVSIF TAB BUTTON -->
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link w-100 active"
+          id="description-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#description-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="description-tab-pane"
+          aria-selected="true"
+        >
+          {{ 'Cabinet.Description' | translate }}
+        </button>
+      </li>
+      <!-- TOVARNING XUSUSIYATLARI TAB BUTTON -->
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link w-100"
+          id="product-features-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#product-features-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="product-features-tab-pane"
+          aria-selected="false"
+        >
+          {{ 'Cabinet.Features' | translate }}
+        </button>
+      </li>
+      <!-- IZOHLAR VA FIKRLAR TAB BUTTON -->
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link w-100"
+          id="comments-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#comments-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="comments-tab-pane"
+          aria-selected="false"
+        >
+          {{ 'Cabinet.Comments' | translate }}
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <!-- TAVSIF TAB -->
+      <div
+        class="tab-pane fade show active"
+        id="description-tab-pane"
+        role="tabpanel"
+        aria-labelledby="description-tab"
+        tabindex="0"
+      >
+        <div class="d-flex justify-content-between mt-4 align-items-start flex-wrap">
+          <div class="col-12 col-md-6 mb-4">
+            <!-- row 1 -->
+            <div class="mb-4 d-flex flex-column gap-3">
+              <h3>{{ 'Cabinet.Description' | translate }}</h3>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">{{ 'Shop.Common.LotDetails.ProductMark' | translate }}:</span>
+                <b class="w-50 text-end">{{ product.mark_name }}</b>
+              </div>
+              <!--
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted">{{ 'Shop.Provider.OfferAdd.Producer' | translate }}:</span>
+                  <b class="w-50 text-end">{{ product.manufacturer_name }}</b>
+                </div> -->
+              <!-- <div class="d-flex justify-content-between">
+                  <span class="text-muted">Ishlab chiqaruvchi mamlakat:</span>
+                  <b class="w-50 text-end">{{ product.is_local_manufacturer ? 'УЗБЕКИСТАН' : '-' }}</b>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted">Litsenziyaga egaligi:</span>
+                  <b class="w-50 text-end">{{ product.is_licensed ? 'Есть' : 'Нет' }}</b>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted">Mahalliy ishlab chiqaruvchi:</span>
+                  <b class="w-50 text-end">{{ product.is_local_manufacturer ? 'Да' : 'Нет' }}</b>
+                </div> -->
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">{{ 'Shop.Common.LotDetails.ValidityDeadline' | translate }}:</span>
+                <b class="w-50 text-end">{{ product?.shelf_life }} {{ product?.shelf_life_name }}</b>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">{{ 'Shop.Common.LotDetails.WarantyDeadline' | translate }}:</span>
+                <b class="w-50 text-end">{{ product?.guarantee_period }} {{ product?.guarantee_period_name }}</b>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">{{ 'Shop.Common.LotDetails.IssueDate' | translate }}:</span>
+                <b class="w-50 text-end">{{ product?.issue_date | dateformat: 'dd.MM.yyyy' }}</b>
+              </div>
+            </div>
+            <!-- row 2 -->
+            <div class="border rounded-4 bg-light p-3 mb-4">
+              <h4 class="mb-3">{{ 'Shop.Provider.MyOffers.TechDetails' | translate }}</h4>
+              <p class="text-muted">
+                {{ product?.condition }}
+              </p>
+            </div>
+            <!-- row 3 -->
+            <div class="border rounded-4 bg-light p-3" *ngIf="product?.offer_license_files.length > 0">
+              <h4 class="mb-3">{{ 'Shop.Provider.OfferAdd.Licenses' | translate }}</h4>
+              <p class="text-secondary mb-3 d-none">{{ 'Cabinet.FileName' | translate }}</p>
+              <ng-container *ngFor="let license of product?.offer_license_files">
+                <div class="file-box d-flex gap-2 bg-body p-2 border rounded-3 mb-3 align-items-center">
+                  <img src="./assets/images/file-type.svg" alt="file image" />
+                  <div class="d-flex flex-column" style="width: 76%">
+                    <span class="">
+                      <b [tooltip]="license.custom_name.length > 20 ? license.custom_name : null" placement="bottom"
+                        >{{
+                          license.custom_name.length > 20
+                            ? license.custom_name.substring(0, 20) + '...'
+                            : license.custom_name
+                        }}
+                      </b>
+                    </span>
+                    <span class="text-muted d-none">{{ license.file_ext }}</span>
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-success"
+                      (click)="downloadFile(license.file_path, license.file_name)"
+                    >
+                      Скачать
+                    </button>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="col-12 col-md-5 border rounded-4 bg-light p-3 h-100">
+            <div class="d-flex gap-2 align-items-center mb-3">
+              <i class="icon-location text-primary fs-5"></i>
+              <b class="text-blue-900"> {{ 'Shop.Common.LotDetails.DeliveryRegions' | translate }}: </b>
+            </div>
+            <div class="accordion_wrapper" *ngIf="regionsDistricts && regionsDistricts.length > 0">
+              <div class="accordion" id="accordionExample">
+                <ng-container *ngFor="let region of regionsDistricts; index as idx">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button
+                        class="accordion-button"
+                        [ngClass]="{ collapsed: !regionsDistricts[0] }"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        [attr.data-bs-target]="'#region' + idx"
+                        aria-expanded="true"
+                        [attr.aria-controls]="'region' + idx"
+                      >
+                        <small class="fs-5 w-100 text-primary">{{ region.name | translate }}</small>
+                        <small class="d-inline-block mx-3 border bg-blue-100 rounded-2 px-2 py-1">{{
+                          region.children.length
+                        }}</small>
+                      </button>
+                    </h2>
+                    <div [id]="'region' + idx" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                        <ol *ngFor="let district of region.children">
+                          <li>{{ district.name }}</li>
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- IZOHLAR VA FIKRLAR TAB -->
+      <div
+        class="tab-pane fade"
+        id="product-features-tab-pane"
+        role="tabpanel"
+        aria-labelledby="product-features-tab"
+        tabindex="0"
+      >
+        <div class="border rounded-4 bg-light p-3 mt-4">
+          <div *ngFor="let property of product.js_properties; index as idx">
+            <p class="my-2">
+              <span class="text-muted mx-2">{{ idx + 1 }}. {{ property.property_name }}:</span>
+              <span>{{ property.user_value }}</span>
+            </p>
+          </div>
+          <p class="text-muted" *ngIf="product.js_properties.length == 0 || !product.js_properties">
+            {{ 'Cabinet.Soon' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <!-- TOVARNING XUSUSIYATLARI TAB -->
+      <div class="tab-pane fade" id="comments-tab-pane" role="tabpanel" aria-labelledby="comments-tab" tabindex="0">
+        <!-- <div class="form-floating mt-4">
+            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
+              style="height: 150px"></textarea>
+            <label for="floatingTextarea2">Fikr va izohlaringizni qoldiring...</label>
+          </div> -->
+        <div class="my-2">{{ 'Cabinet.NoComments' | translate }}</div>
+      </div>
+      <div class="mt-5">
+        <div class="related-products">
+          <div>
+            <h4>{{ 'Common.SimilarProducts' | translate }}</h4>
+          </div>
+          <div>
+            <button
+              type="button"
+              *ngIf="relatedProducts.length > 0"
+              class="btn btn-outline-success"
+              (click)="redirectToProductList(relatedProducts[0].category_id, relatedProducts[0].product_code)"
+            >
+              {{ 'Shop.Common.ProductList.LoadMore' | translate }}
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <hr />
+        <div class="mt-2">
+          <div class="col-12 text-center" *ngIf="relatedProducts.length === 0">
+            <p class="text-muted">{{ 'Cabinet.NoSimilarProduct' | translate }}</p>
+          </div>
+          <!-- <div class="row text-center" *ngIf="relatedProductsLoading">
+              <div class="col-12">
+                <div class="spinner-border text-primary" style="width: 2rem; height: 2rem;" role="status">
+                  <span class="sr-only"></span>
+                </div>
+              </div>
+            </div> -->
+          <div class="row g-3">
+            <ng-container *ngFor="let product of relatedProducts">
+              <div class="product-box col-sm-6 col-lg-4 col-xl-3">
+                <div
+                  class="hover-shadow border rounded-4 position-relative p-3 custom-transition h-100 d-flex flex-column justify-content-between"
+                >
+                  <i class="icon-star position-absolute"></i>
+                  <div class="product-img mb-3 text-center">
+                    <img
+                      class="item-img-size"
+                      [src]="product.thumb_image || '/assets/images/empty-img.png'"
+                      alt="product-image"
+                      (click)="onViewProductDetails(product.id)"
+                    />
+                  </div>
+                  <div class="product-info">
+                    <h6 class="mb-2 fs-5 fw-semibold">{{ product.product_name | slice2: 25 }}</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                      <small>
+                        <app-copy-to-clipboard [text]="product.display_no"></app-copy-to-clipboard>
+                        {{ product.display_no }}
+                      </small>
+                      <small class="d-flex align-items-center border px-2 rounded-3 bg-light text-black">
+                        <i class="icon-calendar me-2 text-muted"></i>
+                        {{ product.date_ini | dateformat: 'dd.MM.yyyy' }}
+                      </small>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="d-flex align-items-center text-muted">
+                        <i class="icon-quantity me-2"></i>
+                        {{ 'Common.amount' | translate }}
+                      </span>
+                      <span class="border border-primary px-2 rounded-4 bg-blue-100">
+                        {{ product.amount | numberFormat }}
+                        <small>{{ product.unit_name }}</small>
+                      </span>
+                    </div>
+                    <!-- Price -->
+                    <div class="d-flex justify-content-between">
+                      <span class="d-flex align-items-center text-muted">
+                        <i class="icon-invoice me-2"></i>
+                        {{ 'Common.price' | translate }}
+                      </span>
+                      <span class="text-primary fw-semibold">{{ product.price }} {{ 'Cabinet.sum' | translate }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-footer></app-footer>
+
+<div
+  bsModal
+  #addLotModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  style="z-index: 9876"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="makeOfferModalTitle">
+          {{ 'Shop.Common.ProductDetails.PriceRequrest' | translate }}
+        </h5>
+        <button
+          *ngIf="false"
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="onOfferClose()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form
+        autocomplete="off"
+        #offerForm="ngForm"
+        novalidate="novalidate"
+        role="form"
+        (submit)="onOfferSubmit(offerForm)"
+      >
+        <div class="modal-body">
+          <div class="row custom-border bg-light customPadding m-1 mb-4">
+            <div
+              class="col-6 border-custom-right text-center cursor-pointer font-weight-bold"
+              (click)="changeAddLotType(0)"
+              [ngClass]="addLotType === 0 ? 'bg-primary text-white' : 'bg-white text-dark'"
+            >
+              <div class="p-2">
+                {{ 'Выбрать план график' | translate }}
+              </div>
+            </div>
+            <div
+              class="col-6 border-custom-right text-center cursor-pointer font-weight-bold"
+              (click)="changeAddLotType(1)"
+              [ngClass]="addLotType === 1 ? 'bg-primary text-white' : 'bg-white text-dark'"
+            >
+              <div class="p-2" [tooltip]="'Автоматическое формирование План-графика'">
+                {{ 'Создать новый план график' | translate }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12" *ngIf="addLotType === 0">
+              <div class="form-group required">
+                <label for="plan_id">{{ 'План график' | translate }}</label>
+                <ng-select
+                  id="plan_id"
+                  [items]="offerPlangraphs"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="plangraph_detail_id"
+                  placeholder="{{ 'Common.Choose' | translate }}"
+                  [loading]="loadingPlangraphs"
+                  (change)="onGraphChange($event)"
+                  [(ngModel)]="addLotModel.plangraph_detail_id"
+                  name="plan_id"
+                  #plan_id="ngModel"
+                  required
+                >
+                  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                    <div>
+                      <div class="row white-space-normal" [class.custom-row-style]="offerPlangraphs.length > 1">
+                        <div class="col-6">
+                          <span class="bond-style">{{ 'Наименование' | translate }}:</span> {{ item.name }} <br />
+                          <span class="bond-style">{{ 'Shop.Provider.ActiveLots.Product' | translate }}:</span>
+                          {{ item.product_name }} <br />
+                          <span class="bond-style">{{ 'Категория' | translate }}:</span> {{ item.category_name }}
+                          <br />
+                          <span class="bond-style">{{ 'Дата создание' | translate }}:</span>
+                          <span class="badge badge-info custom-badge-style">{{
+                            item.date_ini | dateformat: 'dd.MM.yyyy'
+                          }}</span>
+                        </div>
+                        <div class="col-6">
+                          <span class="bond-style">{{ 'Кол-во' | translate }}:</span> {{ item.quantity }} <br />
+                          <span class="bond-style">{{ 'Испол. количество' | translate }}:</span>
+                          {{ item.used_quantity }} <br />
+                          <span class="bond-style">{{ 'Остав. количество' | translate }}:</span>
+                          {{ item.rest_quantity }} <br />
+                          <span class="bond-style">{{ 'Дата' | translate }}:</span> {{ item.year_name }}
+                          {{ item.season_name }} {{ item.month_name }}
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
+                </ng-select>
+
+                <p *ngIf="plan_id.errors && (plan_id.touched || plan_id.dirty)" class="text-danger">
+                  <span *ngIf="plan_id.errors.required">{{ 'Common.RequiredField' | translate }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="customerType === 1">
+            <div class="col-6">
+              <div class="form-group required">
+                <label for="expenditure_id">Статья расходов</label>
+                <!--                <input id="expenditure_id" type="text" class="form-control " disabled-->
+                <!--                  [value]="addLotModel.expenditure_id ? addLotModel.expenditure_id + ' - ' + addLotModel.expenditure_name : ''"-->
+                <!--                  name="expenditure_id">-->
+                <ng-select
+                  id="expenditure_id"
+                  [items]="expenditures"
+                  [clearable]="false"
+                  bindLabel="id"
+                  bindValue="id"
+                  placeholder="{{ 'Common.Choose' | translate }}"
+                  [(ngModel)]="addLotModel.expenditure_id"
+                  [disabled]="addLotType === 0"
+                  class="custom-drop-down-style"
+                  #expenditure_id="ngModel"
+                  name="expenditure_id"
+                  required
+                >
+                  <ng-template ng-label-tmp let-item_step="item">
+                    <span> {{ item_step.id }} - {{ item_step.name }} </span>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item_step="item" let-index="index" let-search="searchTerm">
+                    <div class="row">
+                      <div class="col">
+                        <span style="margin-bottom: 5px; white-space: normal">
+                          {{ item_step.id }} - {{ item_step.name }}
+                        </span>
+                      </div>
+                    </div>
+                  </ng-template>
+                </ng-select>
+
+                <p
+                  *ngIf="expenditure_id.errors && (expenditure_id.touched || expenditure_id.dirty)"
+                  class="text-danger"
+                >
+                  <span *ngIf="expenditure_id.errors.required">{{ 'Common.RequiredField' | translate }}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-group required">
+                <label for="account_id">Счет заказчика в казначействе</label>
+                <!--                <input id="account_id" type="text" class="form-control " disabled-->
+                <!--                  [value]="addLotModel.account ? addLotModel.account : ''" name="account_id">-->
+
+                <ng-select
+                  id="account_id"
+                  [items]="userAccounts"
+                  [disabled]="addLotType === 0"
+                  [clearable]="false"
+                  bindLabel="account_number"
+                  bindValue="account_number"
+                  placeholder="{{ 'Common.Choose' | translate }}"
+                  [(ngModel)]="addLotModel.Kazna_Account"
+                  class="custom-drop-down-style"
+                  #account_id="ngModel"
+                  name="account_id"
+                  [required]="customerType == customerTypes.budget"
+                >
+                </ng-select>
+
+                <p *ngIf="account_id.errors && (account_id.touched || account_id.dirty)" class="text-danger">
+                  <span *ngIf="account_id.errors.required">{{ 'Common.RequiredField' | translate }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group required" style="margin-bottom: 20px">
+                <label for="amount" class="d-flex justify-content-between">
+                  {{ 'Количество' | translate }}
+                  <div class="custom-min-max-style">
+                    <strong> {{ 'Мин/макс партия' | translate }}:</strong>
+                    {{ product?.min_delivery_amount }} - {{ product?.max_delivery_amount }}
+                    {{ productUnitName }}
+                  </div>
+                </label>
+                <div class="input-group">
+                  <input
+                    id="amount"
+                    type="text"
+                    class="form-control"
+                    (change)="onGetCommission()"
+                    mask="separator.3"
+                    [(ngModel)]="addLotModel.amount"
+                    #amount="ngModel"
+                    name="amount"
+                    required
+                  />
+                  <div class="input-group-append">
+                    <span class="input-group-text">{{ productUnitName }}</span>
+                  </div>
+                </div>
+                <small>
+                  {{ 'Сумма: ' | translate }}
+                  <b>{{ addLotModel?.amount * product?.price | numberFormat }} {{ product?.currency_name }}</b>
+                </small>
+                <p *ngIf="amount.errors && (amount.touched || amount.dirty)" class="text-danger">
+                  <span *ngIf="amount.errors.required"> {{ 'Common.RequiredField' | translate }}! </span>
+                </p>
+
+                <p
+                  *ngIf="+addLotModel?.amount < product?.min_delivery_amount && (amount.touched || amount.dirty)"
+                  class="text-danger"
+                >
+                  {{ 'Shop.Common.ProductDetails.CantBeLessMin' | translate }}
+                </p>
+
+                <p
+                  *ngIf="+addLotModel?.amount > product?.max_delivery_amount && (amount.touched || amount.dirty)"
+                  class="text-danger"
+                >
+                  {{ 'Shop.Common.ProductDetails.CantBeMoreMax' | translate }}
+                </p>
+
+                <p
+                  *ngIf="+addLotModel?.amount > product?.amount && (amount.touched || amount.dirty)"
+                  class="text-danger"
+                >
+                  {{ 'Shop.Common.ProductDetails.CantBeMoreAmount' | translate }}
+                </p>
+
+                <p
+                  *ngIf="selectedPlangraph && selectedPlangraph.rest_quantity < addLotModel.amount"
+                  class="text-danger"
+                >
+                  Количество больше чем оставшее количество в план-граф
+                </p>
+                <br />
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-group required" style="margin-bottom: 20px">
+                <label for="record_id">{{ 'Shop.Common.ProductDetails.ChooseAccount' | translate }}</label>
+                <ng-select
+                  id="record_id"
+                  [items]="userRecords"
+                  [clearable]="false"
+                  bindLabel="record_text"
+                  bindValue="record_id"
+                  placeholder="{{ 'Common.Choose' | translate }}"
+                  (change)="onRecordChange($event)"
+                  [(ngModel)]="addLotModel.record_id"
+                  #record_id="ngModel"
+                  name="record_id"
+                  required
+                >
+                </ng-select>
+
+                <p *ngIf="selectedRecord" class="commission-style">
+                  {{ 'Shop.Common.LotDetails.AvailableAmount' | translate }}:
+                  <b>{{ selectedRecord.amount | numberFormat }} {{ selectedRecord.currency_code }}</b>
+                </p>
+
+                <p *ngIf="record_id.errors && (record_id.touched || record_id.dirty)" class="text-danger">
+                  <span *ngIf="record_id.errors.required">
+                    {{ 'Common.RequiredField' | translate }}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="listing__content__table" style="border-radius: 5px; overflow-x: scroll">
+                <table class="table table-style-2">
+                  <thead style="background-color: #343a40">
+                    <tr>
+                      <th scope="col" style="padding: 20px 10px; width: 40px"></th>
+                      <ng-container *ngFor="let property of product?.js_properties">
+                        <th *ngIf="property.pnum === 0" style="width: 50%">
+                          {{ property.property_name }}
+                        </th>
+                      </ng-container>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span class="text-nowrap">{{ 'Common.Product' | translate }}</span>
+                      </td>
+                      <ng-container *ngFor="let property of product?.js_properties">
+                        <td *ngIf="property.pnum === 0" style="width: 50%">
+                          {{ property.user_value }}
+                        </td>
+                      </ng-container>
+                    </tr>
+                    <tr *ngIf="selectedPlangraph">
+                      <td>
+                        <span class="text-nowrap">{{ 'План график' | translate }}</span>
+                      </td>
+                      <ng-container *ngFor="let property of selectedPlangraph.js_properties">
+                        <td *ngIf="property.pnum === 0">
+                          {{ property.pvalname }}
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </tbody>
+                  <!--                  <tfoot *ngIf="selectedPlangraph"-->
+                  <!--                    style="border-bottom: 1px solid #d9d9d9; border-right: 1px solid #d9d9d9; border-left: 1px solid #d9d9d9;">-->
+                  <!--                    <tr>-->
+                  <!--                      <td>-->
+                  <!--                      </td>-->
+                  <!--                      <td *ngFor="let property of selectedPlangraph.js_properties">-->
+                  <!--                        <span class="text-success" *ngIf="property.checked">&nbsp; &#10004; &nbsp;</span>-->
+                  <!--                        <span class="text-danger" *ngIf="!property.checked">&nbsp; &#10008; &nbsp;</span>-->
+                  <!--                      </td>-->
+                  <!--                    </tr>-->
+                  <!--                  </tfoot>-->
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 mb-2" style="overflow: auto" *ngIf="false">
+              <small>
+                <div class="border-limits" style="min-width: 1216px">
+                  <div class="text-limits"><b>Лимиты по данной позиции:</b></div>
+                  <div class="row">
+                    <div class="col-6" *ngIf="maxLimit !== null">
+                      <div
+                        class="alert alert-warning alertCustomStyles"
+                        role="alert"
+                        *ngIf="
+                          product?.status_id == offerStatuses.Published &&
+                          userRoleId == roleTypes.Customer &&
+                          isAuthorized
+                        "
+                      >
+                        Ушбу турдаги <b class="font-weight-bold">товарга {{ currentBRV }} БҲМ</b> гача бўлган харидни
+                        амалга оширишингиз мумкин.
+                      </div>
+                    </div>
+                    <div class="{{ maxLimit !== null ? 'col-6 border-left ' : 'col-12' }}">
+                      <div class="input-group">
+                        <ng-container *ngIf="!limitZero && dynamic !== null">
+                          <progressbar
+                            class="progressBarLimits widthProgBar81"
+                            [max]="maxLimit"
+                            [value]="dynamic"
+                            [type]="dynamic !== null ? (dynamic > maxLimit ? 'danger' : 'success') : null"
+                            [animate]="true"
+                          >
+                            <span
+                              class="justify-content-center d-flex position-absolute w-100 font-weight-bold"
+                              style="color: #333"
+                              *ngIf="dynamic !== null"
+                              >{{ dynamic | numberFormat }} {{ 'Cabinet.sum' | translate }}
+                            </span>
+                          </progressbar>
+                        </ng-container>
+                        <ng-container *ngIf="limitZero && dynamic !== null">
+                          <progressbar
+                            class="progress-striped active progressBarLimits widthProgBar91"
+                            [striped]="true"
+                            [value]="dynamic"
+                            [type]="'info'"
+                            >По данной позиции лимиты отсутствуют</progressbar
+                          >
+                        </ng-container>
+                        <ng-container *ngIf="dynamic === null">
+                          <progressbar
+                            class="progress-striped active progressBarLimits widthProgBar91"
+                            [striped]="true"
+                            [value]="lm"
+                            [type]="'info'"
+                            >Для получения данных о лимитах нажмите кнопку обновить
+                          </progressbar>
+                        </ng-container>
+                        <div class="input-group-append ml-2">
+                          <button type="button" class="btn btn-primary" (click)="getLimits()" [disabled]="limitLoading">
+                            <b *ngIf="!limitLoading">Обновить</b>
+                            <b *ngIf="limitLoading">Загрузка</b>
+                          </button>
+                        </div>
+                      </div>
+                      <small
+                        class="text-danger"
+                        *ngIf="limitZero && dynamic !== null && maxLimit !== null && dynamic > maxLimit"
+                        >Лимит превышан</small
+                      >
+                    </div>
+                  </div>
+                </div>
+              </small>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-12">
+              <div *ngIf="pledgeCommission">
+                <div class="row">
+                  <div class="col-6">{{ 'Комиссия' | translate }}:</div>
+                  <div class="col-6 text-right">
+                    {{ pledgeCommission.commission | numberFormat }} {{ product.currency_name }}
+                  </div>
+                </div>
+                <div class="row mb-1">
+                  <div class="col-6">{{ 'Залоговая сумма' | translate }}:</div>
+                  <div class="col-6 text-right">
+                    {{ pledgeCommission.pledge | numberFormat }} {{ product.currency_name }}
+                  </div>
+                </div>
+
+                <div style="border-top: 1px solid black"></div>
+                <div class="row" style="margin-top: 1px; font-weight: bold">
+                  <div class="col-6">{{ 'Итого' | translate }}:</div>
+                  <div class="col-6 text-right">
+                    {{ +pledgeCommission.commission.toFixed(2) + +pledgeCommission.pledge.toFixed(2) | numberFormat }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <app-regions-districts [data]="regionsForBidDistricts"></app-regions-districts>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onOfferClose()">
+            {{ 'Common.Close' | translate }}
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="lotAddFormSubmitter">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="lotAddFormSubmitter">
+            </span>
+            {{ 'Common.Send' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- <h1>Product details</h1> -->

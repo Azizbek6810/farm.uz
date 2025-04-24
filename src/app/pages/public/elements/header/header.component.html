@@ -25,7 +25,7 @@
               <span> {{ currentItem.value }}</span>
             </button>
             <ul class="dropdown-menu">
-              <li *ngFor="let item of langs">
+              <li *ngFor="let item of langs" class="cursor-pointer">
                 <a class="dropdown-item d-flex align-items-center gap-1" (click)="changeLang(item)">
                   <img src="./assets/images/{{ item.key }}.svg" alt="flag" />
                   <span> {{ item.value }}</span>

@@ -10,6 +10,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { SkeletonLoaderComponent } from './components/skeleton-loader/skeleton-loader.component';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { JsDeliveriesComponent } from './components/js-deliveries/js-deliveries.component';
+import { DateTransformPipe } from './pipes/date-transform.pipe';
+import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { CopyToClipboardComponent } from './components/copy-to-clipboard/copy-to-clipboard.component';
+import {TooltipModule} from "ngx-bootstrap/tooltip";
 
 @NgModule({
   declarations: [
@@ -18,16 +23,31 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
     PublicFilterComponent,
     ProductNotFoundComponent,
     ProductSearchComponent,
-    SkeletonLoaderComponent
+    SkeletonLoaderComponent,
+    JsDeliveriesComponent,
+    DateTransformPipe,
+    CopyToClipboardComponent
   ],
-  imports: [CommonModule, NgSelectModule, TranslateModule, FormsModule, NgxSkeletonLoaderModule],
+  imports: [
+    CommonModule,
+    NgSelectModule,
+    TranslateModule,
+    FormsModule,
+    NgxSkeletonLoaderModule,
+    NgbModule,
+    NgbTooltipModule,
+    TooltipModule
+  ],
   exports: [
     StringSlicePipe,
     NumberFormatPipe,
     PublicFilterComponent,
     ProductNotFoundComponent,
     ProductSearchComponent,
-    SkeletonLoaderComponent
+    SkeletonLoaderComponent,
+    DateTransformPipe,
+    JsDeliveriesComponent,
+    CopyToClipboardComponent
   ]
 })
 export class SharedModule {}

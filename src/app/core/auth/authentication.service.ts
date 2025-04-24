@@ -57,6 +57,10 @@ export class AuthenticationService {
     return localStorage.getItem(this.roleKey);
   }
 
+  getRoleId() {
+    return localStorage.getItem(this.roleIdKey);
+  }
+
   setRememberMyChoose(role: string) {
     localStorage.setItem(this.rememberMyChooseKey, role);
   }
