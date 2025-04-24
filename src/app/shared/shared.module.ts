@@ -8,6 +8,8 @@ import { ProductSearchComponent } from './components/product-search/product-sear
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { SkeletonLoaderComponent } from './components/skeleton-loader/skeleton-loader.component';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 @NgModule({
   declarations: [
@@ -15,9 +17,17 @@ import { FormsModule } from '@angular/forms';
     NumberFormatPipe,
     PublicFilterComponent,
     ProductNotFoundComponent,
-    ProductSearchComponent
+    ProductSearchComponent,
+    SkeletonLoaderComponent
   ],
-  imports: [CommonModule, NgSelectModule, TranslateModule, FormsModule],
-  exports: [StringSlicePipe, NumberFormatPipe, PublicFilterComponent, ProductNotFoundComponent, ProductSearchComponent]
+  imports: [CommonModule, NgSelectModule, TranslateModule, FormsModule, NgxSkeletonLoaderModule],
+  exports: [
+    StringSlicePipe,
+    NumberFormatPipe,
+    PublicFilterComponent,
+    ProductNotFoundComponent,
+    ProductSearchComponent,
+    SkeletonLoaderComponent
+  ]
 })
 export class SharedModule {}
