@@ -1,1 +1,746 @@
-<p>lot-details works!</p>
+<app-header></app-header>
+
+<app-breadcrumb
+  [pageNames]="[{ name: lotDetails?.product_name + ' (' + lotDetails?.product_code + ')' }]"
+></app-breadcrumb>
+
+<div class="container py-3">
+  <div class="item" *ngIf="productState === 1">
+    <app-skeleton-loader></app-skeleton-loader>
+  </div>
+  <section id="product-details" class="mb-5" [ngClass]="{ hide: productState === 1 }">
+    <h2 class="section-title mb-5 fw-bold fs-2" *ngIf="false">Mahsulot sahifasi</h2>
+    <div class="row mb-4 flex-wrap">
+      <div class="product-images col-12 col-lg-6 mb-4">
+        <div class="border rounded-4 text-center p-4 mb-3">
+          <span
+            class="dwnButton cursor-pointer"
+            [tooltip]="'Скачать файл'"
+            (click)="downloadFile(mainFile.file_path, mainFile.file_name)"
+          >
+            <i class="fa fa-download" aria-hidden="true"></i>
+          </span>
+          <img class="main-img" [src]="mainImageUrl || '/assets/images/empty-img.png'" alt="asd" />
+        </div>
+        <div class="d-flex thumbnail-images thumbnail-images-div">
+          <!--          <img class="p-2 m-1 rounded-3 custom-transition thumbnail-images active" [src]="mainImageUrl">-->
+          <ng-container *ngFor="let childImages of lotDetails?.js_files">
+            <img
+              [tooltip]="childImages.custom_name"
+              *ngIf="childImages.file_ext.toLowerCase() === 'xls' || childImages.file_ext.toLowerCase() === 'xlsx'"
+              class="p-2 m-1 rounded-3 custom-transition thumbnail-images"
+              src="/assets/images/files/xls.svg"
+              alt=""
+              (click)="downloadFile(childImages.file_path, childImages.file_name)"
+            />
+            <img
+              [tooltip]="childImages.custom_name"
+              *ngIf="childImages.file_ext.toLowerCase() === 'doc' || childImages.file_ext.toLowerCase() === 'docx'"
+              class="p-2 m-1 rounded-3 custom-transition thumbnail-images"
+              src="/assets/images/files/doc.svg"
+              alt=""
+              (click)="downloadFile(childImages.file_path, childImages.file_name)"
+            />
+            <img
+              [tooltip]="childImages.custom_name"
+              *ngIf="childImages.file_ext.toLowerCase() === 'pdf'"
+              class="p-2 m-1 rounded-3 custom-transition thumbnail-images"
+              src="/assets/images/files/pdf.svg"
+              alt=""
+              (click)="downloadFile(childImages.file_path, childImages.file_name)"
+            />
+            <img
+              *ngIf="
+                childImages.file_ext.toLowerCase() === 'jpeg' ||
+                childImages.file_ext.toLowerCase() === 'jpg' ||
+                childImages.file_ext.toLowerCase() === 'png'
+              "
+              class="p-2 m-1 rounded-3 custom-transition thumbnail-images"
+              [ngClass]="{ active: childImages.selected }"
+              [src]="childImages.thumb_image || '/assets/images/empty-img.png'"
+              alt=""
+              (click)="onSelectMain(childImages)"
+            />
+          </ng-container>
+        </div>
+      </div>
+      <div class="product-infos col-12 col-lg-6 d-flex flex-column gap-3">
+        <div class="d-flex justify-content-between">
+          <span class="border border-primary py-2 px-3 rounded-4 text-primary fw-normal bg-blue-100">
+            {{ 'Common.NumberProduct' | translate }}: {{ lotDetails?.display_no }}
+          </span>
+          <i class="icon-star" style="border: 0px"></i>
+        </div>
+        <h3 class="fw-semibold">{{ lotDetails?.product_name }}</h3>
+        <div>
+          <small class="border p-2" style="border-radius: 5px"
+            >{{ 'Cabinet.ProductCode' | translate }}:
+            <app-copy-to-clipboard [text]="lotDetails?.product_code"></app-copy-to-clipboard>
+            {{ lotDetails?.product_code }}</small
+          >
+        </div>
+        <!-- <div class="d-flex align-items-center mt-2 gap-2">
+          <i class="icon-star liked"></i>
+          <div class="d-flex gap-2 align-items-center">
+            <b class="fs-5">4.5</b>
+            <div class="dot"></div>
+            <span class="text-decoration-underline text-muted fs-5">0 ta izoh</span>
+          </div>
+        </div>
+        <hr class="m-0"> -->
+        <button
+          class="btn btn-primary d-flex align-items-center justify-content-center gap-2 d-none"
+          data-bs-toggle="modal"
+          data-bs-target="#givePiceModal"
+        >
+          <i class="icon-legal"></i>
+          <span>Taklif kiritish</span>
+        </button>
+        <div class="box mt-3 border rounded-4 bg-light p-3 d-flex flex-column gap-2">
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Shop.Provider.MyOffers.Status' | translate }}:</span>
+            <span class="text-primary border border-primary py-1 px-2 rounded-4 fw-normal bg-blue-100">
+              {{ lotDetails?.status_name }}
+            </span>
+          </div>
+          <div class="d-flex justify-content-between gap-5">
+            <span class="text-muted">{{ 'Shop.Common.ProductDetails.Category' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end">
+              {{
+                lotDetails?.category_name.length > 40
+                  ? lotDetails?.category_name.substring(0, 40) + '...'
+                  : lotDetails?.category_name
+              }}
+              <i
+                class="icon-help-circle text-primary"
+                *ngIf="lotDetails?.category_name.length > 40"
+                [tooltip]="lotDetails?.category_name"
+              >
+              </i
+            ></span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted"> {{ 'Common.amount' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end"
+              >{{ lotDetails?.amount }}
+              <span *ngFor="let prop of lotDetails?.js_properties">{{ prop.user_value }}</span></span
+            >
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Cabinet.MinMaxSet' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end"
+              >{{ lotDetails?.min_delivery_amount }}-{{ lotDetails?.max_delivery_amount }}
+              <span *ngFor="let prop of lotDetails?.js_properties">{{ prop.user_value }}</span></span
+            >
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Shop.Provider.MyDeals.DelivDeadline' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end"
+              >{{ lotDetails?.delivery_term }} {{ lotDetails?.delivery_term_period_name }}</span
+            >
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Shop.Provider.OfferAdd.StartDate' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end">
+              {{ lotDetails?.start_date ? (lotDetails?.start_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+            </span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">{{ 'Shop.Provider.OfferAdd.EndDate' | translate }}:</span>
+            <span class="text-black fw-semibold w-50 text-end">
+              {{ lotDetails?.end_date ? (lotDetails?.end_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3 mb-3">
+      <button
+        *ngIf="
+          lotDetails &&
+          lotDetails.lot_status_id === 1 &&
+          (lotDetails?.bid_type_id == providerType.Offerent ||
+            (!lotDetails?.bid_date_ini &&
+              !lotDetails?.bid_price &&
+              userRoleId == roleTypes.Provider &&
+              lotDetails?.is_rival == 1 &&
+              isAuthorized))
+        "
+        type="button"
+        class="btn btn-primary btn-lg"
+        (click)="onBidModal(bidTemplate)"
+      >
+        <span class="icon icon-hammer"></span>{{ 'Shop.Common.LotDetails.MakeOffer' | translate }}
+      </button>
+
+      <p
+        *ngIf="
+          lotDetails?.user_id == currentUserId &&
+          lotDetails?.bid_type_id == providerType.Offerent &&
+          userRoleId == roleTypes.Provider &&
+          isAuthorized
+        "
+        class="own-offer-text-style text-warning mt-2 text-center"
+      >
+        {{ 'Shop.Common.LotDetails.Info1' | translate: { price: lotDetails?.price } }}
+        {{ 'Shop.Common.LotDetails.Info2' | translate }}
+      </p>
+    </div>
+
+    <div
+      class="row"
+      *ngIf="
+        lotDetails?.bid_type_id != providerType.Offerent &&
+        lotDetails?.bid_date_ini &&
+        lotDetails?.bid_price &&
+        userRoleId == roleTypes.Provider &&
+        isAuthorized
+      "
+    >
+      <div class="col-12 mb-4">
+        <div class="d-flex flex-column align-items-center border rounded-4 bg-light p-3">
+          <h5 class="has-bidded-text-style text-center">{{ 'Shop.Common.LotDetails.YouMadeOffer' | translate }}!</h5>
+          <p class="has-bidded-text-style text-center">
+            <span style="font-size: 14px; font-weight: 700"
+              >{{ 'Shop.Common.LotDetails.YourOffer' | translate }}:
+              <b style="color: #53c22b"> {{ lotDetails?.bid_price | numberFormat }} {{ 'Cabinet.sum' | translate }} </b>
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-stretch gap-3 mb-4">
+      <div class="col-lg-6">
+        <div class="border rounded-4 bg-light p-3">
+          <div>
+            <!-- <p class="text-center mb-1">{{ 'Shop.Common.LotDetails.LeftTime' | translate }}</p> -->
+            <div class="countdown">
+              <div class="clock twoDayDigits flip-clock-wrapper">
+                <ul class="flip">
+                  <li class="flip-clock-active">
+                    <a href="#">
+                      <div class="up">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                      <div class="down">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <ul class="flip">
+                  <li class="flip-clock-active">
+                    <a href="#">
+                      <div class="up">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                      <div class="down">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <span class="flip-clock-divider hours">
+                  <span class="flip-clock-dot top"></span>
+                  <span class="flip-clock-dot bottom"></span>
+                </span>
+                <ul class="flip">
+                  <li class="flip-clock-active">
+                    <a href="#">
+                      <div class="up">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                      <div class="down">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <ul class="flip">
+                  <li class="flip-clock-active">
+                    <a href="#">
+                      <div class="up">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                      <div class="down">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <span class="flip-clock-divider hours">
+                  <span class="flip-clock-dot top"></span>
+                  <span class="flip-clock-dot bottom"></span>
+                </span>
+                <ul class="flip">
+                  <li class="flip-clock-active">
+                    <a href="#">
+                      <div class="up">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                      <div class="down">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <ul class="flip">
+                  <li class="flip-clock-active">
+                    <a href="#">
+                      <div class="up">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                      <div class="down">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <span class="flip-clock-divider hours">
+                  <span class="flip-clock-dot top"></span>
+                  <span class="flip-clock-dot bottom"></span>
+                </span>
+                <ul class="flip">
+                  <li class="flip-clock-active">
+                    <a href="#">
+                      <div class="up">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                      <div class="down">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <ul class="flip">
+                  <li class="flip-clock-active">
+                    <a href="#">
+                      <div class="up">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                      <div class="down">
+                        <div class="shadow"></div>
+                        <div class="inn">-</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <!--              <div *ngIf="isPublished" class="clock flip-clock-wrapper"></div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="d-flex flex-column align-items-center border rounded-4 bg-light p-3 h-100 justify-content-center">
+          <span class="fs-5 text-muted">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}:</span>
+          <strong class="fs-4">{{ lotDetails?.price }} {{ 'Cabinet.sum' | translate }}</strong>
+        </div>
+      </div>
+    </div>
+    <ul class="product-info-tabs nav nav-tabs gap-2 d-flex justify-content-around" id="myTab" role="tablist">
+      <!-- TAVSIF TAB BUTTON -->
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link w-100 active"
+          id="description-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#description-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="description-tab-pane"
+          aria-selected="true"
+        >
+          {{ 'Cabinet.Description' | translate }}
+        </button>
+      </li>
+      <!-- TOVARNING XUSUSIYATLARI TAB BUTTON -->
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link w-100"
+          id="product-features-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#product-features-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="product-features-tab-pane"
+          aria-selected="false"
+        >
+          {{ 'Cabinet.Features' | translate }}
+        </button>
+      </li>
+      <!-- IZOHLAR VA FIKRLAR TAB BUTTON -->
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link w-100"
+          id="comments-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#comments-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="comments-tab-pane"
+          aria-selected="false"
+        >
+          {{ 'Cabinet.Comments' | translate }}
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <!-- TAVSIF TAB -->
+      <div
+        class="tab-pane fade show active"
+        id="description-tab-pane"
+        role="tabpanel"
+        aria-labelledby="description-tab"
+        tabindex="0"
+      >
+        <div class="d-flex justify-content-between mt-4 align-items-start flex-wrap">
+          <div class="col-12 col-md-6 mb-4">
+            <!-- row 1 -->
+            <div class="mb-4 d-flex flex-column gap-3">
+              <h3>{{ 'Cabinet.Description' | translate }}</h3>
+              <!-- <div class="d-flex justify-content-between">
+                <span class="text-muted">{{ 'Shop.Common.LotDetails.ProductMark' | translate }}:</span>
+                <b class="w-50 text-end">{{ lotDetails?.mark_name }}</b>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">{{ 'Shop.Provider.OfferAdd.Producer' | translate }}:</span>
+                <b class="w-50 text-end">{{ lotDetails?.manufacturer_name }}</b>
+              </div> -->
+              <!-- <div class="d-flex justify-content-between">
+                <span class="text-muted">Ishlab chiqaruvchi mamlakat:</span>
+                <b class="w-50 text-end">{{ product.is_local_manufacturer ? 'УЗБЕКИСТАН' : '-' }}</b>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">Litsenziyaga egaligi:</span>
+                <b class="w-50 text-end">{{ product.is_licensed ? 'Есть' : 'Нет' }}</b>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">Mahalliy ishlab chiqaruvchi:</span>
+                <b class="w-50 text-end">{{ product.is_local_manufacturer ? 'Да' : 'Нет' }}</b>
+              </div> -->
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">{{ 'Shop.Common.LotDetails.ValidityDeadline' | translate }}:</span>
+                <b class="w-50 text-end">{{ lotDetails?.shelf_life }} {{ lotDetails?.shelf_life_name }}</b>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">{{ 'Shop.Common.LotDetails.WarantyDeadline' | translate }}:</span>
+                <b class="w-50 text-end">{{ lotDetails?.guarantee_period }} {{ lotDetails?.guarantee_period_name }}</b>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">{{ 'Shop.Common.LotDetails.IssueDate' | translate }}:</span>
+                <b class="w-50 text-end">{{ lotDetails?.issue_date | dateformat: 'dd.MM.yyyy' }}</b>
+              </div>
+            </div>
+            <!-- row 2 -->
+            <div class="border rounded-4 bg-light p-3 mb-4">
+              <h4 class="mb-3">{{ 'Shop.Provider.MyOffers.TechDetails' | translate }}</h4>
+              <p class="text-muted">
+                {{ lotDetails?.condition }}
+              </p>
+            </div>
+            <!-- row 3 -->
+            <div class="border rounded-4 bg-light p-3" *ngIf="lotDetails?.offer_license_files?.length > 0">
+              <h4 class="mb-3">{{ 'Shop.Provider.OfferAdd.Licenses' | translate }}</h4>
+              <p class="text-secondary mb-3 d-none">{{ 'Cabinet.FileName' | translate }}</p>
+              <ng-container *ngFor="let license of lotDetails?.offer_license_files">
+                <div class="file-box d-flex gap-2 bg-body p-2 border rounded-3 mb-3 align-items-center">
+                  <img src="./assets/images/file-type.svg" alt="file image" />
+                  <div class="d-flex flex-column" style="width: 76%">
+                    <span class="">
+                      <b [tooltip]="license.custom_name.length > 20 ? license.custom_name : null" placement="bottom"
+                        >{{
+                          license.custom_name.length > 20
+                            ? license.custom_name.substring(0, 20) + '...'
+                            : license.custom_name
+                        }}
+                      </b>
+                    </span>
+                    <span class="text-muted d-none">{{ license.file_ext }}</span>
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-success"
+                      (click)="downloadFile(license.file_path, license.file_name)"
+                    >
+                      Скачать
+                    </button>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="col-12 col-md-5 border rounded-4 bg-light p-3 h-100">
+            <div class="d-flex gap-2 align-items-center mb-3">
+              <i class="icon-location text-primary fs-5"></i>
+              <b class="text-blue-900"> {{ 'Shop.Common.LotDetails.DeliveryRegions' | translate }}: </b>
+            </div>
+            <div class="accordion_wrapper" *ngIf="regionsDistricts && regionsDistricts.length > 0">
+              <div class="accordion" id="accordionExample">
+                <ng-container *ngFor="let region of regionsDistricts">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button
+                        class="accordion-button"
+                        [ngClass]="{ collapsed: !regionsDistricts[0] }"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#andijonviloyat"
+                        aria-expanded="true"
+                        aria-controls="andijonviloyat"
+                      >
+                        <small class="fs-5 w-100">{{ region.name }}</small>
+                        <small class="d-inline-block mx-3 border bg-blue-100 rounded-2 px-2 py-1">{{
+                          region.children.length
+                        }}</small>
+                      </button>
+                    </h2>
+                    <div
+                      id="andijonviloyat"
+                      class="accordion-collapse collapse show"
+                      data-bs-parent="#accordionExample"
+                    >
+                      <div class="accordion-body">
+                        <ol *ngFor="let district of region.children">
+                          <li>{{ district.name }}</li>
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- IZOHLAR VA FIKRLAR TAB -->
+      <div
+        class="tab-pane fade"
+        id="product-features-tab-pane"
+        role="tabpanel"
+        aria-labelledby="product-features-tab"
+        tabindex="0"
+      >
+        <div class="border rounded-4 bg-light p-3 mt-4">
+          <div *ngFor="let property of lotDetails.js_properties; index as idx">
+            <p class="my-2">
+              <span class="text-muted mx-2">{{ idx + 1 }}. {{ property.property_name }}:</span>
+              <span>{{ property.user_value }}</span>
+            </p>
+          </div>
+          <p class="text-muted" *ngIf="lotDetails.js_properties.length == 0 || !lotDetails.js_properties">
+            {{ 'Cabinet.Soon' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <!-- TOVARNING XUSUSIYATLARI TAB -->
+      <div class="tab-pane fade" id="comments-tab-pane" role="tabpanel" aria-labelledby="comments-tab" tabindex="0">
+        <!-- <div class="form-floating mt-4">
+          <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
+            style="height: 150px"></textarea>
+          <label for="floatingTextarea2">Fikr va izohlaringizni qoldiring...</label>
+        </div> -->
+        <div class="my-2">{{ 'Cabinet.NoComments' | translate }}</div>
+      </div>
+      <div class="mt-5">
+        <div class="related-products">
+          <div>
+            <h4>{{ 'Common.SimilarProducts' | translate }}</h4>
+          </div>
+          <div>
+            <button
+              type="button"
+              *ngIf="relatedProducts.length > 0"
+              class="btn btn-outline-success"
+              (click)="redirectToProductList(relatedProducts[0].category_id, relatedProducts[0].product_code)"
+            >
+              {{ 'Shop.Common.ProductList.LoadMore' | translate }}
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <hr />
+        <div class="mt-2">
+          <div class="col-12 text-center" *ngIf="relatedProducts.length === 0">
+            <p class="text-muted">{{ 'Cabinet.NoSimilarProduct' | translate }}</p>
+          </div>
+          <!-- <div class="row text-center" *ngIf="relatedProductsLoading">
+            <div class="col-12">
+              <div class="spinner-border text-primary" style="width: 2rem; height: 2rem;" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+          </div> -->
+          <div class="row g-3">
+            <ng-container *ngFor="let product of relatedProducts">
+              <div class="product-box col-sm-6 col-lg-4 col-xl-3">
+                <div
+                  class="hover-shadow border rounded-4 position-relative p-3 custom-transition h-100 d-flex flex-column justify-content-between"
+                >
+                  <i class="icon-star position-absolute"></i>
+                  <div class="product-img mb-3 text-center">
+                    <img
+                      class="item-img-size"
+                      [src]="product.thumb_image || '/assets/images/empty-img.png'"
+                      alt="product-image"
+                      (click)="onViewProductDetails(product.id)"
+                    />
+                  </div>
+                  <div class="product-info">
+                    <h6 class="mb-2 fs-5 fw-semibold">{{ product.product_name | slice2: 25 }}</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                      <small>
+                        <app-copy-to-clipboard [text]="product.display_no"></app-copy-to-clipboard>
+                        {{ product.display_no }}
+                      </small>
+                      <small class="d-flex align-items-center border px-2 rounded-3 bg-light text-black">
+                        <i class="icon-calendar me-2 text-muted"></i>
+                        {{ product.date_ini | dateformat: 'dd.MM.yyyy' }}
+                      </small>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="d-flex align-items-center text-muted">
+                        <i class="icon-quantity me-2"></i>
+                        {{ 'Common.amount' | translate }}
+                      </span>
+                      <span class="border border-primary px-2 rounded-4 bg-blue-100">
+                        {{ product.amount | numberFormat }}
+                        <small>{{ product.unit_name }}</small>
+                      </span>
+                    </div>
+                    <!-- Price -->
+                    <div class="d-flex justify-content-between">
+                      <span class="d-flex align-items-center text-muted">
+                        <i class="icon-invoice me-2"></i>
+                        {{ 'Common.price' | translate }}
+                      </span>
+                      <span class="text-primary fw-semibold">{{ product.price }} {{ 'Cabinet.sum' | translate }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-footer></app-footer>
+
+<ng-template #bidTemplate>
+  <div class="modal-header" style="background: #1d262d; color: #ffffff">
+    <h4 class="modal-title pull-left">{{ 'Shop.Common.LotDetails.FormOffer' | translate }}</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group required" style="margin-bottom: 5px">
+          <label for="price">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}</label>
+          <input
+            id="price"
+            type="text"
+            class="form-control"
+            (blur)="onGetCommission()"
+            [(ngModel)]="addBidModel.price"
+            #price="ngModel"
+            name="price"
+            mask="separator.2"
+            required
+          />
+
+          <p *ngIf="price.errors && (price.touched || price.dirty)" class="text-danger">
+            <span *ngIf="price.errors.required">
+              {{ 'Common.RequiredField' | translate }}
+            </span>
+          </p>
+
+          <p *ngIf="+addBidModel?.price > lotDetails?.price" class="text-danger" style="font-style: italic">
+            {{ 'Shop.Common.LotDetails.Info3' | translate }}
+          </p>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group required" style="margin-bottom: 5px">
+          <label>{{ 'Shop.Common.ProductDetails.ChooseAccount' | translate }}</label>
+          <ng-select
+            id="record_id"
+            [items]="userRecords"
+            [clearable]="false"
+            bindLabel="record_text"
+            bindValue="record_id"
+            placeholder="{{ 'Common.Choose' | translate }}"
+            (change)="onAccountChange($event)"
+            [(ngModel)]="addBidModel.record_id"
+            #record_id="ngModel"
+            name="record_id"
+            required
+          >
+          </ng-select>
+
+          <p *ngIf="record_id.errors && (record_id.touched || record_id.dirty)" class="text-danger">
+            <span *ngIf="record_id.errors.required">{{ 'Common.RequiredField' | translate }}</span>
+          </p>
+
+          <p *ngIf="selectedRecord" class="custom-min-max-style mt-2">
+            {{ 'Shop.Common.LotDetails.AvailableAmount' | translate }}: {{ selectedRecord.amount | numberFormat }}
+            {{ selectedRecord.currency_code }}
+          </p>
+        </div>
+      </div>
+      <div class="col-12">
+        <div *ngIf="pledgeCommission" style="font-size: 12px; margin-top: 10px; margin-bottom: 10px">
+          <div class="row">
+            <div class="col-6">{{ 'Комиссия' | translate }}:</div>
+            <div class="col-6 text-right">{{ pledgeCommission.commission }} {{ 'Cabinet.sum' | translate }}</div>
+          </div>
+          <div class="row" [class.mb-1]="!dempingPrice">
+            <div class="col-6">{{ 'Залоговая сумма' | translate }}:</div>
+            <div class="col-6 text-right">{{ pledgeCommission.pledge }} {{ 'Cabinet.sum' | translate }}</div>
+          </div>
+          <!--            <div class="row mb-1" *ngIf="dempingPrice">-->
+          <!--              <div class="col-6">Демпинг:</div>-->
+          <!--              <div class="col-6 text-right">{{dempingPrice}} {{'Cabinet.sum'|translate}}</div>-->
+          <!--            </div>-->
+          <div style="border-top: 1px solid black"></div>
+          <div class="row" style="margin-top: 10px; font-weight: bold">
+            <div class="col-6">{{ 'Сумма' | translate }}:</div>
+            <div class="col-6 text-right">
+              {{ addBidModel.price * lotDetails.lot_amount | numberFormat }} {{ 'Cabinet.sum' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onBidClose()">
+      {{ 'Закрыть' | translate }}
+    </button>
+    <button type="button" (click)="onBidSubmit()" class="btn btn-primary" [disabled]="offerFormSubmitted">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="offerFormSubmitted">
+      </span>
+      {{ 'Отправить' | translate }}
+    </button>
+  </div>
+</ng-template>
