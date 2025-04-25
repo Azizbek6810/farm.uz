@@ -1,0 +1,277 @@
+{
+  "provider": {
+    "menu": [
+      {
+        "id": 2,
+        "routeLink": "/cabinet/provider/info",
+        "icon": "icon-home-line",
+        "title": "Cabinet.ControlPanel",
+        "isHide": false,
+        "hasChild": false,
+        "redirectToOtherSite": null,
+        "className": "",
+        "budgeCount": 0,
+        "hrLine": true,
+        "subMenu": []
+      },
+      {
+        "id": 4,
+        "routeLink": "/cabinet/provider/add-offer",
+        "icon": "icon-calendar-plus",
+        "title": "Shop.Provider.OfferAdd.Upload",
+        "isHide": false,
+        "hasChild": false,
+        "redirectToOtherSite": null,
+        "className": "",
+        "budgeCount": 0,
+        "subMenu": []
+      },
+      {
+        "id": 5,
+        "routeLink": null,
+        "icon": "icon-dropbox",
+        "title": "Cabinet.MyProducts",
+        "isHide": false,
+        "hasChild": true,
+        "redirectToOtherSite": null,
+        "className": "",
+        "budgeCount": 0,
+        "subMenu": [
+          {
+            "id": 1,
+            "routeLink": "/cabinet/provider/offer-list/1",
+            "icon": "",
+            "title": "Cabinet.OnModeration",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 2,
+            "routeLink": "/cabinet/provider/offer-list/5",
+            "icon": "",
+            "title": "Cabinet.AfterModeration",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 3,
+            "routeLink": "/cabinet/provider/offer-list/44",
+            "icon": "",
+            "title": "Cabinet.RemovedBySupplier",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 4,
+            "routeLink": "/cabinet/provider/offer-list/8",
+            "icon": "",
+            "title": "Common.Expired",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 5,
+            "routeLink": "/cabinet/provider/offer-list/3",
+            "icon": "",
+            "title": "Common.Denied",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 6,
+            "routeLink": "/cabinet/provider/offer-list/7",
+            "icon": "",
+            "title": "Common.OutOfStock",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "routeLink": "/cabinet/provider/my-lots/1",
+        "icon": "icon-inbox",
+        "title": "Cabinet.MyLots",
+        "isHide": false,
+        "hasChild": false,
+        "redirectToOtherSite": null,
+        "className": "",
+        "budgeCount": 0,
+        "subMenu": []
+      },
+      {
+        "id": 7,
+        "routeLink": "/cabinet/provider/rival-lots",
+        "icon": "icon-hand-shake",
+        "title": "Cabinet.ReceivedOffers",
+        "isHide": false,
+        "hasChild": false,
+        "redirectToOtherSite": null,
+        "className": "",
+        "budgeCount": 0,
+        "subMenu": []
+      },
+      {
+        "id": 8,
+        "routeLink": null,
+        "icon": "icon-checkmark-circle",
+        "title": "Cabinet.MyDeals",
+        "isHide": false,
+        "hasChild": false,
+        "redirectToOtherSite": null,
+        "className": "",
+        "budgeCount": 0,
+        "subMenu": [
+          {
+            "id": 1,
+            "routeLink": "/cabinet/provider/my-deals/new",
+            "icon": "",
+            "title": "Common.AuctionDealsStatus.new",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 2,
+            "routeLink": "/cabinet/provider/my-deals/paid",
+            "icon": "",
+            "title": "Common.AuctionDealsStatus.paid",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 3,
+            "routeLink": "/cabinet/provider/my-deals/delivered",
+            "icon": "",
+            "title": "Common.AuctionDealsStatus.delivered",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 4,
+            "routeLink": "/cabinet/provider/my-deals/terminated",
+            "icon": "",
+            "title": "Common.AuctionDealsStatus.terminated",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          }
+        ]
+      }
+    ]
+  },
+  "customer": {
+    "menu": [
+      {
+        "id": 1,
+        "routeLink": "/cabinet/customer/info",
+        "icon": "icon-home-line",
+        "title": "Cabinet.ControlPanel",
+        "isHide": false,
+        "hasChild": false,
+        "redirectToOtherSite": null,
+        "className": "",
+        "budgeCount": 0,
+        "hrLine": true,
+        "subMenu": []
+      },
+      {
+        "id": 3,
+        "routeLink": "/cabinet/customer/my-lots/",
+        "icon": "icon-hand-shake",
+        "title": "Cabinet.MyRequests",
+        "isHide": false,
+        "hasChild": false,
+        "redirectToOtherSite": null,
+        "className": "",
+        "budgeCount": 0,
+        "subMenu": []
+      },
+      {
+        "id": 3,
+        "routeLink": null,
+        "icon": "icon-checkmark-circle",
+        "title": "Cabinet.MyDeals",
+        "isHide": false,
+        "hasChild": false,
+        "redirectToOtherSite": null,
+        "className": "",
+        "budgeCount": 0,
+        "subMenu": [
+          {
+            "id": 1,
+            "routeLink": "/cabinet/customer/my-deals/new",
+            "icon": "",
+            "title": "Common.AuctionDealsStatus.new",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 2,
+            "routeLink": "/cabinet/customer/my-deals/paid",
+            "icon": "",
+            "title": "Common.AuctionDealsStatus.paid",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 3,
+            "routeLink": "/cabinet/customer/my-deals/delivered",
+            "icon": "",
+            "title": "Common.AuctionDealsStatus.delivered",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          },
+          {
+            "id": 4,
+            "routeLink": "/cabinet/customer/my-deals/terminated",
+            "icon": "",
+            "title": "Common.AuctionDealsStatus.terminated",
+            "isHide": false,
+            "hasChild": false,
+            "redirectToOtherSite": null,
+            "className": "",
+            "budgeCount": 0
+          }
+        ]
+      }
+    ]
+  }
+}

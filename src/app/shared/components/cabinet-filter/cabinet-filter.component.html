@@ -1,0 +1,136 @@
+<div class="offcanvas-header">
+  <h5 id="offcanvasProductFilterLabel">{{ 'Common.Filter' | translate }}</h5>
+  <i class="icon-cancel-circle" data-bs-dismiss="offcanvas"></i>
+</div>
+<hr class="my-0" />
+<div class="offcanvas-body">
+  <div class="filter_form">
+    <div class="inputs_wrapper">
+      <div class="row">
+        <ng-container *ngFor="let item of items">
+          <div class="col-12" *ngIf="item === 1">
+            <label for="filter-search">Asosit kalit so'zi</label>
+            <div class="input-group">
+              <span class="input-group-text bg-body" id="filter_qidirish">
+                <i class="icon-search"></i>
+              </span>
+              <input
+                type="text"
+                name="keyword"
+                class="form-control"
+                placeholder="..."
+                [(ngModel)]="filterModel.keyword"
+                id="filter-search"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 mt-3" *ngIf="item === 2">
+            <div class="row">
+              <div class="col-12">
+                <label for="category_list" class="form-label"
+                  >{{ 'Shop.Common.ProductList.ProductCategory' | translate }} :</label
+                >
+                <ng-select
+                  [items]="categories"
+                  id="category_list"
+                  name="category_list"
+                  [clearable]="false"
+                  (change)="getProducts($event)"
+                  bindLabel="name"
+                  bindValue="id"
+                  [(ngModel)]="filterModel.category_id"
+                  placeholder="{{ 'Common.Select' | translate }}"
+                >
+                  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                    <div style="padding: 2px">
+                      <p style="margin-bottom: 5px; white-space: normal">
+                        {{ item.name }}
+                      </p>
+                    </div>
+                    <div
+                      class="dropdown-divider"
+                      style="margin-bottom: -0.5rem; border-top: 1px solid #e8ecef"
+                      *ngIf="index !== categories.length - 1"
+                    ></div>
+                  </ng-template>
+                </ng-select>
+              </div>
+              <div class="col-12 mt-2">
+                <label for="category_list" class="form-label"
+                  >{{ 'Shop.Customer.MyLots.ProductName' | translate }} :</label
+                >
+                <ng-select
+                  id="appeal_category"
+                  [items]="products"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="product_code"
+                  (change)="setFilterValue('product')"
+                  [loading]="loadingSearchProducts"
+                  [(ngModel)]="filterModel.product_code"
+                  placeholder="{{ 'Common.Select' | translate }}"
+                >
+                  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                    <div style="padding: 2px">
+                      <p style="margin-bottom: 5px; white-space: normal">
+                        {{ item.name }}
+                      </p>
+                    </div>
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 mt-3" *ngIf="item === 3">
+            <div class="row">
+              <div class="col-6">
+                <label for="region_id" class="form-label">{{ 'Common.Region' | translate }}:</label>
+                <ng-select
+                  id="region_id"
+                  [items]="regions"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="id"
+                  [placeholder]="'Common.SelectRegion' | translate"
+                  [(ngModel)]="filterModel.region_id"
+                  #region_id="ngModel"
+                  name="region_id"
+                  (change)="onRegion($event)"
+                >
+                </ng-select>
+              </div>
+              <div class="col-6">
+                <label for="district_id" class="form-label">{{ 'Common.District' | translate }}:</label>
+                <ng-select
+                  id="district_id"
+                  [items]="districts"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="id"
+                  [placeholder]="'Common.SelectDistrict' | translate"
+                  [(ngModel)]="filterModel.district_id"
+                  (change)="onDistrict($event)"
+                  #district_id="ngModel"
+                  name="district_id"
+                >
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="offcanvas-footer">
+  <div class="filter_buttons">
+    <button type="submit" class="btn btn-outline-danger" (click)="reset()" data-bs-dismiss="offcanvas">
+      {{ 'Common.Reset' | translate }}
+    </button>
+    <button type="submit" class="btn btn-primary" (click)="search()" data-bs-dismiss="offcanvas">
+      {{ 'Common.Search' | translate }}
+    </button>
+  </div>
+</div>

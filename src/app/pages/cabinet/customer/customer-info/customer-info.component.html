@@ -1,0 +1,59 @@
+<app-breadcrumb [pageName]="[{ name: 'Cabinet.CustomerInfo' }]"></app-breadcrumb>
+
+<div class="right_sidebar__body py-4 px-5">
+  <div class="d-flex gap-4">
+    <div class="col-lg-6 border rounded-4 shadow-sm p-4">
+      <app-skeleton-loader *ngIf="isLoading" [style]="{ height: '20px' }"> </app-skeleton-loader>
+      <ng-container *ngIf="!isLoading">
+        <h4 class="mb-2 fw-semibold">{{ 'Cabinet.MyRequisites' | translate }}</h4>
+        <hr />
+        <small class="text-muted">{{ 'Cabinet.CompanyName' | translate }}</small>
+        <p>{{ userName }}</p>
+
+        <div class="row my-3">
+          <p class="d-flex flex-column col-6">
+            <small class="text-muted">{{ 'Cabinet.Inn' | translate }}</small>
+            <span class="fs-5">{{ userInfo[0]?.inn }}</span>
+          </p>
+          <p class="d-flex flex-column col-6">
+            <small class="text-muted">{{ 'Common.Region' | translate }}</small>
+            <span class="fs-5">{{ userInfo[0]?.region_name }}</span>
+          </p>
+        </div>
+
+        <div class="row my-3">
+          <p class="d-flex flex-column col-6">
+            <small class="text-muted">{{ 'Cabinet.AccreditationDate' | translate }}</small>
+            <span class="fs-5">{{ userInfo[0]?.accredited_date | dateformat }}</span>
+          </p>
+          <p class="d-flex flex-column col-6">
+            <small class="text-muted">{{ 'Common.District' | translate }}</small>
+            <span class="fs-5">{{ userInfo[0]?.district_name }}</span>
+          </p>
+        </div>
+
+        <div class="row my-3">
+          <p class="d-flex flex-column col-6">
+            <small class="text-muted">{{ 'Cabinet.Login' | translate }}</small>
+            <span class="fs-5">{{ userInfo[0]?.username }}</span>
+          </p>
+          <p class="d-flex flex-column col-6">
+            <small class="text-muted">{{ 'Cabinet.ContactDetails' | translate }}</small>
+            <span class="fs-5">{{ userInfo[0]?.phone }}</span>
+          </p>
+        </div>
+
+        <div class="row my-3">
+          <p class="d-flex flex-column col-6">
+            <small class="text-muted">{{ 'Cabinet.Email' | translate }}</small>
+            <span class="fs-5">{{ userInfo[0]?.email }}</span>
+          </p>
+          <p class="d-flex flex-column col-6">
+            <small class="text-muted">{{ 'Cabinet.Index' | translate }}</small>
+            <span class="fs-5">{{ userInfo[0]?.zip }}</span>
+          </p>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

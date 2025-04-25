@@ -1,0 +1,42 @@
+.left_sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 350px;
+    height: 100vh;
+    padding: 0.5rem 0;
+    color: white;
+    background-color: #101323;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.right_sidebar {
+    margin-left: 350px;
+    width: calc(100% - 350px);
+    padding: 0.5rem;
+}
+
+.right_sidebar #header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+}
+
+.left_sidebar .nav-link:hover,
+.left_sidebar .nav-link.active,
+.submenu.active .submenu-toggle {
+    background-color: #1d2939;
+}
+
+.right_header__lower {
+    background-image: url('/assets/images/bg-cabinet-header.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.fixed {
+    left: 0;
+    top: 0;
+    position: fixed;
+}

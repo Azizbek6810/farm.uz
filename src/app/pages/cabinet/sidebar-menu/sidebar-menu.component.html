@@ -1,1 +1,56 @@
-<p>sidebar-menu works!</p>
+<div class="fixed vh-100 overflow-auto">
+  <div class="d-flex flex-column align-items-center align-items-sm-start min-vh-100 px-3 gap-3 bg-sidebar">
+    <div class="header__logo py-4">
+      <a href="index.html" class="cabinet_logo__link">
+        <img src="./assets/images/logo-white.svg" alt="logo" />
+      </a>
+    </div>
+    <ul
+      class="custom_ul nav nav-pills w-100 flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start gap-2"
+      id="menu"
+    >
+      <ng-container *ngFor="let menuItems of leftMenu; index as i">
+        <li class="nav-item w-100 fSize-18">
+          <a
+            [routerLink]="menuItems.subMenu.length === 0 ? menuItems.routeLink : null"
+            (click)="menuItems.subMenu.length > 0 ? showMenu(i) : null"
+            [routerLinkActive]="'active'"
+            class="nav-link p-0 d-flex justify-content-between align-items-center w-100 text-white cursor-pointer"
+          >
+            <span class="sidebar_link__wrapper fw-semibold d-flex align-items-center gap-2">
+              <i class="{{ menuItems.icon }}"></i>
+              <small class="d-none d-sm-inline"> {{ menuItems.title | translate }} </small>
+            </span>
+            <i class="icon-chevron-down1" *ngIf="menuItems.subMenu.length > 0"></i>
+          </a>
+          <ng-container *ngIf="menuItems.isHide">
+            <ul class="submenu-items" *ngFor="let subMenu of menuItems.subMenu">
+              <li>
+                <a
+                  [routerLink]="subMenu.routeLink"
+                  [routerLinkActive]="'active'"
+                  [routerLinkActiveOptions]="{ exact: false }"
+                  class="fSize-15 p-0 d-flex justify-content-between align-items-center w-100 text-white cursor-pointer"
+                >
+                  <span class="sidebar_link__wrapper fw-semibold d-flex align-items-center gap-2">
+                    <i *ngIf="!subMenu.icon" class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                    <i *ngIf="subMenu.icon" class="{{ subMenu.icon }}"></i>
+                    <div class="badge-block">
+                      <div class="d-none d-sm-inline">{{ subMenu.title | translate }}</div>
+                      <!-- <div class="badge badge-warning p6" > {{ subMenu.budgeCount }}</div> -->
+                    </div>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </ng-container>
+        </li>
+        <hr class="m-0 p-0 w-100" *ngIf="menuItems.hrLine" />
+      </ng-container>
+    </ul>
+    <hr />
+    <!-- <div class="text-center pb-4">
+      App version: <b>{{ env.version }}</b>
+    </div> -->
+  </div>
+</div>

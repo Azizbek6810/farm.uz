@@ -1,0 +1,219 @@
+<app-breadcrumb [pageName]="[{ name: 'Cabinet.MyRequests' }]"></app-breadcrumb>
+
+<div class="right_sidebar__body py-4 px-5">
+    <div class="d-flex gap-4">
+      <div class="col-lg-12">
+        <loading *ngIf="loadingOffers"></loading>
+        <section>
+          <div class="section-header d-flex align-items-center justify-content-between flex-wrap-reverse gap-4">
+            <form>
+              <select *ngIf="false" class="form-select">
+                <option selected>Filialni tanlang</option>
+                <option value="1">Toshkent</option>
+                <option value="2">Buxoro</option>
+                <option value="3">Samarqand</option>
+              </select>
+            </form>
+            <div class="d-flex gap-2 align-items-center">
+              <!-- search input group -->
+              <form class="d-flex align-items-center">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="keyword"
+                  [placeholder]="'Shop.Customer.MyLots.LotNumber' | translate"
+                  [(ngModel)]="filter.keyword"
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+                <button class="btn btn-primary d-flex align-items-center gap-1" id="basic-addon1" (click)="loadLots()">
+                  <i class="icon-search"></i>
+                  <span> {{ 'Common.Search' | translate }} </span>
+                </button>
+              </form>
+              <!-- offcanvas -->
+              <button
+                type="button"
+                class="btn btn-light border border-2 bg-transparent d-flex align-items-center justify-content-center gap-2"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasProductFilter"
+                aria-controls="offcanvasProductFilter"
+              >
+                <i class="icon-filter"></i>
+                <span>{{ 'Common.Filter' | translate }}</span>
+              </button>
+              <i class="icon-refresh btn btn-light border border-2 bg-transparent p-2"></i>
+              <div
+                class="offcanvas offcanvas-end"
+                tabindex="-1"
+                id="offcanvasProductFilter"
+                aria-labelledby="offcanvasProductFilterLabel"
+              >
+                <app-cabinet-filter
+                  [items]="filterSections"
+                  (resetFilter)="reset()"
+                  (searchByFilter)="loadLots()"
+                  [filterModel]="filter"
+                ></app-cabinet-filter>
+              </div>
+            </div>
+          </div>
+          <div class="section-body my-4">
+            <!-- table-wrapper -->
+            <div class="table-wrapper mb-4">
+              <table class="table table-hover border">
+                <thead class="table-header-sticky">
+                  <tr>
+                    <th scope="col">№</th>
+                    <th scope="col">{{ 'Shop.Customer.MyLots.ProductNumber' | translate }}</th>
+                    <th scope="col">{{ 'Shop.Customer.MyLots.LotNumber' | translate }}</th>
+                    <th scope="col">{{ 'Shop.Customer.MyLots.ProductName' | translate }}</th>
+                    <th scope="col">{{ 'Shop.Customer.MyLots.Amount' | translate }}</th>
+                    <th scope="col">{{ 'Common.ProductProperties' | translate }}</th>
+                    <th scope="col">{{ 'Shop.Customer.MyLots.StartPrice' | translate }}</th>
+                    <th scope="col">{{ 'Shop.Customer.MyLots.StartDate' | translate }}</th>
+                    <th scope="col">{{ 'Shop.Customer.MyLots.EndDate' | translate }}</th>
+                    <th scope="col">{{ 'Shop.Provider.MyOffers.Status' | translate }}</th>
+                    <th class="action-sticky">{{ 'Common.Actions' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of lots">
+                    <td class="text-nowrap">
+                      <span *ngIf="item.is_local_manufacturer == 1">
+                        <img src="assets/images/flags/uz.svg" style="width: 35px" /> <br />
+                      </span>
+                      <span class="display_no">
+                        {{ item.rn }}
+                      </span>
+                    </td>
+                    <td class="text-nowrap">
+                      <span class="cursor-pointer" (click)="toProduct(item.id)">{{ item.id }}</span>
+                    </td>
+                    <td class="text-nowrap">
+                      <span class="cursor-pointer" (click)="toLot(item.lot_id)">{{ item.lot_id }}</span
+                      ><br />
+                    </td>
+                    <td class="text-nowrap">
+                      <span> {{ item.product_name }} </span><br />
+                      <span style="font-size: 12px"
+                        >{{ 'Common.Mark' | translate }}:
+                        <span class="text-info additional-info-style">
+                          {{ item.mark_name }}
+                        </span>
+                      </span>
+                    </td>
+                    <td class="text-nowrap">
+                      {{ item.lot_amount }}
+                      <span class="text-muted">
+                        {{ item.unit_name }}
+                      </span>
+                    </td>
+                    <td class="text-nowrap">
+                      <span *ngFor="let property of item.js_properties">
+                        <span class="text-muted"> {{ property.property_name }}: </span>
+                        {{ property.user_value }}
+                        <br />
+                      </span>
+                    </td>
+                    <td class="text-nowrap">
+                      <span class="text-nowrap">{{ item.price | numberFormat }} 
+                      </span>
+                      <span class="text-muted">
+                        {{ 'Cabinet.sum' | translate }}
+                      </span>
+                    </td>
+                    <td class="text-nowrap">
+                      <span class="display_no">
+                        {{ item.lot_start_date ? (item.lot_start_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                      </span>
+                    </td>
+                    <td class="text-nowrap">
+                      <span class="end_date"
+                        >{{ item.lot_end_date ? (item.lot_end_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                      </span>
+                    </td>
+                    <td class="text-nowrap">
+                      <span [ngClass]="{ 'new': item.status_name == 'New', 'deleted-by-provider': item.status_name == 'Completed' }">
+                        {{ item.status_name | translate}}
+                      </span>
+                      <button class="btn btn-outline-primary" *ngIf="item.status_id && item.status_id === 15">
+                        {{ 'Common.RejectionReason' | translate }}
+                      </button>
+                      <button class="btn btn-outline-primary" *ngIf="item.customer_moderation_note">
+                        {{ 'Shop.Provider.MyOffers.Note' | translate }}
+                      </button>
+                    </td>
+                    <td class="text-nowrap">
+                      <div class="dropdown dropleft dropdown-action-menu dropdown-left-style">
+                        <button class="btn" type="button">
+                          <span class="icon-menu"></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                          <a class="dropdown-item" (click)="toLot(item.lot_id)">
+                            {{ 'Common.Details' | translate }}
+                          </a>
+                          <ng-container *ngIf="item.status_id === 3">
+                            <a class="dropdown-item" *ngIf="item.has_discount_history !== 1">
+                              {{ 'Common.Discount' | translate }}
+                            </a>
+                            <!--                        <a class="dropdown-item" *ngIf="item.has_discount_history !== 1"-->
+                            <!--                           (click)="onDiscountClick(item, discountRequestTemplate)">-->
+                            <!--                          {{ 'Common.Discount' | translate}}-->
+                            <!--                        </a>-->
+                            <a class="dropdown-item" *ngIf="item.has_discount_history === 1">
+                              {{ 'Common.DiscountHistory' | translate }}
+                              <i class="fa fa-dot-circle fa-xs text-danger" *ngIf="item.has_active_discount === 1"></i>
+                            </a>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- data not found -->
+            <div *ngIf="(!lots || lots.length == 0) && !loadingOffers" class="d-flex justify-content-center">
+              {{ 'Common.DataNotFound' | translate }}
+            </div>
+            <div
+              class="d-flex justify-content-between"
+              *ngIf="offerStatusId == offerStatuses.New && newOffers && newOffers.length > 0"
+            >
+              <pagination
+                [boundaryLinks]="true"
+                [totalItems]="maxCount"
+                [maxSize]="size"
+                [itemsPerPage]="pageItemCount"
+                (pageChanged)="onPageChange($event)"
+                [(ngModel)]="page"
+                previousText="&lsaquo;"
+                nextText="&rsaquo;"
+                firstText="&laquo;"
+                lastText="&raquo;"
+              >
+              </pagination>
+              <div class="d-flex align-items-center gap-2">
+                <div class="listing__header__pagination__label">
+                  {{ maxCount > 0 ? (page - 1) * pageItemCount + 1 : 0 }} -
+                  {{ maxCount > page * pageItemCount ? page * pageItemCount : maxCount }} of {{ maxCount }}
+                </div>
+                <div class="form-group mb-0">
+                  <ng-select
+                    [items]="limitItems"
+                    [clearable]="false"
+                    bindLabel="name"
+                    bindValue="value"
+                    [(ngModel)]="pageItemCount"
+                    (change)="onLimitsChange($event)"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
