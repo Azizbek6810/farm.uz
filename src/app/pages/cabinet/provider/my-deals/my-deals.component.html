@@ -1,0 +1,420 @@
+<!-- <app-breadcrumb [pageName]="[{ name: 'Cabinet.MyDeals' }]"></app-breadcrumb> -->
+<app-breadcrumb [pageName]="[{ name: ('Cabinet.MyDeals' | translate) + ' (' + (statusName | translate) + ')' }]"></app-breadcrumb>
+
+<div class="right_sidebar__body py-4 px-5">
+  <div class="d-flex gap-4">
+    <div class="col-lg-12">
+      <loading *ngIf="loadingDeals"></loading>
+      <section>
+        <div class="section-header d-flex align-items-center justify-content-between flex-wrap-reverse gap-4">
+          <form>
+            <select class="form-select">
+              <option selected>Filialni tanlang</option>
+              <option value="1">Toshkent</option>
+              <option value="2">Buxoro</option>
+              <option value="3">Samarqand</option>
+            </select>
+          </form>
+          <div class="d-flex gap-2 align-items-center">
+            <!-- search input group -->
+            <form class="d-flex align-items-center">
+              <input
+                type="text"
+                class="form-control"
+                [placeholder]="'Common.Search' | translate"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+              />
+              <button class="btn btn-primary d-flex align-items-center gap-1" id="basic-addon1">
+                <i class="icon-search"></i>
+                <span>
+                  {{ 'Common.Search' | translate }}
+                </span>
+              </button>
+            </form>
+            <!-- offcanvas -->
+            <button
+              type="button"
+              class="btn btn-light border border-2 bg-transparent d-flex align-items-center justify-content-center gap-2"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasProductFilter"
+              aria-controls="offcanvasProductFilter"
+            >
+              <i class="icon-filter"></i>
+              <span>{{ 'Common.Filter' | translate }}</span>
+            </button>
+            <i class="icon-refresh btn btn-light border border-2 bg-transparent p-2"></i>
+            <div
+              class="offcanvas offcanvas-end"
+              tabindex="-1"
+              id="offcanvasProductFilter"
+              aria-labelledby="offcanvasProductFilterLabel"
+            >
+              <app-cabinet-filter
+                [items]="filterSections"
+                (resetFilter)="reset()"
+                (searchByFilter)="loadDeals()"
+                [filterModel]="filter"
+              ></app-cabinet-filter>
+            </div>
+          </div>
+        </div>
+        <div class="section-body my-4">
+          <!-- table -->
+          <div class="table-wrapper mb-4">
+            <table class="table table-hover border">
+              <thead class="table-header-sticky">
+                <tr>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.LotNumber' | translate }}</th>
+                  <!-- <th scope="col">{{ 'Shop.Customer.MyDeals.DealNumber' | translate }}</th> -->
+                  <th scope="col">{{ 'Shop.Customer.MyDeals.DealDate' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyDeals.Date' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyDeals.Product' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyDeals.SellerName' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyDeals.SellerInn' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyDeals.Amount' | translate }}</th>
+                  <th scope="col">{{ 'Common.ProductProperties' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyDeals.DealSum' | translate }}</th>
+                  <!-- <th *ngIf="statusName === 'new'">{{ 'Trade.NeedToPay' | translate }}</th> -->
+                  <th *ngIf="statusName === 'terminated'">{{ 'Shop.Customer.MyDeals.ReasonTermination' | translate }}</th>
+                  <th *ngIf="statusName === 'terminated'">{{ 'Common.Penalty' | translate }}</th>
+                  <th class="action-table-th">{{ 'Common.Actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let item of deals"
+                  [ngClass]="{
+                    'tr-red': item.deadline_color_status === 'Red',
+                    'tr-yellow': item.deadline_color_status === 'Yellow'
+                  }"
+                >
+                  <td class="text-nowrap">
+                    <span class="display_no">
+                      {{ item.id }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="display_no">
+                      {{ item.date_ini ? (item.date_ini | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <div class="text-center">
+                      <div
+                        *ngIf="item.status_id == dealStatus.Paid"
+                        class="text-success border border-success rounded-4 bg-transparent w-fit px-2"
+                      >
+                        {{ item.status_name }}
+                      </div>
+                      <div
+                        *ngIf="item.status_id == dealStatus.New"
+                        class="text-info border border-info rounded-4 bg-transparent w-fit px-2"
+                      >
+                        {{ item.status_name }}
+                      </div>
+                      <div
+                        *ngIf="
+                          item.status_id == dealStatus.New && (item.is_kazna_error === 1 || item.is_payment_error === 1)
+                        "
+                        class="mt-2 text-center mb-2"
+                      >
+                        <button class="btn btn-sm btn-outline-warning" (click)="showNoteModal(item, showTextModal)">
+                          {{ 'Common.Error' | translate }}
+                        </button>
+                      </div>
+                      <div
+                        *ngIf="item.status_id == dealStatus.Delivered"
+                        class="text-primary border border-primary rounded-4 bg-transparent w-fit px-2 py-1"
+                      >
+                        {{ item.status_name }}
+                      </div>
+                      <div
+                        *ngIf="item.status_id == dealStatus.Terminated"
+                        class="text-danger border border-danger rounded-4 bg-transparent w-fit px-2 py-1"
+                      >
+                        {{ item.status_name }}
+                      </div>
+                      <div
+                        *ngIf="item.status_id == dealStatus.Restored"
+                        class="text-warning border border-warning rounded-4 bg-transparent w-fit px-2 py-1"
+                      >
+                        {{ item.status_name }}
+                      </div>
+                    </div>
+                    <div *ngIf="item.status_id == dealStatus.New" class="text-muted">
+                      {{ 'Shop.Provider.MyDeals.PayDeadline' | translate }}:
+                      <span class="invite_date">
+                        {{ item.deadline ? (item.deadline | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                      </span>
+                    </div>
+                    <div *ngIf="item.status_id == dealStatus.Paid" class="text-muted">
+                      {{ 'Shop.Provider.MyDeals.DelivDeadline' | translate }}:
+                      <span class="invite_date">
+                        {{ item.deadline ? (item.deadline | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                      </span>
+                      <br />
+                      <span class="text-line-through"
+                        >{{ 'Shop.Provider.MyDeals.PayDate' | translate }}:
+                        <span class="invite_date">
+                          {{ item.payment_date ? (item.payment_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                        </span>
+                      </span>
+                    </div>
+                    <div *ngIf="item.status_id == dealStatus.Delivered" class="text-muted">
+                      {{ 'Shop.Provider.MyDeals.DelivDate' | translate }}:
+                      <span class="invite_date">
+                        {{ item.delivery_date ? (item.delivery_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                      </span>
+                      <br />
+                      <span class="text-line-through"
+                        >{{ 'Shop.Provider.MyDeals.PayDate' | translate }}:
+                        <span class="invite_date">
+                          {{ item.payment_date ? (item.payment_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                        </span>
+                      </span>
+                    </div>
+                    <div *ngIf="item.status_id == dealStatus.Terminated" class="text-muted">
+                      {{ 'Shop.Provider.MyDeals.RecovDeadline' | translate }}:
+                      <span class="invite_date">
+                        {{ item.deadline ? (item.deadline | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                      </span>
+                      <span class="text-line-through"
+                        >{{ 'Shop.Provider.MyDeals.PayDate' | translate }}:
+                        <span class="invite_date">
+                          {{ item.payment_date ? (item.payment_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                        </span>
+                      </span>
+                      <br />
+                      <span class="text-line-through"
+                        >{{ 'Shop.Provider.MyDeals.DelivDate' | translate }}:
+                        <span class="invite_date">
+                          {{ item.delivery_date ? (item.delivery_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                        </span>
+                      </span>
+                      <br />
+                      <span class="text-line-through">
+                        {{ 'Shop.Provider.MyDeals.DestroyDate' | translate }}:
+                        <span class="invite_date">
+                          {{
+                            item.terminate_date ? (item.terminate_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --'
+                          }}
+                        </span>
+                      </span>
+                      <br />
+                    </div>
+                    <div *ngIf="item.status_id == dealStatus.Restored" class="text-muted">
+                      {{ 'Shop.Provider.MyDeals.RecovDeadline' | translate }}:
+                      <span class="invite_date">
+                        {{ item.restore_date ? (item.restore_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                      </span>
+                    </div>
+                  </td>
+                  <td>{{ item.product_name }}</td>
+                  <td class="text-nowrap">
+                    {{ item.customer_name }}
+                    <br />
+                  </td>
+                  <td class="text-nowrap text-success">{{ item.customer_inn }}</td>
+                  <td class="text-nowrap">
+                    {{ item.amount }}
+                    <span class="text-muted" *ngIf="item.js_properties && item.js_properties.length > 0">
+                      {{ item.js_properties[0].user_value }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <div *ngFor="let property of item.js_properties; index as idx">
+                      <ng-container *ngIf="idx !== 0">
+                        <span class="text-muted">{{ property.property_name }}: </span>
+                        <span>{{ property.user_value }}</span
+                        ><br />
+                      </ng-container>
+                    </div>
+                  </td>
+                  <td class="text-nowrap">
+                    {{ item.cost | numberFormat: '1.2-2' }}
+                    <span class="text-muted">{{ item.currency_name ? item.currency_name : 'UZS' }}</span>
+                  </td>
+                  <!-- <td class="text-cost" *ngIf="statusName === 'new'">
+                    {{ item.rest_payment | currency: ' ':'symbol':'1.2-2' }} {{ item.currency_name }}
+                  </td> -->
+                  <td class="text-cost" *ngIf="statusName === 'terminated'">
+                    {{ item.reason_name }}
+                  </td>
+                  <td class="text-cost" *ngIf="statusName === 'terminated'">
+                    {{ item.penalty_id === 1 ? 'Штраф с заказчика' : '' }}
+                    {{ item.penalty_id === 2 ? 'Без штрафа' : '' }}
+                    {{ item.penalty_id === 3 ? 'Штраф с поставщика' : '' }}
+                  </td>
+                  <td class="text-nowrap">
+                    <div class="dropdown dropleft dropdown-action-menu dropdown-left-style">
+                      <button class="btn" type="button">
+                        <span class="icon-menu"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                        <a class="dropdown-item" (click)="toLot(item.lot_id)">
+                          {{ 'Common.Details' | translate }}
+                        </a>
+                      </div>
+                    </div>
+                    <!-- <div class="dropdown dropleft dropdown-action-menu dropdown-left-style"
+                                            *ngIf="item.state !== 5">
+                                            <button class="btn" type="button">
+                                                <span class="icon-menu"></span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                                                <a class="dropdown-item"
+                                                    *ngIf="((canPay)&&(item.status_id == dealStatus.New))"
+                                                    (click)="onPaymentClick(item, paymentTemplate)">
+                                                    {{'Common.Pay'|translate}}
+                                                </a>
+                                                <a class="dropdown-item"
+                                                    *ngIf="((clientType !== 6)&&(item.status_id == dealStatus.Paid))"
+                                                    (click)="onCompleteClick(item, completeTemplate)">
+                                                    {{'Common.Complete'|translate}}
+                                                </a>
+                                                <ng-container
+                                                    *ngIf="statusName === 'delivery-expired' || statusName === 'annulled-no-payment'">
+                                                    <a class="dropdown-item" *ngIf="item.has_active_restore === 0"
+                                                        (click)="onRestorePayment(item, restorePaymentTemplate)">Восстановить</a>
+                                                    <a class="dropdown-item" *ngIf="item.has_restore_history === 1"
+                                                        (click)="onRestoredDealsClick(item, restoredDealsHistory)">
+                                                        {{'Auction.Provider.Cabinet.RecoveryProposal'|translate}}
+                                                        <i class="fa fa-dot-circle fa-xs text-danger"
+                                                            *ngIf="item.has_active_restore === 1"></i>
+                                                    </a>
+                                                </ng-container>
+                                                <a class="dropdown-item" *ngIf="((statusName === 'new')
+                                                || (statusName === 'paid')
+                                                || (statusName === 'delivery-expired')
+                                                || (statusName === 'payment-returned')
+                                                || (statusName === 'payment-expired'))
+                                                && item.has_active_terminate == 0"
+                                                    (click)="onDestroyAddClick(item, destroyAdd)">
+                                                    {{'Common.Termination'|translate}}
+                                                </a>
+                                                <a class="dropdown-item"
+                                                    (click)="onDestroyListClick(item, listDealDestroy)" *ngIf="((statusName === 'new')
+                                                || (statusName === 'paid')
+                                                || (statusName === 'terminated')
+                                                || (statusName === 'payment-returned')
+                                                || (statusName === 'delivery-expired')
+                                                || (statusName === 'payment-expired'))
+                                                && item.has_terminate_history == 1">
+                                                    {{'Shop.Customer.MyDeals.TerminationProposals'|translate}}
+                                                </a>
+                                                <a *ngIf="statusName === 'terminated'" class="dropdown-item"
+                                                    (click)="onRoadmap(item)">
+                                                    {{'Core.History' | translate}}
+                                                </a>
+                                                <a *ngIf="statusName === 'new' && item.is_pay_btn === 1"
+                                                    [ngClass]="{'disableEvents': getPayLoading}" class="dropdown-item"
+                                                    (click)="getLotPayment(item)">
+                                                    {{'Получить оплату' | translate}}
+                                                    <ng-container *ngIf="getPayLoading">
+                                                        <span class="spinner-border spinner-border-sm text-info"
+                                                            role="status"></span>
+                                                    </ng-container>
+                                                </a>
+                                                <a (click)="downloadContract(item)" class="dropdown-item">
+                                                    {{'Common.DownloadContract'|translate}}
+                                                </a>
+                                                <a *ngIf="(statusName === 'new'|| statusName === 'paid') && item.is_dom === 1"
+                                                    (click)="showParticipantsList(item, listParticipantsTemplate)"
+                                                    class="dropdown-item">
+                                                    {{'Shop.Common.ProductList.ParticipantsList'|translate}}
+                                                </a>
+                                            </div>
+                                        </div> -->
+                    <div class="spinner-border spinner-border-sm text-info" role="status" *ngIf="item.state === 5">
+                      <span class="sr-only">{{ 'Common.Loading' | translate }}</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Not Found -->
+          <div *ngIf="(!deals || deals.length == 0) && !loadingDeals" class="d-flex justify-content-center">
+            {{ 'Common.DataNotFound' | translate }}
+          </div>
+          <!-- pagination -->
+          <div class="d-flex justify-content-between" *ngIf="deals && deals.length > 0">
+            <pagination
+              [boundaryLinks]="true"
+              [totalItems]="maxCount"
+              [maxSize]="size"
+              [itemsPerPage]="pageItemCount"
+              (pageChanged)="onPageChange($event)"
+              [(ngModel)]="page"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;"
+            >
+            </pagination>
+
+            <div class="d-flex align-items-center gap-2">
+              <div class="listing__header__pagination__label">
+                {{ maxCount > 0 ? (page - 1) * pageItemCount + 1 : 0 }} -
+                {{ maxCount > page * pageItemCount ? page * pageItemCount : maxCount }} of {{ maxCount }}
+              </div>
+              <div class="form-group mb-0">
+                <ng-select
+                  [items]="limitItems"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="value"
+                  [(ngModel)]="pageItemCount"
+                  (change)="onLimitsChange($event)"
+                >
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<ng-template #showTextModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" *ngIf="selectedDeal">Причина</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-12">
+        {{ tradeNote }}
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" *ngIf="kaznaDate">
+    Дата обновления: {{ kaznaDate | dateformat: 'dd.MM.yyyy HH:mm' }}
+    <button type="button" class="btn btn-primary ml-3" (click)="sendKazna(selectedDeal)" [disabled]="sendingKazna">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="sendingKazna"> </span>
+      {{ 'Common.Send' | translate }}
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #chatProvCustomer>
+  <div class="backdrop" (click)="onHideChat()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">{{ 'Чат по сделке: ' | translate }} {{ selectedDeal.id }}</h5>
+      <button type="button" class="close" (click)="onHideChat()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- <app-customer-provider-chat [receiverId]="selectedDeal.provider_id" [lotId]="selectedDeal.id"
+                [system_type]="2">
+            </app-customer-provider-chat> -->
+    </div>
+  </div>
+</ng-template>
+

@@ -14,13 +14,21 @@ import {BsDatepickerModule} from 'ngx-bootstrap/datepicker'
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { MyDealsComponent } from './my-deals/my-deals.component';
+import { OfferListComponent } from './offer-list/offer-list.component';
+import { MyLotsComponent } from './my-lots/my-lots.component';
+import { RivalLotsComponent } from './rival-lots/rival-lots.component';
 
 
 @NgModule({
   declarations: [
     ProviderComponent,
     ProviderInfoComponent,
-    AddEditOfferComponent
+    AddEditOfferComponent,
+    MyDealsComponent,
+    OfferListComponent,
+    MyLotsComponent,
+    RivalLotsComponent
   ],
   imports: [
     CommonModule,

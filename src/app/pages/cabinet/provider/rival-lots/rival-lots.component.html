@@ -1,0 +1,208 @@
+<app-breadcrumb [pageName]="[{ name: 'Cabinet.ReceivedOffers' }]"></app-breadcrumb>
+
+<div class="right_sidebar__body py-4 px-5">
+  <div class="d-flex gap-4">
+    <div class="col-lg-12">
+      <loading *ngIf="loadingOffers"></loading>
+      <section>
+        <div class="section-header d-flex align-items-center justify-content-between flex-wrap-reverse gap-4">
+          <form>
+            <select class="form-select" *ngIf="false">
+              <option selected>Filialni tanlang</option>
+              <option value="1">Toshkent</option>
+              <option value="2">Buxoro</option>
+              <option value="3">Samarqand</option>
+            </select>
+          </form>
+          <div class="d-flex gap-2 align-items-center">
+            <!-- search input group -->
+            <form *ngIf="false" class="d-flex align-items-center">
+              <input
+                type="text"
+                class="form-control"
+                name="keyword"
+                [placeholder]="'Shop.Customer.MyLots.LotNumber' | translate"
+                [(ngModel)]="filter.keyword"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+              />
+              <button
+                class="btn btn-primary d-flex align-items-center gap-1"
+                id="basic-addon1"
+                (click)="loadRivalLots()"
+              >
+                <i class="icon-search"></i>
+                <span>
+                  {{ 'Common.Search' | translate }}
+                </span>
+              </button>
+            </form>
+            <!-- offcanvas -->
+            <button
+              type="button"
+              class="btn btn-light border border-2 bg-transparent d-flex align-items-center justify-content-center gap-2"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasProductFilter"
+              aria-controls="offcanvasProductFilter"
+            >
+              <i class="icon-filter"></i>
+              <span>{{ 'Common.Filter' | translate }}</span>
+            </button>
+            <i class="icon-refresh btn btn-light border border-2 bg-transparent p-2"></i>
+            <div
+              class="offcanvas offcanvas-end"
+              tabindex="-1"
+              id="offcanvasProductFilter"
+              aria-labelledby="offcanvasProductFilterLabel"
+            >
+              <app-cabinet-filter
+                [items]="filterSections"
+                (resetFilter)="reset()"
+                (searchByFilter)="loadRivalLots()"
+                [filterModel]="filter"
+              ></app-cabinet-filter>
+            </div>
+          </div>
+        </div>
+        <div class="section-body my-4">
+          <!-- table-wrapper -->
+          <div class="table-wrapper mb-4">
+            <table class="table table-hover border">
+              <thead class="table-header-sticky">
+                <tr>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.LotNumber' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.ProductNumber' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.ProductName' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.StartDate' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.EndDate' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.ProductList.DateInvitation' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.Amount' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.StartPrice' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.PriceOffered' | translate }}</th>
+                  <th>{{ 'Common.Actions' | translate }}</th>
+                  <!-- <th class="action-sticky">{{ 'Действия' | translate }}</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of rivalLots">
+                  <td class="text-nowrap">
+                    <!-- <img src="assets/images/flags/uz.svg" style="width: 35px;"> -->
+                    <span *ngIf="item.is_local_manufacturer == 1">
+                      <img src="assets/images/flags/uz.svg" style="width: 35px" /> <br />
+                    </span>
+
+                    <span class="display_no" (click)="onDetails(item.lot_id)">{{ item.lot_display_no }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="cursor-pointer text-muted" (click)="onOfferDetails(item.offer_id)">{{
+                      item.offer_display_no
+                    }}</span>
+                  </td>
+                  <td class="text-nowrap">{{ item.product_name }}</td>
+                  <td class="text-nowrap">
+                    <span class="display_no">
+                      {{ item.start_date ? (item.start_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="end_date">
+                      {{ item.end_date ? (item.end_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="invite_date">
+                      {{ item.invite_date ? (item.invite_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    {{ item.amount }} <span class="text-success">{{ getUnitName(item.js_properties) }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    {{ item.price | numberFormat }} <span class="text-info">{{ 'Cabinet.sum' | translate }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-success"
+                      *ngIf="!item.bid_date_ini && !item.bid_price && item.bid_type_id != providerType.Offerent"
+                      (click)="onDetails(item.lot_id)"
+                    >
+                      {{ 'Shop.Provider.ActiveLots.Apply' | translate }}
+                    </button>
+                    <span *ngIf="item.bid_date_ini && item.bid_price && item.bid_type_id == providerType.Offerent">
+                      {{ item.bid_price | numberFormat }} <span class="text-info">{{ 'Cabinet.sum' | translate }}</span
+                      ><br />
+                      <button type="button" class="btn btn-sm btn-primary" (click)="onDetails(item.lot_id)">
+                        {{ 'Shop.Provider.ActiveLots.UpdatePrice' | translate }}
+                      </button>
+                    </span>
+                    <span *ngIf="item.bid_date_ini && item.bid_price && item.bid_type_id != providerType.Offerent">
+                      {{ item.bid_price | numberFormat }} <span class="text-info">{{ 'Cabinet.sum' | translate }}</span>
+                    </span>
+                  </td>
+                  <td>
+                    <!-- <td class="action-sticky"> -->
+                    <div class="dropdown dropleft dropdown-action-menu dropdown-left-style">
+                      <button class="btn" type="button">
+                        <span class="icon-menu"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right cursor-pointer" aria-labelledby="">
+                        <a class="dropdown-item" (click)="onDetails(item.lot_id)">
+                          {{ 'Common.Details' | translate }}</a
+                        >
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Not found -->
+          <div *ngIf="(!rivalLots || rivalLots.length == 0) && !loadingLots" class="d-flex justify-content-center">
+            {{ 'Common.DataNotFound' | translate }}
+          </div>
+          <!-- Loading... -->
+          <div class="d-flex justify-content-center" *ngIf="loadingLots">
+            <div class="spinner-border text-secondary" role="status">
+              <span class="sr-only" translate>{{ 'Common.Loading' | translate }}</span>
+            </div>
+          </div>
+          <!-- pagination -->
+          <div class="d-flex justify-content-between" *ngIf="rivalLots && rivalLots.length > 0">
+            <pagination
+              [boundaryLinks]="true"
+              [totalItems]="maxCount"
+              [maxSize]="size"
+              [itemsPerPage]="pageItemCount"
+              (pageChanged)="onPageChange($event)"
+              [(ngModel)]="page"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;"
+            >
+            </pagination>
+
+            <div class="d-flex align-items-center gap-2">
+              <div class="listing__header__pagination__label">
+                {{ maxCount > 0 ? (page - 1) * pageItemCount + 1 : 0 }} -
+                {{ maxCount > page * pageItemCount ? page * pageItemCount : maxCount }} of {{ maxCount }}
+              </div>
+              <div class="form-group mb-0">
+                <ng-select
+                  [items]="limitItems"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="value"
+                  [(ngModel)]="pageItemCount"
+                  (change)="onLimitsChange($event)"
+                >
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

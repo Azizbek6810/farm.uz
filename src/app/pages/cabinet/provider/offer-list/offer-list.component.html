@@ -1,0 +1,657 @@
+<app-breadcrumb [pageName]="[{ name: ('Cabinet.MyProducts' | translate) + ' (' + statusName + ')' }]"></app-breadcrumb>
+
+<div class="right_sidebar__body py-4 px-5">
+  <div class="d-flex gap-4">
+    <div class="col-lg-12">
+      <loading *ngIf="loadingOffers"></loading>
+      <section>
+        <div class="section-header d-flex align-items-center justify-content-between flex-wrap-reverse gap-4">
+          <form>
+            <select *ngIf="false" class="form-select">
+              <option selected>Filialni tanlang</option>
+              <option value="1">Toshkent</option>
+              <option value="2">Buxoro</option>
+              <option value="3">Samarqand</option>
+            </select>
+          </form>
+          <div class="d-flex gap-2 align-items-center">
+            <!-- search input group -->
+            <form class="d-flex align-items-center">
+              <input
+                type="text"
+                class="form-control"
+                name="keyword"
+                [placeholder]="'Common.NumberProduct' | translate"
+                [(ngModel)]="filter.keyword"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+              />
+              <button class="btn btn-primary d-flex align-items-center gap-1" id="basic-addon1" (click)="onSearch()">
+                <i class="icon-search"></i>
+                <span>
+                  {{ 'Common.Search' | translate }}
+                </span>
+              </button>
+            </form>
+            <!-- offcanvas -->
+            <!-- ishlamaydigan filter button -->
+            <button
+              type="button"
+              class="btn btn-light border border-2 bg-transparent d-flex align-items-center justify-content-center gap-2"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasProductFilter"
+              aria-controls="offcanvasProductFilter"
+            >
+              <i class="icon-filter"></i>
+              <span>{{ 'Common.Filter' | translate }}</span>
+            </button>
+            <i class="icon-refresh btn btn-light border border-2 bg-transparent p-2"></i>
+            <div
+              class="offcanvas offcanvas-end"
+              tabindex="-1"
+              id="offcanvasProductFilter"
+              aria-labelledby="offcanvasProductFilterLabel"
+            >
+              <app-cabinet-filter
+                [items]="filterSections"
+                (resetFilter)="reset()"
+                (searchByFilter)="filterOffers()"
+                [filterModel]="filter"
+              ></app-cabinet-filter>
+            </div>
+          </div>
+        </div>
+        <div class="section-body my-4">
+          <div class="table-wrapper mb-4" *ngIf="offerStatusId == offerStatuses.New">
+            <table class="table table-hover border">
+              <thead class="table-header-sticky">
+                <tr>
+                  <th scope="col">{{ 'Common.NumberProduct' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.ProductName' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Amount' | translate }}</th>
+                  <th scope="col">{{ 'Common.ProductProperties' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Status' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.CratedDate' | translate }}</th>
+                  <th scope="col">{{ 'Cabinet.OnModeration' | translate }}</th>
+                  <th>{{ 'Common.Actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of newOffers">
+                  <td class="text-nowrap">
+                    <span *ngIf="item.display_on_national == 1">
+                      <img src="assets/images/flags/uz.svg" alt="language" />
+                    </span>
+                    <br />
+                    <span class="display_no" (click)="onDetails(item.id, item)">
+                      {{ item.display_no }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">{{ item.product_name }}</td>
+                  <td class="text-nowrap">
+                    <span class="text-muted"> {{ 'Shop.Provider.MyOffers.Was' | translate }}: </span>
+                    <span class="text-success">{{ item.base_amount }}</span> <br />
+                    <span class="text-muted"> {{ 'Shop.Provider.MyOffers.Left' | translate }}:</span>
+                    <span class="text-success">{{ item.amount }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngFor="let property of item.js_properties">
+                      <span class="text-muted">{{ property.property_name }}:</span>
+                      <span>{{ property.user_value }}</span
+                      ><br />
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="text-nowrap fw-normal">
+                      <span>{{ item.price | numberFormat: '1.2-2' }} </span>
+                      <span class="text-secondary">{{ 'Cabinet.sum' | translate }}</span>
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="moderation">{{ item.status_name }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="display_no">
+                      {{ item.created_date ? (item.created_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-danger text-nowrap">{{ item.passed_seconds_date }}</td>
+                  <td class="text-nowrap">
+                    <div class="dropdown dropleft dropdown-action-menu dropdown-left-style">
+                      <button class="btn" type="button">
+                        <span class="icon-menu"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                        <a class="dropdown-item" (click)="onDetails(item.id, item)">
+                          {{ 'Common.Details' | translate }}
+                        </a>
+                        <a class="dropdown-item" (click)="onEdit(item.id)">
+                          {{ 'Common.Edit' | translate }}
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrapper mb-4" *ngIf="offerStatusId == offerStatuses.DeletedByProvider">
+            <table class="table table-hover border">
+              <thead class="table-header-sticky">
+                <tr>
+                  <th scope="col">№</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.ProductName' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Status' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Amount' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.CratedDate' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Customer.MyLots.EndDate' | translate }}</th>
+                  <th class="action-table-th">{{ 'Common.Actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of deletedByProviderOffers">
+                  <td class="text-nowrap">
+                    <span *ngIf="item.display_on_national == 1">
+                      <img src="assets/images/flags/uz.svg" style="width: 35px" alt="" /> <br />
+                    </span>
+                    <span class="display_no" (click)="onDetails(item.id, item)">
+                      {{ item.display_no }}
+                    </span>
+                  </td>
+                  <td>{{ item.product_name }}</td>
+                  <td class="text-nowrap">
+                    <span class="deleted-by-provider">{{ item.status_name }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="text-muted">{{ 'Shop.Provider.MyOffers.Was' | translate }}:</span>
+                    <span class="text-success"> {{ item.base_amount }}</span> <br />
+                    <span class="text-muted">{{ 'Shop.Provider.MyOffers.Left' | translate }}:</span>
+                    <span class="text-success"> {{ item.amount }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="text-nowrap">
+                      <span>{{ item.price | numberFormat: '1.2-2' }} </span>
+                      <span class="text-secondary">{{ 'Cabinet.sum' | translate }}</span>
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="display_no">
+                      {{ item.start_date ? (item.start_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="end_date">
+                      {{ item.end_date ? (item.end_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <div class="dropdown dropleft dropdown-action-menu dropdown-left-style">
+                      <button class="btn" type="button">
+                        <span class="icon-menu"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                        <a class="dropdown-item" (click)="onDetails(item.id, item)">
+                          {{ 'Common.Details' | translate }}
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="table-wrapper mb-4"
+            *ngIf="offerStatusId === offerStatuses.Expired || offerStatusId === offerStatuses.InsufficientFunds"
+          >
+            <table class="table table-hover border">
+              <thead class="table-header-sticky">
+                <tr>
+                  <th scope="col">№</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.ProductName' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Amount' | translate }}</th>
+                  <th scope="col">{{ 'Common.ProductProperties' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Status' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.StartDate' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.EndDate' | translate }}</th>
+                  <th class="action-table-th">{{ 'Common.Actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of expiredOffers">
+                  <th scope="col">
+                    <input
+                      [checked]="item.is_checked"
+                      type="checkbox"
+                      class="my-checkbox"
+                      (change)="checkedItem($event, item.id)"
+                    />
+                  </th>
+                  <td class="text-nowrap">
+                    <span *ngIf="item.display_on_national == 1">
+                      <img src="assets/images/flags/uz.svg" style="width: 35px" alt="" /> <br />
+                    </span>
+                    <span class="display_no" (click)="onDetails(item.id, item)">
+                      {{ item.display_no }}
+                    </span>
+                  </td>
+                  <td>{{ item.product_name }}</td>
+                  <td class="text-nowrap">
+                    <span class="text-muted">{{ 'Shop.Provider.MyOffers.Was' | translate }}:</span>
+                    <span class="text-success"> {{ item.base_amount }}</span> <br />
+                    <span class="text-muted">{{ 'Shop.Provider.MyOffers.Left' | translate }}:</span>
+                    <span class="text-success"> {{ item.amount }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngFor="let property of item.js_properties">
+                      <span class="text-muted">{{ property.property_name }}:</span>
+                      <span>{{ property.user_value }}</span
+                      ><br />
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="text-nowrap">
+                      <span>{{ item.price | numberFormat: '1.2-2' }} </span>
+                      <span class="text-secondary">{{ 'Cabinet.sum' | translate }}</span>
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="expired">{{ item.status_name }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="display_no">
+                      {{ item.start_date ? (item.start_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="end_date">
+                      {{ item.end_date ? (item.end_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <div class="dropdown dropleft dropdown-action-menu dropdown-left-style">
+                      <button class="btn" type="button">
+                        <span class="icon-menu"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                        <a class="dropdown-item" (click)="onDetails(item.id, item)">
+                          {{ 'Common.Details' | translate }}
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrapper mb-4" *ngIf="offerStatusId == offerStatuses.Denied">
+            <table class="table table-hover border">
+              <thead class="table-header-sticky">
+                <tr>
+                  <th scope="col">№</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.ProductName' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Status' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Amount' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.CratedDate' | translate }}</th>
+                  <th scope="col">{{ 'Common.ModerationDate' | translate }}</th>
+                  <th scope="col">Имя <br /><span>Модератора</span></th>
+                  <th scope="col">Регион <br /><span>Модератора</span></th>
+                  <th scope="col">Отдел <br /><span>Модератора</span></th>
+                  <th scope="col">Email <br /><span>Модератора</span></th>
+                  <th scope="col">Телефон <br /><span>Модератора</span></th>
+                  <th class="action-table-th">{{ 'Common.Actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of deniedOffers">
+                  <td class="text-nowrap">
+                    <span *ngIf="item.display_on_national == 1">
+                      <img src="assets/images/flags/uz.svg" style="width: 35px" alt="" /> <br />
+                    </span>
+                    <span class="display_no" (click)="onDetails(item.id, item)">
+                      {{ item.display_no }}
+                    </span>
+                  </td>
+                  <td>{{ item.product_name }}</td>
+                  <td class="text-nowrap d-flex flex-column gap-3">
+                    <span class="denied">{{ item.status_name }}</span>
+                    <button class="btn btn-outline-secondary" (click)="showKaznaNote(item, kaznaNoteModal)">
+                      {{ 'Common.RejectionReason' | translate }}
+                    </button>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="text-success"> {{ item.amount }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span>{{ item.price | numberFormat: '1.2-2' }} </span>
+                    <span class="text-secondary">{{ 'Cabinet.sum' | translate }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="display_no">
+                      {{ item.created_date ? (item.created_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="border border-success px-2 py-1 rounded-4 text-success">
+                      {{ item.act_date | dateformat: 'dd.MM.yyyy' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">{{ item.employee_name }}</td>
+                  <td class="text-nowrap">{{ item.employee_region_name }}</td>
+                  <td class="text-nowrap">{{ item.employee_department_name }}</td>
+                  <td class="text-nowrap">{{ item.employee_email }}</td>
+                  <td class="text-nowrap">{{ item.employee_phone }}</td>
+                  <td class="text-nowrap">
+                    <div class="dropdown dropleft dropdown-action-menu dropdown-left-style">
+                      <button class="btn" type="button">
+                        <span class="icon-menu"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                        <a class="dropdown-item" (click)="onDetails(item.id, item)">
+                          {{ 'Common.Details' | translate }}
+                        </a>
+                        <a class="dropdown-item" (click)="onEdit(item.id)">
+                          {{ 'Common.Edit' | translate }}
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrapper mb-4" *ngIf="offerStatusId == offerStatuses.OutOfStock">
+            <table class="table table-hover border">
+              <thead class="table-header-sticky">
+                <tr>
+                  <th scope="col">№</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.ProductName' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Amount' | translate }}</th>
+                  <th scope="col">{{ 'Common.ProductProperties' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Status' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.StartDate' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.EndDate' | translate }}</th>
+                  <th class="action-table-th">{{ 'Common.Actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of outOfStockOffers">
+                  <td class="text-nowrap">
+                    <span *ngIf="item.display_on_national == 1">
+                      <img src="assets/images/flags/uz.svg" style="width: 35px" alt="" /> <br />
+                    </span>
+                    <span class="display_no" (click)="onDetails(item.id, item)">
+                      {{ item.display_no }}
+                    </span>
+                  </td>
+                  <td>{{ item.product_name }}</td>
+                  <td class="text-nowrap">
+                    <span class="text-muted">{{ 'Shop.Provider.MyOffers.Was' | translate }}:</span>
+                    <span class="text-success"> {{ item.base_amount }}</span> <br />
+                    <span class="text-muted">{{ 'Shop.Provider.MyOffers.Left' | translate }}:</span>
+                    <span class="text-success"> {{ item.amount }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngFor="let property of item.js_properties">
+                      <span class="text-muted">{{ property.property_name }}:</span>
+                      <span>{{ property.user_value }}</span
+                      ><br />
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="text-nowrap">
+                      <span>{{ item.price | numberFormat: '1.2-2' }} </span>
+                      <span class="text-secondary">{{ 'Cabinet.sum' | translate }}</span>
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="out-of-stock">{{ item.status_name }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="display_no">
+                      {{ item.start_date ? (item.start_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="end_date">
+                      {{ item.end_date ? (item.end_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <div class="dropdown dropleft dropdown-action-menu dropdown-left-style">
+                      <button class="btn" type="button">
+                        <span class="icon-menu"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                        <a class="dropdown-item" (click)="onDetails(item.id, item)">
+                          {{ 'Common.Details' | translate }}
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="table-wrapper mb-4"
+            *ngIf="offerStatusId == offerStatuses.Closed || offerStatusId == offerStatuses.Published"
+          >
+            <table class="table table-hover border">
+              <thead class="table-header-sticky">
+                <tr>
+                  <th scope="col">№</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.ProductName' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Amount' | translate }}</th>
+                  <th scope="col">{{ 'Common.ProductProperties' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.Status' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.StartDate' | translate }}</th>
+                  <th scope="col">{{ 'Shop.Provider.MyOffers.EndDate' | translate }}</th>
+                  <th>{{ 'Common.Actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of publishedOffers">
+                  <td class="text-nowrap">
+                    <span *ngIf="item.display_on_national == 1">
+                      <img src="assets/images/flags/uz.svg" style="width: 35px" alt="" /> <br />
+                    </span>
+                    <span class="display_no" (click)="onDetails(item.id, item)">
+                      {{ item.display_no }}
+                    </span>
+                    <!-- <i class="ml-1 fa fa-clone text-primary" style="cursor:pointer;" aria-hidden="true" (click)="onCopyToClipboard(item.display_no)"></i> -->
+                  </td>
+                  <td class="text-nowrap">{{ item.product_name }}</td>
+                  <td class="text-nowrap">
+                    <span class="text-muted">{{ 'Shop.Provider.MyOffers.Was' | translate }}:</span>
+                    <span class="text-success"> {{ item.base_amount }}</span> <br />
+                    <span class="text-muted">{{ 'Shop.Provider.MyOffers.Left' | translate }}:</span>
+                    <span class="text-success"> {{ item.amount }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngFor="let property of item.js_properties">
+                      <span class="text-muted">{{ property.property_name }}:</span>
+                      <span>{{ property.user_value }}</span
+                      ><br />
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span>{{ item.price | numberFormat: '1.2-2' }} </span>
+                    <span class="text-secondary">{{ 'Cabinet.sum' | translate }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="published">{{ item.status_name }}</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="display_no">
+                      {{ item.start_date ? (item.start_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span class="end_date">
+                      {{ item.end_date ? (item.end_date | dateformat: 'dd.MM.yyyy HH:mm') : '-- -- --' }}
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <div class="dropdown dropleft dropdown-action-menu dropdown-left-style">
+                      <button class="btn" type="button">
+                        <span class="icon-menu"></span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                        <a class="dropdown-item" (click)="onDetails(item.id, item)">
+                          {{ 'Common.Details' | translate }}
+                        </a>
+                        <ng-container *ngIf="false">
+                          <a
+                            *ngIf="offerStatusId === offerStatuses.Published"
+                            class="dropdown-item"
+                            (click)="onEdit(item.id)"
+                          >
+                            {{ 'Common.Edit' | translate }}
+                          </a>
+                          <a class="dropdown-item" (click)="edit_2(item.id, item.display_on_shop)">
+                            {{ 'Перевыставить' | translate }}
+                          </a>
+                          <ng-container *ngIf="item.display_on_shop === 1">
+                            <a class="dropdown-item" (click)="cloneOffer(item.id)">
+                              {{ 'Клонировать' | translate }}
+                            </a>
+                          </ng-container>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            *ngIf="
+              (!newOffers || newOffers.length == 0) &&
+              (!publishedOffers || publishedOffers.length == 0) &&
+              (!outOfStockOffers || outOfStockOffers.length == 0) &&
+              (!deniedOffers || deniedOffers.length == 0) &&
+              (!expiredOffers || expiredOffers.length == 0) &&
+              (!deletedByProviderOffers || deletedByProviderOffers.length == 0) &&
+              !loadingOffers
+            "
+            class="d-flex justify-content-center"
+          >
+            {{ 'Common.DataNotFound' | translate }}
+          </div>
+          <!-- newOffers pagination -->
+          <div
+            class="d-flex justify-content-between"
+            *ngIf="offerStatusId == offerStatuses.New && newOffers && newOffers.length > 0"
+          >
+            <pagination
+              [boundaryLinks]="true"
+              [totalItems]="maxCount"
+              [maxSize]="size"
+              [itemsPerPage]="pageItemCount"
+              (pageChanged)="onPageChange($event)"
+              [(ngModel)]="page"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;"
+            >
+            </pagination>
+            <div class="d-flex align-items-center gap-2">
+              <div class="listing__header__pagination__label">
+                {{ maxCount > 0 ? (page - 1) * pageItemCount + 1 : 0 }} -
+                {{ maxCount > page * pageItemCount ? page * pageItemCount : maxCount }} of {{ maxCount }}
+              </div>
+              <div class="form-group mb-0">
+                <ng-select
+                  [items]="limitItems"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="value"
+                  [(ngModel)]="pageItemCount"
+                  (change)="onLimitsChange($event)"
+                >
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <!-- PublishedOffer pagination -->
+
+          <div
+            class="d-flex justify-content-between"
+            *ngIf="
+              offerStatusId == offerStatuses.Closed ||
+              (offerStatusId == offerStatuses.Published && publishedOffers && publishedOffers.length > 0)
+            "
+          >
+            <pagination
+              [boundaryLinks]="true"
+              [totalItems]="maxCount"
+              [maxSize]="size"
+              [itemsPerPage]="pageItemCount"
+              (pageChanged)="onPageChange($event)"
+              [(ngModel)]="page"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;"
+            >
+            </pagination>
+
+            <div class="d-flex align-items-center gap-2">
+              <div class="listing__header__pagination__label">
+                {{ maxCount > 0 ? (page - 1) * pageItemCount + 1 : 0 }} -
+                {{ maxCount > page * pageItemCount ? page * pageItemCount : maxCount }} of {{ maxCount }}
+              </div>
+              <div class="form-group mb-0">
+                <ng-select
+                  [items]="limitItems"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="value"
+                  [(ngModel)]="pageItemCount"
+                  (change)="onLimitsChange($event)"
+                >
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<ng-template #kaznaNoteModal>
+  <div class="modal-header d-flex justify-content-between align-items-center">
+    <h4 class="modal-title">{{ 'Common.RejectionReason' | translate }}</h4>
+    <i
+      class="icon-x-close cursor-pointer text-danger border border-danger p-2 rounded-circle"
+      aria-hidden="true"
+      (click)="modalClose()"
+    ></i>
+  </div>
+  <div class="modal-body" *ngIf="kaznaSelectedLots">
+    <ng-container *ngIf="kaznaSelectedLots.js_notes && kaznaSelectedLots.js_notes.length > 0">
+      <p *ngFor="let note of kaznaSelectedLots.js_notes; index as idx">{{ idx + 1 }}. {{ note.name }}</p>
+    </ng-container>
+    <ng-container *ngIf="kaznaSelectedLots.note && kaznaSelectedLots.note.length > 0">
+      <p class="fst-italic">{{ kaznaSelectedLots.note }}</p>
+    </ng-container>
+    <ng-container *ngIf="kaznaSelectedLots.extra_note && kaznaSelectedLots.extra_note.length > 0">
+      <p class="fst-italic">{{ kaznaSelectedLots.extra_note }}</p>
+    </ng-container>
+  </div>
+</ng-template>

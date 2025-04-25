@@ -1,0 +1,68 @@
+.result_item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    width: max-content;
+    cursor: pointer;
+    transition: box-shadow .3s linear;
+}
+
+.result_item:hover {
+    box-shadow:
+        0px 1px 2px 0px rgba(10, 13, 18, 0.05),
+        inset 0px -2px 0px 0px rgba(10, 13, 18, 0.05),
+        inset 0px 0px 0px 1px rgba(10, 13, 18, 0.18);
+}
+
+.result_item span {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    opacity: 0.6;
+}
+
+.result_item .icon-x-close {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.result_item .icon-x-close:hover {
+    color: var(--bs-red);
+}
+
+.icon-dots-vertical {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+nav {
+    margin: 0 auto;
+}
+
+.nav-tabs {
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+    border: none;
+}
+
+.nav-tabs .nav-link {
+    background-color: rgb(250, 250, 250);
+    color: #717680;
+    border-radius: 6px;
+    border: 1px solid rgb(233, 234, 235);
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:hover {
+    background-color: var(--white);
+    box-shadow:
+        0px 1px 2px -1px rgba(10, 13, 18, 0.1),
+        0px 1px 3px 0px rgba(10, 13, 18, 0.1);
+    color: black;
+}
