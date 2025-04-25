@@ -19,15 +19,33 @@ import { ProductListComponent } from './pages/public/product-list/product-list.c
 import { UsefulToKnowComponent } from './pages/public/useful-to-know/useful-to-know.component';
 import { ProductDetailsComponent } from './pages/public/product-list/product-details/product-details.component';
 import { LotDetailsComponent } from './pages/public/product-list/lot-details/lot-details.component';
-import {TooltipModule} from "ngx-bootstrap/tooltip";
-import {ProgressbarModule} from "ngx-bootstrap/progressbar";
-import {NgSelectModule} from "@ng-select/ng-select";
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule } from '@angular/forms';
+import { RedirectComponent } from './pages/sign/redirect/redirect.component';
+import { LoginRoleComponent } from './pages/sign/login-role/login-role.component';
+import { SubUserRoleComponent } from './pages/sign/sub-user-role/sub-user-role.component';
+import { CabinetComponent } from './pages/cabinet/cabinet.component';
 
 @NgModule({
-  declarations: [AppComponent, HomePageComponent, HeaderComponent, FooterComponent, BreadcrumbComponent, DealsComponent, ProductListComponent, UsefulToKnowComponent, ProductDetailsComponent, LotDetailsComponent],
+  declarations: [
+    AppComponent,
+    HomePageComponent,
+    HeaderComponent,
+    FooterComponent,
+    BreadcrumbComponent,
+    DealsComponent,
+    ProductListComponent,
+    UsefulToKnowComponent,
+    ProductDetailsComponent,
+    LotDetailsComponent,
+    RedirectComponent,
+    LoginRoleComponent,
+    SubUserRoleComponent
+  ],
   imports: [
     CommonModule,
     BrowserModule,

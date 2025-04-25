@@ -1,0 +1,74 @@
+<div class="center-choose-new-role">
+  <div class="text-center">
+    <div *ngIf="getRolesStatus !== 1">
+      <div>
+        <h3 class="text-uppercase text-info d-inline-block mb-4" style="max-width: 500px">
+          {{ 'LoginRole' }}
+        </h3>
+      </div>
+      <div>
+        <div class="row m-2 justify-content-center">
+          <ng-container *ngFor="let item of userRoles; index as i">
+            <div class="col-3 mt-3 mr-0">
+              <div class="card d-inline-block w-100" style="margin: 0 8px; overflow: visible">
+                <div class="card-body">
+                  <h5 class="card-title font-weight-bold" style="font-size: 16px">{{ item.owner_name }}</h5>
+                  <!--            <p class="card-text">{{item.fullname}}</p>-->
+                  <ng-select
+                    id="id"
+                    [items]="item.branches"
+                    [clearable]="false"
+                    bindLabel="fullname"
+                    bindValue="sub_user_id"
+                    [(ngModel)]="item.selected_branch"
+                    [searchable]="false"
+                    (change)="changeBranch($event)"
+                    placeholder="Choose"
+                  >
+                    <ng-template ng-label-tmp let-item_step="item">
+                      <span> {{ item_step.fullname }} - {{ item_step.role_name }} </span>
+                    </ng-template>
+                    <ng-template ng-option-tmp let-item_step="item" let-index="index" let-search="searchTerm">
+                      <div>
+                        <div class="card">
+                          <div class="card-header font-weight-bold break-spaces" style="padding: 0.3rem 1rem">
+                            {{ item_step.fullname }}
+                          </div>
+                          <div class="card-body" style="padding: 0.5rem 1rem">
+                            <h6 style="margin-bottom: 5px" class="text-info break-spaces">
+                              {{ item_step.role_name }}
+                            </h6>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </ng-select>
+                  <button
+                    type="button"
+                    (click)="selectUserRole(i, item)"
+                    [disabled]="getRolesStatus === 5"
+                    style="overflow: hidden"
+                    class="btn w-100 btn-primary mt-3"
+                  >
+                    {{ 'Select' }}
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                      *ngIf="selectedIdx === i && getRolesStatus === 5"
+                    ></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="getRolesStatus === 1">
+      <div class="spinner-border text-secondary m-auto" role="status">
+        <span class="sr-only" translate>Common.Loading</span>
+      </div>
+    </div>
+  </div>
+</div>

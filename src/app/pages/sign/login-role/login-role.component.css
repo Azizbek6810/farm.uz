@@ -1,0 +1,76 @@
+.center-choose-role {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -200px;
+    width: 400px;
+    height: 200px;
+}
+
+.center-choose-role-h5 {
+    margin-bottom: 40px;
+    text-align: center;
+    color: #585975;
+}
+
+.btn-role {
+    width: 100%;
+    height: 80px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.btn-new-role {
+    width: 100%;
+    height: 40px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.center-choose-role {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -400px;
+    width: 800px;
+    height: 200px;
+}
+
+.center-choose-new-role {
+    position: absolute;
+    top: 201px;
+    left: 0;
+    margin: 0;
+    width: 100%;
+    height: 200px;
+}
+
+.role-avatar {
+    max-height: 140px;
+    margin-top: 20px;
+}
+
+.w150 {
+    height: 150px;
+    width: 150px;
+}
+
+
+.login-role {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.buttons-block {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1em;
+    margin-top: 3em;
+    border: 1px solid lightgrey;
+    margin-left: 34.5%;
+    margin-right: 34.5%;
+    border-radius: 5px;
+    padding: 8px;
+}

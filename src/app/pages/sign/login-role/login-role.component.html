@@ -1,0 +1,65 @@
+<div class="center-choose-new-role" *ngIf="!showOldStyle">
+  <div class="text-center">
+    <div *ngIf="getRolesStatus !== 1">
+      <div class="mb-3">
+        <h3 class="text-uppercase text-info d-inline-block mb-4" style="max-width: 500px">
+          {{ 'Common.SelectRole' | translate }}
+        </h3>
+      </div>
+      <div class="login-role">
+        <ng-container *ngFor="let item of userRoles | filterByName: keyword; index as i">
+          <div>
+            <div class="card d-inline-block" style="width: 18rem; margin: 0 8px; height: 100%">
+              <img src="{{ userRolesAvatars[item.role_id - 1] }}" class="card-img-top role-avatar w150" alt="..." />
+              <div class="card-body" style="height: 115px">
+                <h5 class="card-title">{{ item.role_name | translate }}</h5>
+                <h5 class="card-title" *ngIf="item.name_code">{{ item.name_code }}</h5>
+                <p class="card-text" [tooltip]="item.fullname.length > 25 ? item.fullname : null">
+                  {{ item.short_name }}
+                </p>
+                <!--          <a href="#" class="btn btn-primary">Go somewhere</a>-->
+              </div>
+              <div class="card-footer">
+                <button
+                  type="button"
+                  (click)="selectUserRole(i)"
+                  [disabled]="getRolesStatus === 5"
+                  style="overflow: hidden"
+                  class="btn w-100"
+                  [ngClass]="{ 'btn-success': item.role_id === 1, 'btn-primary': item.role_id === 2 }"
+                >
+                  {{ 'Common.Choose' | translate }}
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                    *ngIf="selectedIdx === i && getRolesStatus === 5"
+                  ></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="buttons-block">
+        <div>
+          <button type="button" class="btn btn-outline-primary" routerLink="/">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            {{ 'Common.HomePage' | translate }}
+          </button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-outline-danger" (click)="logout()">
+            <i class="fa fa-sign-out" aria-hidden="true"></i>
+            {{ 'Common.ExitCabinet' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="getRolesStatus === 1">
+      <div class="spinner-border text-secondary m-auto" role="status">
+        <span class="sr-only">{{ 'Common.Loading' | translate }}</span>
+      </div>
+    </div>
+  </div>
+</div>

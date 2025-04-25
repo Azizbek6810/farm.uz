@@ -15,6 +15,7 @@ import { DateTransformPipe } from './pipes/date-transform.pipe';
 import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { CopyToClipboardComponent } from './components/copy-to-clipboard/copy-to-clipboard.component';
 import {TooltipModule} from "ngx-bootstrap/tooltip";
+import { FilterByNamePipe } from './pipes/filter-by-name.pipe';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {TooltipModule} from "ngx-bootstrap/tooltip";
     SkeletonLoaderComponent,
     JsDeliveriesComponent,
     DateTransformPipe,
-    CopyToClipboardComponent
+    CopyToClipboardComponent,
+    FilterByNamePipe
   ],
   imports: [
     CommonModule,
@@ -47,7 +49,8 @@ import {TooltipModule} from "ngx-bootstrap/tooltip";
     SkeletonLoaderComponent,
     DateTransformPipe,
     JsDeliveriesComponent,
-    CopyToClipboardComponent
+    CopyToClipboardComponent,
+    FilterByNamePipe
   ]
 })
 export class SharedModule {}
