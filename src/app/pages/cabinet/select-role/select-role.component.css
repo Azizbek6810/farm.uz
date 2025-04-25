@@ -1,0 +1,10 @@
+.select_role {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 16px;
+    max-width: 490px;
+    margin: 50px auto;
+    text-align: center;
+}

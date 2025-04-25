@@ -1,0 +1,35 @@
+.section-not-found {
+    min-height: calc(100vh - 90.77px - 16px - 354.438px);
+    padding: 10px 0;
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.not_found {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    max-width: 490px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.not_found h3 {
+    color: var(--title-text-color);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
+    letter-spacing: 0%;
+    text-align: center;
+}
+
+.not_found p {
+    color: var(--main-text-color);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0%;
+    text-align: center;
+}

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/core/auth/authentication.service';
 
 @Component({
   selector: 'app-cabinet',
@@ -6,10 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./cabinet.component.css']
 })
 export class CabinetComponent implements OnInit {
+  constructor(
+    private router: Router,
+    public auth: AuthenticationService
+  ) {}
 
-  constructor() { }
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
+  onLogOut(event: any): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
   }
-
 }

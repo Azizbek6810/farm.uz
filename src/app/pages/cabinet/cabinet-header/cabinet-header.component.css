@@ -1,0 +1,33 @@
+.right_sidebar__body .nav-pills .nav-link.active {
+    background-color: transparent;
+    border: 2px solid var(--blurLight-color);
+    color: var(--color-gray-600);
+    background: var(--white);
+}
+
+.sidebar_link__wrapper {
+    padding: 12px;
+    border-radius: 6px;
+    background-color: transparent;
+    width: 100%;
+}
+
+.sidebar_link__wrapper:hover {
+    background-color: #1d2939;
+}
+
+.right_header__lower {
+    background-image: url("/assets/images/bg-cabinet-header.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.profile-icon {
+    font-size: 40px;
+    margin-right: 5px;
+}
+
+img[alt="language"] {
+    width: 20px;
+    border-radius: 5px;
+}

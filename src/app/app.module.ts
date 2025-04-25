@@ -29,6 +29,7 @@ import { RedirectComponent } from './pages/sign/redirect/redirect.component';
 import { LoginRoleComponent } from './pages/sign/login-role/login-role.component';
 import { SubUserRoleComponent } from './pages/sign/sub-user-role/sub-user-role.component';
 import { CabinetComponent } from './pages/cabinet/cabinet.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { CabinetComponent } from './pages/cabinet/cabinet.component';
     LotDetailsComponent,
     RedirectComponent,
     LoginRoleComponent,
-    SubUserRoleComponent
+    SubUserRoleComponent,
+    NotFoundComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,9 @@
+.right_header__lower {
+    background-image: url("/assets/images/bg-cabinet-header.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    color: white;
+}

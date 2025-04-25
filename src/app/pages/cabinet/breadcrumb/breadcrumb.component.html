@@ -1,0 +1,15 @@
+<div class="right_header__lower px-4 py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a class="text-white fs-6"><i class="icon-home-line"></i></a>
+      </li>
+      <li class="breadcrumb-item">
+        <a class="text-white fs-6">{{ 'Common.HomePage' | translate }}</a>
+      </li>
+      <ng-container *ngFor="let item of pageName">
+        <li class="breadcrumb-item active text-white fs-6" aria-current="page">{{ item.name | translate }}</li>
+      </ng-container>
+    </ol>
+  </nav>
+</div>

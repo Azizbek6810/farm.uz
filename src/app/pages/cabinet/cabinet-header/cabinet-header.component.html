@@ -1,0 +1,63 @@
+<header id="header">
+  <!-- Upper Part -->
+  <div class="header_upper py-2 px-3 d-flex justify-content-end align-items-center">
+    <div class="d-flex align-items-center gap-3">
+      <div class="phone_number d-flex align-items-center gap-2">
+        <i class="fa fa-phone bg-dark-blue" aria-hidden="true"></i>
+        <div class="d-flex flex-column">
+          <a href="tel:+998 71 207 00 33" class="fs-5 fw-semibold lh-sm text-black">+998 71 207 00 33</a>
+          <span class="fs-7 text-secondary">{{ 'Common.HowCanIHelp' | translate }}</span>
+        </div>
+      </div>
+      <div class="dropdown">
+        <button
+          class="btn border border-light-subtle dropdown-toggle d-flex align-items-center gap-2"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <img src="./assets/images/{{ currentItem.key }}.svg" alt="language" />
+          {{ currentItem.value }}
+        </button>
+        <ul class="dropdown-menu">
+          <ng-container *ngFor="let item of lang">
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 cursor-pointer" (click)="changeLang(item)">
+                <img src="./assets/images/{{ item.key }}.svg" alt="language" />
+                {{ item.value }}
+              </a>
+            </li>
+          </ng-container>
+        </ul>
+      </div>
+      <div class="dropdown">
+        <button
+          class="btn dropdown-toggle d-flex align-items-center gap-4 border"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <!-- <i class="fa fa-user-circle-o profile-icon" aria-hidden="true"></i> -->
+          <div class="d-flex flex-column align-items-start">
+            <b class="fw-semibold" [tooltip]="userName.length > 18 ? userName : null" placement="bottom">{{
+              userName.length > 18 ? userName.substring(0, 18) + '...' : userName
+            }}</b>
+            <small class="text-muted" style="font-size: 13px">{{ roleName | translate }}</small>
+          </div>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item cursor-pointer text-success" routerLink="/login-role">
+              <i class="icon-user"></i>
+              {{ 'Cabinet.SelectRole' | translate }} </a
+            ><a class="dropdown-item cursor-pointer text-danger" (click)="logout()">
+              <i class="fa fa-sign-out" aria-hidden="true"></i>
+              {{ 'Common.exit' | translate }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- Lower Part -->
+</header>
