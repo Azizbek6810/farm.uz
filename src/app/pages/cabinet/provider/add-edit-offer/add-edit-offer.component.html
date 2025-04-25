@@ -1,0 +1,1093 @@
+<app-breadcrumb [pageName]="[{ name: 'Shop.Provider.OfferAdd.Upload' }]"></app-breadcrumb>
+<loading *ngIf="offerSubmitted"></loading>
+
+<div class="right_sidebar__body py-4 px-5">
+  <form (ngSubmit)="submitForm(offerForm)" #offerForm="ngForm" autocomplete="off">
+    <div class="d-flex" style="overflow: hidden">
+      <div class="col-lg-12 border rounded-4 shadow-sm p-4">
+        <h4 class="mb-2 fw-semibold">{{ 'Shop.Provider.OfferAdd.ProductInfo' | translate }}</h4>
+        <hr />
+        <div class="row">
+          <div class="col-12" *ngIf="false">
+            <div class="form-group mb-2">
+              <label class="mb-2">{{ 'Shop.Provider.OfferAdd.ProductSearch' | translate }}</label>
+              <app-product-search
+                [filterModel]="filterSearchProduct"
+                (resetFilter)="resetSearchProduct()"
+                (searchEvent)="loadSearchProducts()"
+              ></app-product-search>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group mb-2">
+              <label for="category_id" class="mb-2">{{ 'Shop.Common.LotDetails.ProductCategory' | translate }}</label>
+              <ng-select
+                id="category_id"
+                [items]="categories"
+                [clearable]="false"
+                bindLabel="name"
+                bindValue="id"
+                [placeholder]="'Common.Choose' | translate"
+                [(ngModel)]="model.category_id"
+                [disabled]="disableInputsRePublish"
+                [loading]="loadingCategories === 'loading'"
+                #category_id="ngModel"
+                name="category_id"
+                (change)="onCategory($event)"
+                required
+              >
+                <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                  <div style="padding: 2px">
+                    <p style="margin-bottom: 5px; white-space: normal">
+                      {{ item.name }}
+                    </p>
+                  </div>
+                  <div
+                    class="dropdown-divider"
+                    style="margin-bottom: -0.5rem"
+                    *ngIf="index !== categories.length - 1"
+                  ></div>
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group mb-2">
+              <label for="product_code" class="mb-2">{{ 'Shop.Provider.OfferAdd.Product' | translate }}</label>
+              <ng-select
+                id="product_code"
+                [items]="products"
+                [clearable]="false"
+                bindLabel="name"
+                bindValue="product_code"
+                [placeholder]="'Common.Choose' | translate"
+                [disabled]="disableInputsRePublish"
+                [(ngModel)]="model.product_code"
+                [loading]="loadingProducts === 'loading'"
+                (change)="onProductChange($event)"
+                #product_code="ngModel"
+                name="product_code"
+                required
+              >
+                <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                  <div style="padding: 2px">
+                    <p style="margin-bottom: 5px; white-space: normal">
+                      {{ item.name }} <br />
+                      {{ item.product_code }}
+                    </p>
+                  </div>
+                  <div
+                    class="dropdown-divider"
+                    style="margin-bottom: -0.5rem"
+                    *ngIf="index !== products.length - 1"
+                  ></div>
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+          <div class="row p-3" *ngIf="subSelectedProduct">
+            <h4 class="my-2 fw-semibold">{{ 'Common.ProductProperties' | translate }}</h4>
+            <hr />
+            <div class="col-3" *ngFor="let property of subSelectedProduct; index as i">
+              <div class="form-group" [ngClass]="{ required: property.is_required === 1 }">
+                <label class="mb-2">{{ property.name }}</label>
+                <ng-select
+                  [items]="property.items"
+                  [disabled]="disableInputsRePublish"
+                  [clearable]="false"
+                  bindLabel="value_name"
+                  bindValue="value"
+                  [(ngModel)]="property.user_value"
+                  [name]="'user_value' + i"
+                  #propItem="ngModel"
+                  [placeholder]="'Common.Choose' | translate"
+                >
+                </ng-select>
+                <div
+                  *ngIf="
+                    (propItem.touched || propItem.dirty) && property.is_required === 1 && property.user_value == null
+                  "
+                  class="text-danger"
+                >
+                  {{ 'Common.RequiredField' | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-6">
+            <div class="form-group required">
+              <label for="product_mark" class="mb-2">{{ 'Shop.Common.LotDetails.ProductMark' | translate }}</label>
+              <div class="mark-div mb-2">
+                <div
+                  class="cursor-pointer text-center py-1"
+                  style="width: 50%"
+                  (click)="setMarkType(1)"
+                  [ngClass]="{ 'mark-active': mark_type === 1 }"
+                >
+                  {{ 'Common.AddNew' | translate }}
+                </div>
+                <div
+                  class="cursor-pointer text-center py-1"
+                  style="width: 50%"
+                  (click)="setMarkType(2)"
+                  [ngClass]="{ 'mark-active': mark_type === 2 }"
+                >
+                  {{ 'Common.SelectFromList' | translate }}
+                </div>
+              </div>
+              <ng-container *ngIf="mark_type === 1">
+                <input
+                  id="product_mark"
+                  type="text"
+                  class="form-control"
+                  [disabled]="disableInputsRePublish || isService"
+                  [maxLength]="150"
+                  [placeholder]="'Shop.Provider.OfferAdd.EnterName' | translate"
+                  name="product_mark"
+                  #product_mark="ngModel"
+                  [(ngModel)]="model.product_mark"
+                  (input)="onValueChange($event)"
+                  required
+                />
+                <p *ngIf="product_mark.errors && (product_mark.touched || product_mark.dirty)" class="text-danger">
+                  <span *ngIf="product_mark.errors.required">{{ 'Поле обязательно для заполнения' | translate }}</span>
+                </p>
+              </ng-container>
+              <ng-container *ngIf="mark_type === 2">
+                <ng-select
+                  [items]="filterMarkItems"
+                  bindLabel="name"
+                  bindValue="id"
+                  class="custom-drop-down-style"
+                  #product_mark="ngModel"
+                  placeholder="{{ 'Common.Choose' | translate }}"
+                  [(ngModel)]="model.product_mark_id"
+                  name="user_mark"
+                >
+                </ng-select>
+                <p *ngIf="product_mark.errors && (product_mark.touched || product_mark.dirty)" class="text-danger">
+                  <span *ngIf="product_mark.errors.required">{{ 'Common.RequiredField' | translate }}</span>
+                </p>
+              </ng-container>
+            </div>
+          </div>
+          <div class="col-6" *ngIf="false">
+            <div class="form-group required">
+              <label for="product_manafacturer" class="mb-2">{{ 'Shop.Provider.OfferAdd.Producer' | translate }}</label>
+              <input
+                id="product_manafacturer"
+                type="text"
+                class="form-control"
+                [(ngModel)]="model.product_manafacturer"
+                [disabled]="disableInputsRePublish || isService"
+                [placeholder]="'Shop.Provider.OfferAdd.EnterName' | translate"
+                [maxLength]="100"
+                name="product_manafacturer"
+                #product_manafacturer="ngModel"
+                required
+              />
+              <p
+                *ngIf="product_manafacturer.errors && (product_manafacturer.touched || product_manafacturer.dirty)"
+                class="text-danger"
+              >
+                <span *ngIf="product_manafacturer.errors.required">{{
+                  'Поле обязательно для заполнения' | translate
+                }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group required">
+              <label for="amount">{{ 'Shop.Provider.MyOffers.Amount' | translate }}</label>
+              <div class="input-group">
+                <input
+                  id="amount"
+                  type="text"
+                  class="form-control text-right"
+                  mask="separator.3"
+                  min="0"
+                  placeholder="{{ 'Shop.Provider.OfferAdd.EnterNumber' | translate }}"
+                  [(ngModel)]="model.amount"
+                  #amount="ngModel"
+                  name="amount"
+                  required
+                />
+                <ng-select
+                  *ngIf="subUnitProperty"
+                  [items]="subUnitProperty.items"
+                  [clearable]="false"
+                  [disabled]="disableInputsRePublish"
+                  bindLabel="value_name"
+                  bindValue="value"
+                  class="custom-drop-down-style"
+                  placeholder="{{ 'Common.Choose' | translate }}"
+                  [(ngModel)]="subUnitProperty.user_value"
+                  name="user_value"
+                >
+                </ng-select>
+              </div>
+
+              <div *ngIf="amount.errors && (amount.touched || amount.dirty)" class="text-danger">
+                <div *ngIf="amount.errors?.required && !amount?.errors?.minValue">
+                  {{ 'Поле обязательно для заполнения\n' | translate }}
+                </div>
+                <div *ngIf="amount?.errors?.minValue" translate>Common.ValeCannotBeNegative</div>
+              </div>
+
+              <p *ngIf="+model.amount < +model.min_delivery_amount" class="text-danger">
+                {{ 'Cant be less min' | translate }}
+              </p>
+
+              <p *ngIf="+model.amount < +model.max_delivery_amount" class="text-danger">
+                {{ 'Количество не может быть больше максимальной партии' | translate }}
+              </p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group required">
+                  <label for="min_delivery_amount">{{ 'Shop.Common.ProductDetails.Min' | translate }}</label>
+                  <input
+                    id="min_delivery_amount"
+                    type="text"
+                    min="0"
+                    mask="separator.3"
+                    class="form-control text-right"
+                    placeholder="{{ 'Shop.Provider.OfferAdd.EnterNumber' | translate }}"
+                    [(ngModel)]="model.min_delivery_amount"
+                    #min_delivery_amount="ngModel"
+                    name="min_delivery_amount"
+                    required
+                  />
+
+                  <div
+                    *ngIf="min_delivery_amount.errors && (min_delivery_amount.touched || min_delivery_amount.dirty)"
+                    class="text-danger"
+                  >
+                    <div *ngIf="min_delivery_amount.errors.required">
+                      {{ 'Поле обязательно для заполнения' | translate }}
+                    </div>
+                    <div *ngIf="min_delivery_amount.errors.minValue" translate>Common.ValeCannotBeNegative</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group required">
+                  <label for="max_delivery_amount">{{ 'Shop.Common.ProductDetails.Max' | translate }}</label>
+                  <input
+                    id="max_delivery_amount"
+                    type="text"
+                    min="0"
+                    mask="separator.3"
+                    class="form-control text-right"
+                    placeholder="{{ 'Shop.Provider.OfferAdd.EnterNumber' | translate }}"
+                    [(ngModel)]="model.max_delivery_amount"
+                    #max_delivery_amount="ngModel"
+                    name="max_delivery_amount"
+                    required
+                  />
+                  <div
+                    *ngIf="max_delivery_amount.errors && (max_delivery_amount.touched || max_delivery_amount.dirty)"
+                    class="text-danger"
+                  >
+                    <div *ngIf="max_delivery_amount.errors.required">
+                      {{ 'Поле обязательно для заполнения' | translate }}
+                    </div>
+
+                    <div *ngIf="max_delivery_amount.errors.minValue" translate>Common.ValeCannotBeNegative</div>
+                  </div>
+                </div>
+              </div>
+              <p *ngIf="+model.max_delivery_amount < +model.min_delivery_amount" class="text-danger">
+                {{ 'Максимальная партия не может быть ниже минимальной партии' | translate }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group required">
+                  <label for="price">{{ 'Shop.Provider.MyOffers.UnitPrice' | translate }}</label>
+                  <input
+                    id="price"
+                    class="form-control text-right"
+                    [placeholder]="'Shop.Common.ProductList.Sum' | translate"
+                    type="text"
+                    [(ngModel)]="model.price"
+                    mask="separator.2"
+                    #price="ngModel"
+                    name="price"
+                    required
+                  />
+                  <p *ngIf="price.errors && (price.touched || price.dirty)" class="text-danger">
+                    <span *ngIf="price.errors.required">{{ 'Поле обязательно для заполнения' | translate }}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="form-group">
+                  <label>{{ 'Shop.Provider.OfferAdd.TotalSum' | translate }}</label>
+                  <input
+                    type="text"
+                    disabled
+                    class="form-control text-right"
+                    [value]="model.price * model.amount | numberFormat"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h4 class="mb-2 fw-semibold">{{ 'Shop.Provider.OfferAdd.ProductInfo2' | translate }}</h4>
+        <hr />
+        <div class="row">
+          <div class="col-3">
+            <div class="form-group required">
+              <label for="issue_year">{{ 'Shop.Common.LotDetails.IssueDate' | translate }}</label>
+              <input
+                id="issue_year"
+                class="form-control text-right"
+                type="text"
+                readonly
+                [placeholder]="'Shop.Common.LotDetails.IssueDate' | translate"
+                [(ngModel)]="model.issue_date"
+                [maxDate]="maxDate"
+                bsDatepicker
+                [bsConfig]="issueYearConfig"
+                (bsValueChange)="onIssueYear($event)"
+                #issue_year="ngModel"
+                [disabled]="offerEditWhenPublishStatus || isService"
+                name="issue_year"
+                required
+              />
+              <p *ngIf="issue_year.errors && (issue_year.touched || issue_year.dirty)" class="text-danger">
+                <span *ngIf="issue_year.errors.required">{{ 'Common.RequiredField' | translate }}</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group required">
+              <label for="shelf_life">{{ 'Shop.Common.LotDetails.ValidityDeadline' | translate }}</label>
+              <div class="d-flex">
+                <input
+                  id="shelf_life"
+                  type="text"
+                  class="form-control text-right"
+                  mask="9990"
+                  [disabled]="offerEditWhenPublishStatus || isService"
+                  placeholder=""
+                  [(ngModel)]="model.shelf_life"
+                  #shelf_life="ngModel"
+                  name="shelf_life"
+                  required
+                />
+                <ng-select
+                  [items]="periods"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="id"
+                  [placeholder]="'Cabinet.unity' | translate"
+                  [(ngModel)]="model.shelf_life_period_id"
+                  class="custom-drop-down-style"
+                  [disabled]="offerEditWhenPublishStatus || isService"
+                  #shelf_life_period_id="ngModel"
+                  name="shelf_life_period_id"
+                  required
+                >
+                </ng-select>
+              </div>
+
+              <div
+                *ngIf="
+                  shelf_life.touched ||
+                  shelf_life.dirty ||
+                  ((shelf_life_period_id.touched || shelf_life_period_id.dirty) &&
+                    (shelf_life.errors || shelf_life_period_id.errors))
+                "
+                class="text-danger"
+              >
+                <div *ngIf="shelf_life.errors?.required || shelf_life_period_id.errors?.required">
+                  {{ 'Common.RequiredField' | translate }}
+                </div>
+                <div *ngIf="shelf_life.value <= 0">
+                  {{ 'Common.MustBeGreaterThanZero' | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group required">
+              <label for="guarantee_period">{{ 'Shop.Common.LotDetails.WarantyDeadline' | translate }}</label>
+              <div class="d-flex">
+                <input
+                  id="guarantee_period"
+                  type="text"
+                  class="form-control text-right"
+                  min="0"
+                  mask="9990"
+                  placeholder="{{ '' | translate }}"
+                  [(ngModel)]="model.guarantee_period"
+                  [disabled]="offerEditWhenPublishStatus"
+                  #guarantee_period="ngModel"
+                  name="guarantee_period"
+                  required
+                />
+                <ng-select
+                  [items]="periods"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="id"
+                  [placeholder]="'Cabinet.unity' | translate"
+                  [(ngModel)]="model.guarantee_period_id"
+                  class="custom-drop-down-style"
+                  [disabled]="offerEditWhenPublishStatus"
+                  #guarantee_period_id="ngModel"
+                  name="guarantee_period_id"
+                  required
+                >
+                </ng-select>
+              </div>
+
+              <div
+                *ngIf="
+                  guarantee_period.touched ||
+                  guarantee_period.dirty ||
+                  ((guarantee_period_id.touched || guarantee_period_id.dirty) &&
+                    (guarantee_period.errors || guarantee_period_id.errors))
+                "
+                class="text-danger"
+              >
+                <div *ngIf="guarantee_period.errors?.required || guarantee_period_id.errors?.required">
+                  {{ 'Common.RequiredField' | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group required">
+              <label for="delivery_term">{{ 'Shop.Provider.MyDeals.DelivDeadline' | translate }}</label>
+              <div class="d-flex">
+                <input
+                  id="delivery_term"
+                  type="text"
+                  class="form-control text-right"
+                  mask="9990"
+                  [disabled]="offerEditWhenPublishStatus"
+                  placeholder="{{ '' | translate }}"
+                  [(ngModel)]="model.delivery_term"
+                  #delivery_term="ngModel"
+                  name="delivery_term"
+                  required
+                />
+                <ng-select
+                  [items]="periods"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="id"
+                  [placeholder]="'Cabinet.unity' | translate"
+                  [(ngModel)]="model.delivery_term_period_id"
+                  class="custom-drop-down-style"
+                  [disabled]="offerEditWhenPublishStatus"
+                  #delivery_term_period_id="ngModel"
+                  name="delivery_term_period_id"
+                  required
+                >
+                </ng-select>
+              </div>
+
+              <div
+                *ngIf="
+                  delivery_term.touched ||
+                  delivery_term.dirty ||
+                  ((delivery_term_period_id.touched || delivery_term_period_id.dirty) &&
+                    (delivery_term.errors || delivery_term_period_id.errors))
+                "
+                class="text-danger"
+              >
+                <div *ngIf="delivery_term.errors?.required || delivery_term_period_id.errors?.required">
+                  {{ 'Common.RequiredField' | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-1">
+          <div class="row">
+            <div class="col-6" *ngIf="model.is_licensed">
+              <div class="form-group">
+                <label for="license_id">{{ 'Shop.Provider.OfferAdd.Licenses' | translate }}</label>
+                <ng-select
+                  #licenseSelect
+                  id="license_id"
+                  [disabled]="disableInputsRePublish"
+                  [items]="licenses"
+                  [clearable]="false"
+                  bindLabel="name"
+                  bindValue="id"
+                  [placeholder]="'Shop.Provider.OfferAdd.SelectLisence' | translate"
+                  [(ngModel)]="model.license_id"
+                  #license_id="ngModel"
+                  name="license_id"
+                  required
+                >
+                  <ng-template ng-label-tmp let-item="item">
+                    <div style="width: 500px; padding: 10px">
+                      <div class="row">
+                        <div class="col">
+                          <div class="d-flex justify-content-between">
+                            <h6 style="white-space: normal !important">{{ item.license_type_name }}</h6>
+                            <span *ngIf="item.gost_id" style="font-weight: bold">
+                              ГОСТ ТНВЭД: {{ item.gost_tnvd }}
+                            </span>
+                          </div>
+                          <div class="d-flex justify-content-between" style="padding-bottom: 10px">
+                            <h5 style="white-space: normal !important">№: {{ item.name }}</h5>
+                            <span *ngIf="item.gost_id">Продукт: {{ item.gost_product_name }}</span>
+                          </div>
+                          <div style="font-size: 12px">
+                            <div class="d-flex justify-content-between">
+                              <div>
+                                <span class="mr-2" style="font-style: italic">
+                                  {{ 'Shop.Provider.OfferAdd.StartDate' | translate }}:
+                                  {{ item.start_date | dateformat: 'dd.MM.yyyy' }} </span
+                                >|
+                                <span *ngIf="item.end_date" class="ml-2" style="font-style: italic; align-content: end">
+                                  {{ 'Shop.Provider.OfferAdd.EndDate' | translate }}:
+                                  {{ item.end_date | dateformat: 'dd.MM.yyyy' }}
+                                </span>
+                                <span *ngIf="!item.end_date" class="ml-2" style="font-style: italic">
+                                  {{ 'Shop.Provider.OfferAdd.EndDate' | translate }}: Бессрочно
+                                </span>
+                              </div>
+                              <span
+                                *ngIf="item.status_id == licenseStatus.Active"
+                                style="color: #207700; font-weight: bold"
+                              >
+                                {{ 'Common.Active' | translate }}
+                              </span>
+                              <span *ngIf="item.status_id == licenseStatus.Passiva" class="text-danger">
+                                {{ 'Common.Expired' | translate }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
+
+                  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                    <div>
+                      <!--                      <div class="row" [style.background-color]="item.gost_id ? 'BlanchedAlmond': ''" >-->
+                      <div class="row">
+                        <div class="col">
+                          <div class="d-flex justify-content-between">
+                            <h6 style="white-space: normal !important">{{ item.license_type_name }}</h6>
+
+                            <span *ngIf="item.gost_id" style="font-weight: bold">
+                              ГОСТ ТНВЭД: {{ item.gost_tnvd }}
+                            </span>
+
+                            <div>
+                              <button type="button" class="badge badge-danger" (click)="removeLicense(item)">X</button>
+                            </div>
+                          </div>
+                          <div class="d-flex justify-content-between" style="padding-bottom: 10px">
+                            <h5 style="white-space: normal !important">№: {{ item.name }}</h5>
+
+                            <span *ngIf="item.gost_id">Продукт: {{ item.gost_product_name }}</span>
+                          </div>
+
+                          <div style="font-size: 12px">
+                            <div class="d-flex justify-content-between">
+                              <div>
+                                <span class="mr-2" style="font-style: italic">
+                                  {{ 'Shop.Provider.OfferAdd.StartDate' | translate }}:
+                                  {{ item.start_date | dateformat: 'dd.MM.yyyy' }}</span
+                                >|
+                                <span *ngIf="item.end_date" class="ml-2" style="font-style: italic">
+                                  {{ 'Shop.Provider.OfferAdd.EndDate' | translate }}:
+                                  {{ item.end_date | dateformat: 'dd.MM.yyyy' }}
+                                </span>
+
+                                <span *ngIf="!item.end_date" class="ml-2" style="font-style: italic">
+                                  {{ 'Shop.Provider.OfferAdd.EndDate' | translate }}: Бессрочно</span
+                                >
+                              </div>
+                              <span
+                                *ngIf="item.status_id == licenseStatus.Active"
+                                style="color: #207700; font-weight: bold"
+                              >
+                                {{ 'Common.Active' | translate }}
+                              </span>
+                              <span *ngIf="item.status_id == licenseStatus.Passiva" class="text-danger">
+                                {{ 'Common.Expired' | translate }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="dropdown-divider" style="margin-bottom: -8px"></div>
+                  </ng-template>
+                  <ng-template ng-footer-tmp>
+                    <div class="create-new">
+                      <button type="button" class="btn btn-primary" (click)="onLicenseAdd(licenseTemplate)">
+                        {{ 'Shop.Provider.OfferAdd.AddLicense' | translate }}
+                      </button>
+                    </div>
+                  </ng-template>
+                </ng-select>
+
+                <p
+                  *ngIf="model.is_licensed && license_id.errors && (license_id.touched || license_id.dirty)"
+                  class="text-danger"
+                >
+                  <span *ngIf="license_id.errors.required">{{ 'Common.RequiredField' | translate }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h4 class="mt-4 fw-semibold">{{ 'Shop.Provider.MyOffers.TechDetails' | translate }}</h4>
+        <hr />
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group required">
+              <textarea
+                class="form-control"
+                [disabled]="disableInputsRePublish"
+                rows="5"
+                [(ngModel)]="model.conditions"
+                maxlength="3000"
+                name="conditions"
+                #conditions="ngModel"
+                [placeholder]="'Shop.Provider.MyOffers.EnterTechDetails' | translate"
+                required
+              ></textarea>
+              <small class="form-text text-muted" *ngIf="model && model.conditions">
+                <em>{{ 'Trade.Info4' | translate: { length: 3000 - model.conditions.length } }}</em>
+              </small>
+              <div
+                *ngIf="conditions && conditions.errors && (conditions.touched || conditions.dirty)"
+                class="text-danger"
+              >
+                <div *ngIf="conditions.errors.required">{{ 'Common.RequiredField' | translate }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <ng-container *ngIf="regionsDistricts">
+            <app-regions-districts
+              [isDisableAll]="disableInputsRePublish"
+              [data]="regionsDistricts"
+              [isAll]="true"
+              [onEditData]="editOfferDeliviries"
+            >
+            </app-regions-districts>
+          </ng-container>
+        </div>
+
+        <h4 class="fw-semibold">{{ 'Shop.Provider.OfferAdd.ProductFiles' | translate }}</h4>
+        <hr />
+
+        <div class="row">
+          <div class="files__body">
+            <div class="row row-min mb-5">
+              <div class="col-2">
+                <div class="img-card-file-child">
+                  <div class="upload-image" style="height: 204px">
+                    <div
+                      class="upload-image--upload"
+                      (click)="onFilesShow()"
+                      style="background-color: rgb(255, 255, 255); opacity: 1"
+                    >
+                      <i class="fa fa-plus-circle" aria-hidden="true" style="font-size: 40px"></i>
+                      <strong class="mt-2">{{ 'Common.UploadFile' | translate }}</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-10">
+                <div class="img-card-file-parent">
+                  <div class="card p-1 img-card-file-child" *ngFor="let file of selectedFiles">
+                    <div
+                      class="card-header border-bottom-0 mb-1 img-header"
+                      style="padding: 6px"
+                      [ngClass]="{ 'bg-main-img': file.id === mainFileId }"
+                    >
+                      <div>
+                        <label class="radio-custom mb-0" *ngIf="file.ext_type_id == fileType.image">
+                          <input type="radio" [checked]="file.id === mainFileId" (change)="mainFileChecked(file.id)" />
+                          <span class="checkmark"></span>
+                          <span> {{ 'Shop.Provider.OfferAdd.MainImage' | translate }} </span>
+                        </label>
+                      </div>
+                      <div
+                        [class.image-delete-icon-style]="file.ext_type_id == fileType.image"
+                        [class.image-delete-not-image-style]="file.ext_type_id != fileType.image"
+                        (click)="onImageDelete(file.id)"
+                        class="text-danger cursor-pointer remove-img-button"
+                      >
+                        X
+                      </div>
+                    </div>
+
+                    <div class="card-body p-0">
+                      <div class="text-center">
+                        <img
+                          class="img-fixed-size"
+                          *ngIf="file.ext.toLowerCase() === 'jpg' || file.ext.toLowerCase() === 'png'"
+                          [src]="file.fileBlob"
+                          alt=""
+                        />
+                        <img
+                          class="img-fixed-size"
+                          *ngIf="file.ext.toLowerCase() === 'xls' || file.ext.toLowerCase() === 'xlsx'"
+                          src="/assets/images/files/xls.svg"
+                          alt=""
+                        />
+                        <img
+                          class="img-fixed-size"
+                          *ngIf="file.ext.toLowerCase() === 'doc' || file.ext.toLowerCase() === 'docx'"
+                          src="/assets/images/files/doc.svg"
+                          alt=""
+                        />
+                        <img
+                          class="img-fixed-size"
+                          *ngIf="file.ext.toLowerCase() === 'pdf'"
+                          src="/assets/images/files/pdf.svg"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                      <div class="file__shortinfo">
+                        <p class="mb-0">
+                          <strong>{{ 'Common.FileName' | translate }}:</strong>
+                          {{
+                            file.custom_name.length > 12 ? file.custom_name.substring(0, 12) + '...' : file.custom_name
+                          }}
+                        </p>
+                        <p class="mb-0">
+                          <strong>{{ 'Common.Size' | translate }}:</strong>
+                          {{ file.file_size }} Mb
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="form-group required">
+              <label for="record_id">{{ 'Shop.Common.ProductDetails.ChooseAccount' | translate }}</label>
+              <ng-select
+                id="record_id"
+                [items]="userRecords"
+                [disabled]="disableAccount"
+                [clearable]="false"
+                bindLabel="record_text"
+                bindValue="record_id"
+                placeholder="{{ 'Common.Choose' | translate }}"
+                [(ngModel)]="model.record_id"
+                #record_id="ngModel"
+                name="record_id"
+                required
+              >
+                <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                  <div class="">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col">
+                            <label class="d-inline-block mb-0" style="width: 100px"
+                              >{{ 'Common.AccountNumber' | translate }}:</label
+                            >
+                            <h6
+                              class="d-inline-block text-right text-info font-weight-bold"
+                              style="width: calc(100% - 100px)"
+                            >
+                              {{ item.record_text }}
+                            </h6>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <label class="d-inline-block mb-0" style="width: 100px"
+                              >{{ 'Common.Balance' | translate }} :</label
+                            >
+                            <h6
+                              class="d-inline-block text-right text-dark"
+                              style="width: calc(100% - 100px); white-space: pre-wrap"
+                            >
+                              {{ item.amount | numberFormat }} {{ item.currency_code }}
+                            </h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-select>
+
+              <p *ngIf="record_id.errors && (record_id.touched || record_id.dirty)" class="text-danger">
+                <span *ngIf="record_id.errors.required">
+                  {{ 'Common.RequiredField' | translate }}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group required">
+              <label>{{ 'Common.ExpositionType' | translate }}</label>
+              <label class="radio-custom" *ngFor="let type of publishTypes; index as idx">
+                {{ type.note }}
+                <input
+                  type="radio"
+                  [disabled]="disableInputsRePublish && idx > 0"
+                  [(ngModel)]="model.publish_type_id"
+                  name="publish_type_id"
+                  #publish_type_id="ngModel"
+                  [value]="type.id"
+                  (change)="onPublishType(type)"
+                />
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-2 mb-2">
+          <button class="btn btn-primary" style="width: 200px">{{ 'Cabinet.PlacedProduct' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div
+  bsModal
+  #fileManagerModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  style="z-index: 9876"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-xl draggable" style="--bs-modal-width: 1250px">
+    <div class="modal-content" style="width: 100% !important; margin-right: 0 !important">
+      <app-trade-file-manager
+        #fileManagerComponent
+        [hideRecentFiles]="true"
+        (filesSelected)="hideFileSelect()"
+        [totalSelectCount]="isLicenseFile ? 1 : 10"
+      ></app-trade-file-manager>
+    </div>
+  </div>
+</div>
+
+<ng-template #licenseTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{ 'Shop.Provider.OfferAdd.AddLicense' | translate }}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onLicenseClose()" *ngIf="false">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <form
+    autocomplete="off"
+    #licenseForm="ngForm"
+    novalidate="novalidate"
+    role="form"
+    (submit)="onLicenseSubmit(licenseForm)"
+  >
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group required">
+            <label for="name">{{ 'Shop.Provider.OfferAdd.Nomination' | translate }}</label>
+            <input
+              id="name"
+              type="text"
+              class="form-control"
+              [placeholder]="'Shop.Provider.OfferAdd.EnterName' | translate"
+              [(ngModel)]="addLiscenseModel.name"
+              #name="ngModel"
+              name="name"
+              required
+            />
+            <p *ngIf="name.errors && (name.touched || name.dirty)" class="text-danger">
+              <span *ngIf="name.errors.required">
+                {{ 'Common.RequiredField' | translate }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group required">
+            <label for="start_date_format">{{ 'Shop.Provider.OfferAdd.StartDate' | translate }}</label>
+            <input
+              id="start_date_format"
+              type="text"
+              class="form-control"
+              [placeholder]="'Common.DDMMYYYY' | translate"
+              [(ngModel)]="addLiscenseModel.start_date_format"
+              #start_date_format="ngModel"
+              name="start_date_format"
+              bsDatepicker
+              [bsConfig]="datePickerConfig"
+              (bsValueChange)="onStartDate($event)"
+              required
+            />
+            <p
+              *ngIf="start_date_format.errors && (start_date_format.touched || start_date_format.dirty)"
+              class="text-danger"
+            >
+              <span *ngIf="start_date_format.errors.required">
+                {{ 'Common.RequiredField' | translate }}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="form-group">
+            <label for="end_date_format">{{ 'Shop.Provider.OfferAdd.EndDate' | translate }}</label>
+            <input
+              id="end_date_format"
+              type="text"
+              class="form-control"
+              [placeholder]="'Common.DDMMYYYY' | translate"
+              [(ngModel)]="addLiscenseModel.end_date_format"
+              #end_date_format="ngModel"
+              name="end_date_format"
+              bsDatepicker
+              [bsConfig]="datePickerConfig"
+              (bsValueChange)="onEndDate($event)"
+            />
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for="id">{{ 'Common.Select' | translate }}</label>
+            <ng-select
+              id="id"
+              [items]="licenseTypes"
+              [clearable]="false"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="{{ 'Common.Choose' | translate }}"
+              [(ngModel)]="addLiscenseModel.type_id"
+              name="id"
+              required
+            >
+              <!--              <ng-template ng-label-tmp let-item_step="item">-->
+              <!--                <span>-->
+              <!--                  {{item_step.name}} - {{ item_step.penalty_amount | currency: ' ':'symbol':'1.2-2' }}-->
+              <!--                </span>-->
+              <!--              </ng-template>-->
+              <!--              <ng-template ng-option-tmp let-item_step="item" let-index="index" let-search="searchTerm">-->
+              <!--                <span>-->
+              <!--                  {{item_step.name}} - {{ item_step.penalty_amount | currency: ' ':'symbol':'1.2-2' }}-->
+              <!--                </span>-->
+              <!--              </ng-template>-->
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label>{{ 'Common.UploadFile' | translate }}:</label>
+            <div
+              class="jFiler jFiler-theme-default"
+              *ngIf="licenseFiles.length === 0"
+              (click)="openFileManagerForLicense()"
+            >
+              <input
+                id="filer_input_1"
+                name="files[]"
+                type="file"
+                multiple="multiple"
+                style="position: absolute; left: -9999px; top: -9999px; z-index: -9999"
+              />
+              <div class="jFiler-input">
+                <div class="jFiler-input-caption">
+                  <span>{{ 'Common.FileName' | translate }}</span>
+                </div>
+                <div class="jFiler-input-button">{{ 'Common.UploadFile' | translate }}</div>
+              </div>
+            </div>
+            <div class="jFiler-items jFiler-row" *ngIf="licenseFiles.length > 0">
+              <ul class="jFiler-items-list jFiler-items-default">
+                <li class="jFiler-item" data-jfiler-index="0" *ngFor="let file of licenseFiles; index as idx">
+                  <div class="jFiler-item-container">
+                    <div class="jFiler-item-inner">
+                      <div class="jFiler-item-icon pull-left">
+                        <i class="icon-jfi-file-o jfi-file-type-application jfi-file-ext-pdf"></i>
+                      </div>
+                      <div class="jFiler-item-info pull-left">
+                        <div class="jFiler-item-title" title="-1385169526.PDF">{{ file.custom_name }}</div>
+                        <div class="jFiler-item-assets">
+                          <ul class="list-inline">
+                            <li (click)="deleteLicenseFiles()">
+                              <a class="icon-jfi-trash jFiler-item-trash-action"></a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p *ngIf="error" class="text-danger">
+        {{ error }}
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="licenseSubmitted"></span>
+        {{ 'Common.Save' | translate }}
+      </button>
+      <button type="button" class="btn btn-light" (click)="onLicenseClose()">{{ 'Common.Cancel' | translate }}</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #addProductMarkTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{ 'Shop.Provider.OfferAdd.AddLicense' | translate }}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onLicenseClose()" *ngIf="false">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</ng-template>

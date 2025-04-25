@@ -1,1 +1,13 @@
-<p>provider works!</p>
+<div class="section-cabinet container-fluid">
+  <div class="row flex-nowrap">
+    <div class="left_sidebar col-auto col-md-3 col-xl-2 px-sm-2 text-white bg-sidebar shadow">
+      <app-sidebar-menu [roleType]="'provider'"></app-sidebar-menu>
+    </div>
+    <div class="right_sidebar col p-0">
+      <!-- Header Section -->
+      <app-cabinet-header></app-cabinet-header>
+      <router-outlet></router-outlet>
+      <footer class="right_sidebar__footer"></footer>
+    </div>
+  </div>
+</div>

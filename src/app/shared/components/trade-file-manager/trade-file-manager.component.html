@@ -1,0 +1,400 @@
+<div>
+  <div class="file-management">
+    <div class="file-management__menu">
+      <div class="fmm__top">
+        <strong translate>Папка</strong>
+        <div class="buttons">
+          <i class="fa fa-plus cursor-pointer text-info" aria-hidden="true" (click)="showCreateFolder()"></i>
+        </div>
+      </div>
+      <div class="fmm__body">
+        <div class="search" *ngIf="false">
+          <form action="">
+            <div class="input-group input-group--search">
+              <input
+                type="text"
+                class="form-control form-control-lg"
+                [(ngModel)]="keyword"
+                (keyup.enter)="search()"
+                name="keyword"
+                placeholder="{{ 'Search' | translate }}"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-primary btn-lg" (click)="search()" type="button">
+                  <i class="icon icon-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="fmm-center" *ngIf="createNewFolder">
+          <div class="form-group mb-3">
+            <label style="color: white" translate>Название папки</label>
+            <input
+              type="text"
+              required
+              maxlength="80"
+              [(ngModel)]="folderName"
+              class="form-control form-control-lg"
+              placeholder="{{ 'Название папки' | translate }}"
+            />
+          </div>
+          <div class="text-right">
+            <button
+              class="btn btn-success text-light"
+              [disabled]="createFolderStatus === 'loading'"
+              (click)="createFolder()"
+            >
+              {{ 'Create' | translate }}
+              <span *ngIf="createFolderStatus === 'hide'"><i class="fa fa-check"></i></span>
+              <span
+                class="spinner-border spinner-border-sm"
+                *ngIf="createFolderStatus === 'loading'"
+                role="status"
+                aria-hidden="true"
+              >
+              </span>
+            </button>
+          </div>
+        </div>
+        <ul>
+          <ng-container *ngFor="let folder of folderList; index as idx">
+            <li [ngClass]="{ active: idx === selectedFolder }" (click)="selectFolder(idx)">
+              <div class="form-group">
+                <label class="checkbox-custom">
+                  <i class="fa fa-folder text-warning" aria-hidden="true"></i>
+                  {{ folder.name ? folder.name : 'По умолчанию' }}
+                  <span class="badge badge-light badge-absolute-right-margin" *ngIf="folder.cnt && folder.cnt > 0">{{
+                    folder.cnt
+                  }}</span>
+                </label>
+                <h6 class="last-modified-label" *ngIf="folder.modified_date">
+                  {{ 'Последнее изменение' | translate }} {{ folder.modified_date | dateformat: 'dd-MM-yyyy, HH:mm' }}
+                </h6>
+              </div>
+            </li>
+          </ng-container>
+        </ul>
+      </div>
+    </div>
+    <div class="file-management__body">
+      <div class="file-management__body__inner">
+        <div class="recent-files" *ngIf="false">
+          <div class="recent-files__header">
+            <strong translate>Trade.RecentFiles</strong>
+            <div class="buttons">
+              <div id="recent_files_slider_nav" class="owl-nav"></div>
+            </div>
+          </div>
+          <div class="recent-files__body">
+            <div class="owl-carousel owl-theme" id="recent_files_slider">
+              <div class="item" *ngFor="let file of recentFileList; index as idx">
+                <div class="file">
+                  <div
+                    class="form-group position-absolute"
+                    style="padding-top: 0"
+                    *ngIf="(file.selected || canSelect) && +file.state !== 5"
+                  >
+                    <label class="checkbox-custom">
+                      <input type="checkbox" [(ngModel)]="file.selected" (change)="selectFile(file)" />
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div (click)="setFileSelect(file)">
+                    <div class="file-sending" *ngIf="+file.state === 5">
+                      <div class="spinner-center">
+                        <div class="spinner-border text-info m-auto" role="status"></div>
+                      </div>
+                    </div>
+                    <div
+                      class="file-background"
+                      *ngIf="file.ext.toLowerCase() === 'jpg' || file.ext.toLowerCase() === 'png'"
+                    >
+                      <img [src]="file.fileBlob" alt="" />
+                    </div>
+
+                    <div class="file-background" *ngIf="file.ext_type_id === fileType.video">
+                      <video
+                        style="max-width: 100%"
+                        src="{{ tradeURL + '/' + file.path + '/' + file.name }}#t=1"
+                      ></video>
+                    </div>
+                    <img
+                      src="/assets/images/files/xls.svg"
+                      alt=""
+                      *ngIf="file.ext.toLowerCase() === 'xls' || file.ext.toLowerCase() === 'xlsx'"
+                    />
+                    <img
+                      src="/assets/images/files/doc.svg"
+                      alt=""
+                      *ngIf="file.ext.toLowerCase() === 'doc' || file.ext.toLowerCase() === 'docx'"
+                    />
+                    <img src="/assets/images/files/pdf.svg" alt="" *ngIf="file.ext.toLowerCase() === 'pdf'" />
+                    <!--                  <img class="files-image" src="{{tradeURL + file.path + '/thumbs/' + file.name}}" alt="" *ngIf="file.ext.toLowerCase() === 'jpg' || file.ext.toLowerCase() === 'png'">-->
+                    <img
+                      src="/assets/images/files/files.svg"
+                      alt=""
+                      *ngIf="
+                        !(
+                          file.ext_type_id === fileType.video ||
+                          file.ext.toLowerCase() === 'jpg' ||
+                          file.ext.toLowerCase() === 'png' ||
+                          file.ext.toLowerCase() === 'pdf' ||
+                          file.ext.toLowerCase() === 'xls' ||
+                          file.ext.toLowerCase() === 'xlsx' ||
+                          file.ext.toLowerCase() === 'doc' ||
+                          file.ext.toLowerCase() === 'docx'
+                        )
+                      "
+                    />
+                    <strong>{{ file.custom_name }}</strong>
+                    <div class="file__shortinfo">
+                      <span>{{ 'Size' | translate }}: {{ file.file_size / (1024 * 1024) | numberFormat }} Mb</span>
+                      <span>{{ 'Type' | translate }}: {{ file.ext.toUpperCase() }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="files">
+          <div class="files__header">
+            <strong translate>Мои файлы</strong>
+          </div>
+          <div class="files__body">
+            <div class="row row-min">
+              <div class="col">
+                <div class="upload-image">
+                  <div class="upload-image--upload" (click)="fileInput.click()">
+                    <span class="icon icon-plus-o"></span>
+                    <strong translate>Добавить файл</strong>
+                    <input #fileInput (change)="onFileInput($event)" multiple style="display: none" type="file" />
+                  </div>
+                </div>
+              </div>
+              <div class="col file-column" *ngIf="statusFile === 1">
+                <div class="file" style="height: 185px">
+                  <div
+                    class="spinner-border text-info"
+                    role="status"
+                    style="margin-left: calc(50% - 1rem); margin-top: calc(50% - 1rem)"
+                  >
+                    <span class="sr-only">{{ 'Trade.Wait' | translate }}...</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col file-column" *ngFor="let file of sendingFiles; index as idx">
+                <div class="file">
+                  <img src="/assets/images/files/files.svg" alt="" />
+                  <div class="progress" style="height: 5px">
+                    <div class="progress-bar" role="progressbar" style="width: 0" id="progress-{{ file }}"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col file-column" *ngFor="let file of fileList; index as idx">
+                <div class="file">
+                  <div
+                    class="form-group position-absolute"
+                    style="padding-top: 0"
+                    *ngIf="(file.selected || canSelect) && +file.state !== 5"
+                  >
+                    <label class="checkbox-custom">
+                      <input type="checkbox" [(ngModel)]="file.selected" (change)="selectFile(file)" />
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div (click)="setFileSelect(file)">
+                    <div class="file-sending" *ngIf="+file.state === 5">
+                      <div class="spinner-center">
+                        <div class="spinner-border text-info m-auto" role="status"></div>
+                      </div>
+                    </div>
+                    <!--                    <div class="file-background"-->
+                    <!--                      *ngIf="file.ext.toLowerCase() === 'jpg' || file.ext.toLowerCase() === 'png'"-->
+                    <!--                      [ngStyle]="{'background-image': '&quot;' + file.fileBlob + '&quot;'}">-->
+                    <!--                    </div>-->
+                    <div
+                      class="file-background"
+                      *ngIf="file.ext.toLowerCase() === 'jpg' || file.ext.toLowerCase() === 'png'"
+                    >
+                      <img [src]="file.fileBlob || '/assets/images/empty-img.png'" alt="" />
+                    </div>
+
+                    <div class="file-background" *ngIf="file.ext_type_id == fileType.video">
+                      <video
+                        style="max-width: 100%"
+                        src="{{ tradeURL + '/' + file.path + '/' + file.name }}#t=1"
+                      ></video>
+                    </div>
+                    <img
+                      src="/assets/images/files/xls.svg"
+                      alt=""
+                      *ngIf="file.ext.toLowerCase() === 'xls' || file.ext.toLowerCase() === 'xlsx'"
+                    />
+                    <img
+                      src="/assets/images/files/doc.svg"
+                      alt=""
+                      *ngIf="file.ext.toLowerCase() === 'doc' || file.ext.toLowerCase() === 'docx'"
+                    />
+                    <img src="/assets/images/files/pdf.svg" alt="" *ngIf="file.ext.toLowerCase() === 'pdf'" />
+                    <!--                  <img class="files-image" src="{{tradeURL + file.path + '/thumbs/' + file.name}}" alt="" *ngIf="file.ext.toLowerCase() === 'jpg' || file.ext.toLowerCase() === 'png'">-->
+                    <img
+                      src="/assets/images/files/files.svg"
+                      alt=""
+                      *ngIf="
+                        !(
+                          file.ext_type_id == fileType.video ||
+                          file.ext.toLowerCase() === 'jpg' ||
+                          file.ext.toLowerCase() === 'png' ||
+                          file.ext.toLowerCase() === 'pdf' ||
+                          file.ext.toLowerCase() === 'xls' ||
+                          file.ext.toLowerCase() === 'xlsx' ||
+                          file.ext.toLowerCase() === 'doc' ||
+                          file.ext.toLowerCase() === 'docx'
+                        )
+                      "
+                    />
+                    <strong>{{ file.custom_name }}</strong>
+                    <div class="file__shortinfo">
+                      <span>{{ 'Size' | translate }}: {{ file.file_size / (1024 * 1024) | numberFormat }} Mb</span>
+                      <span>{{ 'Type' | translate }}: {{ file.ext.toUpperCase() }}</span>
+                    </div>
+                  </div>
+                  <div class="file__caption" *ngIf="+file.state !== 8">
+                    <div class="file__caption__inner">
+                      <table>
+                        <tr>
+                          <td>{{ 'FileType' | translate }}:</td>
+                          <td>{{ file.ext.toUpperCase() }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ 'Size' | translate }}:</td>
+                          <td>{{ file.file_size / 1024 | numberFormat }} kb</td>
+                        </tr>
+                        <tr>
+                          <td>{{ 'Created' | translate }}:</td>
+                          <td>{{ file.date_ini | dateformat: 'dd-MM-yyyy' }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ 'Location' | translate }}:</td>
+                          <td>{{ file.path }}</td>
+                        </tr>
+                      </table>
+                      <div class="flex-column">
+                        <a class="file__caption__button edit" (click)="editFile(file)"
+                          ><span class="icon icon-edit-2"></span>{{ 'EditFile' | translate }}</a
+                        >
+                        <a class="file__caption__button delete" (click)="removeFile(idx)"
+                          ><span class="icon icon-delete"></span> {{ 'DeleteFile' | translate }}</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="file__caption" *ngIf="+file.state === 8">
+                    <div class="file__caption__inner">
+                      <div>
+                        <div class="form-group mb-3">
+                          <label translate>Common.Nomination</label>
+                          <textarea
+                            type="text"
+                            required
+                            maxlength="80"
+                            rows="3"
+                            [(ngModel)]="newFileName"
+                            class="form-control form-control-lg"
+                            placeholder="{{ 'Common.Nomination' | translate }}"
+                          ></textarea>
+                        </div>
+                        <div class="text-right">
+                          <button
+                            class="btn btn-secondary text-light"
+                            [disabled]="+file.state === 5"
+                            (click)="cancelEditing(file)"
+                          >
+                            {{ 'Common.Cancel' | translate }}
+                          </button>
+                          <button
+                            class="btn btn-success text-light"
+                            [disabled]="+file.state === 5"
+                            style="margin-left: 15px"
+                            (click)="saveEditing(file)"
+                          >
+                            {{ 'Common.Save' | translate }}
+                            <span *ngIf="+file.state !== 5"><i class="fa fa-check"></i></span>
+                            <span
+                              class="spinner-border spinner-border-sm"
+                              *ngIf="+file.state === 5"
+                              role="status"
+                              aria-hidden="true"
+                            >
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="totalCount > fileList.length">
+              <div class="col text-center" style="margin: 16px auto">
+                <button type="button" class="btn btn-outline-primary" (click)="getNextFileList()">
+                  {{ ' Показать больше ' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="file-management-footer text-right" style="background: #1e262d; padding: 15px">
+    <label style="color: white; line-height: 35px" *ngIf="totalSelectCount !== null">
+      {{ 'Вы можете выбрать максимально ' | translate }} {{ totalSelectCount }}
+    </label>
+    <button
+      type="button"
+      class="btn btn-outline-warning"
+      style="margin-left: 16px"
+      (click)="cancelSelect()"
+      *ngIf="selectedCount > 0"
+    >
+      {{ 'Отменить' | translate }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-light"
+      style="margin-left: 16px"
+      (click)="selectAll()"
+      *ngIf="totalSelectCount === null && selectedCount === 0"
+    >
+      {{ 'ChooseAll' | translate }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      style="margin-left: 16px"
+      (click)="setFilesSelected()"
+      *ngIf="selectedCount > 0"
+    >
+      {{ 'Common.Choose' | translate }} ({{ selectedCount }})
+    </button>
+  </div>
+</div>
+
+<div bsModal #fileEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-light" style="margin-left: 16px">
+          {{ 'Common.ChooseAll' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-light" style="margin-left: 16px">
+          {{ 'Common.Choose' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

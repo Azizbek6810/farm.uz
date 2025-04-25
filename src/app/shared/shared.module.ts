@@ -18,6 +18,8 @@ import {TooltipModule} from "ngx-bootstrap/tooltip";
 import { FilterByNamePipe } from './pipes/filter-by-name.pipe';
 import { LoaderComponent } from './components/loader/loader.component';
 import { CabinetFilterComponent } from './components/cabinet-filter/cabinet-filter.component';
+import { TradeFileManagerComponent } from './components/trade-file-manager/trade-file-manager.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { CabinetFilterComponent } from './components/cabinet-filter/cabinet-filt
     CopyToClipboardComponent,
     FilterByNamePipe,
     LoaderComponent,
-    CabinetFilterComponent
+    CabinetFilterComponent,
+    TradeFileManagerComponent
   ],
   imports: [
     CommonModule,
@@ -42,7 +45,8 @@ import { CabinetFilterComponent } from './components/cabinet-filter/cabinet-filt
     NgxSkeletonLoaderModule,
     NgbModule,
     NgbTooltipModule,
-    TooltipModule
+    TooltipModule,
+    ModalModule
   ],
   exports: [
     StringSlicePipe,
@@ -56,7 +60,8 @@ import { CabinetFilterComponent } from './components/cabinet-filter/cabinet-filt
     CopyToClipboardComponent,
     FilterByNamePipe,
     LoaderComponent,
-    CabinetFilterComponent
+    CabinetFilterComponent,
+    TradeFileManagerComponent
   ]
 })
 export class SharedModule {}
