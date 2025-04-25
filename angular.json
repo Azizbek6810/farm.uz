@@ -50,15 +50,32 @@
               "src/robots.txt"
             ],
             "styles": [
+              "node_modules/sweetalert2/src/sweetalert2.scss",
+              "node_modules/ngx-toastr/toastr.css",
+              "src/assets/vendor/flipclock/flipclock.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "src/assets/vendor/font-awesome/css/font-awesome.min.css",
+              "src/assets/css/treejs.css",
               "src/assets/css/global.css",
               "src/assets/styles/main.css",
+              "src/assets/css/jqueryFiler/jquery.filer.css",
               "src/assets/css/icomoon/style.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/@popperjs/core/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "src/assets/js/highcharts/highmaps.js",
+              "src/assets/vendor/flipclock/flipclock.min.js",
+              "src/assets/js/highcharts/drilldown.js",
+              "src/assets/js/highcharts/exporting.js",
+              "src/assets/js/highcharts/offline-exporting.js",
+              "src/assets/js/highcharts/uz-all.js",
+              "src/assets/js/treejs.js",
+              "src/assets/js/e-imzo.js",
+              "src/assets/js/e-imzo-client.js",
+              "src/assets/js/application.js"
             ]
           },
           "configurations": {
