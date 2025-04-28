@@ -48,7 +48,7 @@ export class GlobalInterceptor implements HttpInterceptor {
       case 'Purchase':
         reqUrl = environment.purchaseUrl + request.url;
         break;
-      case 'Custom-url':
+      case 'Custom':
         reqUrl = request.url;
         break;
       default:

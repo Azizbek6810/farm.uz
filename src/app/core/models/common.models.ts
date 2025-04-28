@@ -455,7 +455,7 @@ export class MapStats {
   today_proposal_count: number;
   current_year_deals_count: number;
   current_year_deals_sum: number;
-  lasr_month_deals_count: number;
+  last_month_deals_count: number;
   last_month_deals_sum: number;
 }
 

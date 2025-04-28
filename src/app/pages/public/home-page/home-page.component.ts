@@ -233,7 +233,9 @@ export class HomePageComponent implements OnInit {
     }, 500);
   }
 
-  initSmallChart() {}
+  initSmallChart() {
+    
+  }
 
   // config: SwiperOptions = {
   //   slidesPerView: 3,

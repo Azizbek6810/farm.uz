@@ -1,0 +1,86 @@
+<div class="regions_dropdowns d-flex gap-2 flex-wrapX">
+  <button
+    class="btn"
+    type="button"
+    [ngClass]="{
+      'btn-outline-primary': currentRegion !== -1,
+      'btn-primary border-primary-color': currentRegion === -1
+    }"
+    id="colorizeButton"
+    [tooltip]="'Республика Узбекистан'"
+  >
+    {{ 'Common.All' | translate }}
+  </button>
+  <!-- year dropdown -->
+  <div class="dropdown">
+    <button
+      class="btn btn-outline-primary dropdown-toggle"
+      type="button"
+      id="year-dropdown"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      2024
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="year-dropdown">
+      <li><a class="dropdown-item" href="#">2024</a></li>
+      <li><a class="dropdown-item" href="#">2023</a></li>
+      <li><a class="dropdown-item" href="#">2022</a></li>
+      <li><a class="dropdown-item" href="#">2021</a></li>
+    </ul>
+  </div>
+  <!-- month dropdown -->
+  <div class="dropdown">
+    <button
+      class="btn btn-outline-primary dropdown-toggle"
+      type="button"
+      id="month-dropdown"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      {{ 'January' | translate }}
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="month-dropdown">
+      <li>
+        <a class="dropdown-item" href="#">{{ 'Common.All' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'January' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'February' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'March' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'April' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'May' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'June' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'July' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'August' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'September' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'October' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'November' | translate }}</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#">{{ 'December' | translate }}</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div id="map_container"></div>

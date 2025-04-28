@@ -180,8 +180,8 @@
     <div class="container">
       <div class="purchase_monitoring__flex">
         <div class="purchase_monitoring__item bg-white">
-          <h2 class="text-center mb-3">Xaridlar monitoringi</h2>
-          <div class="d-flex justify-content-center gap-2">
+          <h2 class="text-center mb-3">{{"Common.StatisticsRegion" | translate}}</h2>
+          <!-- <div class="d-flex justify-content-center gap-2">
             <div class="dropdown custom-dropdown">
               <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 2025-yil
@@ -212,11 +212,16 @@
                 <li><a class="dropdown-item" href="#">Dekabr</a></li>
               </ul>
             </div>
-          </div>
-          <div id="uzb-map"></div>
+          </div> -->
+          <app-uzb-map [currentRegion]="currentRegion" (clickRegion)="singleRegion($event)"></app-uzb-map>
         </div>
         <div class="purchase_monitoring__item bg-bottom-header text-white">
-          <h2 class="region_name__title">Navoiy viloyati</h2>
+          <h2 class="region_name__title" *ngIf="!isMapLoading">{{ selectedRegion.name | translate }}</h2>
+          <h2 class="region_name__title" *ngIf="isMapLoading"> {{ 'Common.Loading' | translate }}
+            <!-- <app-skeleton-loader [count]="1"
+              [style]="{ width: '100%', height: '25px', 'border-radius': '10px', 'margin-left': '20px', 'margin-top': '20px' }">
+            </app-skeleton-loader> -->
+          </h2>
           <div class="monitoring_items__wrapper">
             <!-- monitoring item 1 -->
             <div class="monitoring-item">

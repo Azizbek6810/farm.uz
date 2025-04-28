@@ -20,6 +20,7 @@ import { LoaderComponent } from './components/loader/loader.component';
 import { CabinetFilterComponent } from './components/cabinet-filter/cabinet-filter.component';
 import { TradeFileManagerComponent } from './components/trade-file-manager/trade-file-manager.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { UzbMapComponent } from './components/uzb-map/uzb-map.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     FilterByNamePipe,
     LoaderComponent,
     CabinetFilterComponent,
-    TradeFileManagerComponent
+    TradeFileManagerComponent,
+    UzbMapComponent
   ],
   imports: [
     CommonModule,
@@ -61,7 +63,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     FilterByNamePipe,
     LoaderComponent,
     CabinetFilterComponent,
-    TradeFileManagerComponent
+    TradeFileManagerComponent,
+    UzbMapComponent
   ]
 })
 export class SharedModule {}
