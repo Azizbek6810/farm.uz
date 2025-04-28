@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/auth/authentication.service';
-import { LocalizeService } from 'src/app/core/localize.service';
+import { LocalizeService } from 'src/app/core/services/localize.service';
 import { KeyItem } from 'src/app/core/models/common.models';
 
 @Component({

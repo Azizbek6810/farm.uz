@@ -86,9 +86,9 @@
               <tbody>
                 <tr *ngFor="let item of rivalLots">
                   <td class="text-nowrap">
-                    <!-- <img src="assets/images/flags/uz.svg" style="width: 35px;"> -->
+                    <!-- <img src="assets/images/flags/uz.png" style="width: 35px;"> -->
                     <span *ngIf="item.is_local_manufacturer == 1">
-                      <img src="assets/images/flags/uz.svg" style="width: 35px" /> <br />
+                      <img src="assets/images/flags/uz.png" style="width: 35px" /> <br />
                     </span>
 
                     <span class="display_no" (click)="onDetails(item.lot_id)">{{ item.lot_display_no }}</span>

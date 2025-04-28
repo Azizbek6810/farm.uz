@@ -218,7 +218,7 @@
                       class="file-background"
                       *ngIf="file.ext.toLowerCase() === 'jpg' || file.ext.toLowerCase() === 'png'"
                     >
-                      <img [src]="file.fileBlob || '/assets/images/empty-img.png'" alt="" />
+                      <img [src]="file.fileBlob || './assets/images/empty-img.png'" alt="" />
                     </div>
 
                     <div class="file-background" *ngIf="file.ext_type_id == fileType.video">

@@ -21,13 +21,13 @@
           <!-- lang -->
           <div class="dropdown custom-dropdown">
             <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="./assets/images/{{ currentItem.key }}.svg" alt="flag" />
+              <img src="./assets/images/{{ currentItem.key }}.png" alt="flag" />
               <span> {{ currentItem.value }}</span>
             </button>
             <ul class="dropdown-menu">
               <li *ngFor="let item of langs" class="cursor-pointer">
                 <a class="dropdown-item d-flex align-items-center gap-1" (click)="changeLang(item)">
-                  <img src="./assets/images/{{ item.key }}.svg" alt="flag" />
+                  <img src="./assets/images/{{ item.key }}.png" alt="flag" />
                   <span> {{ item.value }}</span>
                 </a>
               </li>

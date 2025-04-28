@@ -159,7 +159,9 @@
     "ExpiredDate": "Amal qilish muddati",
     "TIFTN": "TIF TN kodi",
     "ProductionCapacity": "Ishlab chiqarish salohiyati",
-    "CertificateNumber": "Sertikat raqami"
+    "CertificateNumber": "Sertikat raqami",
+    "Back": "Orqaga",
+    "PageNotFound": "Sahifa topilmadi"
   },
   "Shop": {
     "Common": {

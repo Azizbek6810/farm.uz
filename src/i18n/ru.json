@@ -157,7 +157,9 @@
     "ExpiredDate": "Срок действия",
     "TIFTN": "Код ТН ВЭД",
     "ProductionCapacity": "Производственная мощность",
-    "CertificateNumber": "Номер сертификата"
+    "CertificateNumber": "Номер сертификата",
+    "Back": "Назад",
+    "PageNotFound": "Страница не найдена"
   },
   "Shop": {
     "Provider": {
@@ -462,7 +464,7 @@
   "Fergana": "Ферганский область",
   "Karakalpak": "Республика Каракалпакстан",
   "Khorezm": "Хорезмский область",
-  "TashkentCity": "г.Ташкент",
+  "TashkentCity": "город Ташкент",
   "TashkentRegion": "Ташкентская область",
   "January": "Январь",
   "February": "Февраль",

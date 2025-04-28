@@ -1,9 +1,9 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LocalizeService } from '../localize.service';
+import { LocalizeService } from '../services/localize.service';
 import { AuthenticationService } from '../auth/authentication.service';
-import { EncryptionService } from '../encryption.service';
+import { EncryptionService } from '../services/encryption.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable()

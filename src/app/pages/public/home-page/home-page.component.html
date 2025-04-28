@@ -52,31 +52,31 @@
     <div class="hero_items_wrapper">
       <!-- item -->
       <div class="hero-item">
-        <img src="./assets/images/e-shop.svg" alt="e-shop" />
+        <img src="./assets/images/e-shop.png" alt="e-shop" />
         <h6>Elektron do'kon</h6>
         <p>elektron do'kon ishtirokchilarning takliflaridan iborat</p>
       </div>
       <!-- item -->
       <!-- <div class="hero-item">
-          <img src="./assets/images/auction.svg" alt="auction" />
+          <img src="./assets/images/auction.png" alt="auction" />
           <h6>Auksion</h6>
           <p>boshlang'ich narxni tushirishga qaratilgan auksion</p>
         </div> -->
       <!-- item -->
       <div class="hero-item">
-        <img src="./assets/images/national-shop.svg" alt="national-shop" />
+        <img src="./assets/images/national-shop.png" alt="national-shop" />
         <h6>Milliy do'kon</h6>
         <p>elektron do'kon ishtirokchilarning takliflaridan iborat</p>
       </div>
       <!-- item -->
       <div class="hero-item">
-        <img src="./assets/images/etender.svg" alt="etender" />
+        <img src="./assets/images/etender.png" alt="etender" />
         <h6>Elektron tender va tanlash</h6>
         <p>elektron shakldagi xarid jarayonini amalga oshirish turi</p>
       </div>
       <!-- item -->
       <div class="hero-item">
-        <img src="./assets/images/e-contract.svg" alt="e-contract" />
+        <img src="./assets/images/e-contract.png" alt="e-contract" />
         <h6>Elektron to'g'ridan to'g'ri shartnomalar</h6>
         <p>to'g'ridan-to'g'ri shartnoma tuzishda amalga oshiriladigan xarid jarayonlari shakli</p>
       </div>
@@ -162,7 +162,7 @@
                 class="category_image"
                 (click)="redirectToProductList(category.category_id, productItem.product_code)"
               >
-                <img [src]="productItem.thumb_image || '/assets/images/empty-img.png'" alt="pill" />
+                <img [src]="productItem.thumb_image || './assets/images/empty-img.png'" alt="pill" />
                 <h5>{{ productItem.product_name }}</h5>
               </div>
             </ng-container>
@@ -295,7 +295,7 @@
             <!-- product item 1 -->
             <div class="product-item">
               <img
-                [src]="productItem.thumb_image || '/assets/images/empty-img.png'"
+                [src]="productItem.thumb_image || './assets/images/empty-img.png'"
                 (click)="onViewProductDetails(productItem.id)"
                 alt="product"
               />

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LocalizeService } from './core/localize.service';
+import { LocalizeService } from './core/services/localize.service';
 
 @Component({
   selector: 'app-root',

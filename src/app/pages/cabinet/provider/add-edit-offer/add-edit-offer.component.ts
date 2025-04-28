@@ -34,7 +34,7 @@ import { EsiService } from 'src/app/core/services/esi.service';
 import { ToastrService } from 'ngx-toastr';
 import { AbstractControl, NgForm, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
-import { ErrorHelper } from 'src/app/core/error.helper';
+import { ErrorHelper } from 'src/app/core/helpers/error.helper';
 import { TradeFileManagerComponent } from 'src/app/shared/components/trade-file-manager/trade-file-manager.component';
 declare var $: any;
 
